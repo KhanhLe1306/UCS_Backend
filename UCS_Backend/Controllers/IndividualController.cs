@@ -24,7 +24,9 @@ namespace UCS_Backend.Controllers
         [HttpGet()]
         public IEnumerable<Individual> GetAllIndividuals()
         {
-            return this._individualRepository.GetAllIndividuals();
+            var individuals = this._individualRepository.GetAllIndividuals();
+
+            return individuals;
         }
 
     }
