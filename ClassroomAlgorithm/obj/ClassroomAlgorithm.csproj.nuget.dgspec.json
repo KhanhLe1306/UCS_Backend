@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\khanh\\Desktop\\CapstoneProject\\UCS_Backend\\ClassroomAlgorithm\\ClassroomAlgorithm.csproj": {}
+    "C:\\Users\\khanh\\Desktop\\CapstoneProject\\UCS_Backend\\classroomalgorithm\\ClassroomAlgorithm.csproj": {}
   },
   "projects": {
-    "C:\\Users\\khanh\\Desktop\\CapstoneProject\\UCS_Backend\\ClassroomAlgorithm\\ClassroomAlgorithm.csproj": {
+    "C:\\Users\\khanh\\Desktop\\CapstoneProject\\UCS_Backend\\classroomalgorithm\\ClassroomAlgorithm.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\khanh\\Desktop\\CapstoneProject\\UCS_Backend\\ClassroomAlgorithm\\ClassroomAlgorithm.csproj",
+        "projectUniqueName": "C:\\Users\\khanh\\Desktop\\CapstoneProject\\UCS_Backend\\classroomalgorithm\\ClassroomAlgorithm.csproj",
         "projectName": "ClassroomAlgorithm",
-        "projectPath": "C:\\Users\\khanh\\Desktop\\CapstoneProject\\UCS_Backend\\ClassroomAlgorithm\\ClassroomAlgorithm.csproj",
+        "projectPath": "C:\\Users\\khanh\\Desktop\\CapstoneProject\\UCS_Backend\\classroomalgorithm\\ClassroomAlgorithm.csproj",
         "packagesPath": "C:\\Users\\khanh\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\khanh\\Desktop\\CapstoneProject\\UCS_Backend\\ClassroomAlgorithm\\obj\\",
+        "outputPath": "C:\\Users\\khanh\\Desktop\\CapstoneProject\\UCS_Backend\\classroomalgorithm\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\khanh\\AppData\\Roaming\\NuGet\\NuGet.Config",
