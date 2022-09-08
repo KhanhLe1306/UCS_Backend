@@ -62,18 +62,27 @@ Lecture[] lecArray = {
         Start = 830,
         End = 945,
         Room = null,
-        Capacity = 28,
+        Capacity = 50,
         IsDone = false,
    },
    new Lecture()
    {
-        Id = 1,
+        Id = 2,
         Start = 800,
         End = 915,
         Room = null,
-        Capacity = 28,
+        Capacity = 35,
         IsDone = false,
-   }
+   },
+   new Lecture()
+   {
+        Id = 3,
+        Start = 945,
+        End = 1100,
+        Room = null,
+        Capacity = 45,
+        IsDone = false,
+   },
 };
 
 lectures.AddRange(lecArray);
@@ -92,7 +101,7 @@ for(int i = 0; i < lectures.Count; i++) {
     }
 }
 
-// Sort rooms by capacity desc order
+// Sort rooms by capacity asc order
 for (int i = 0; i < rooms.Count; i++)
 {
     for (int j = 0; j < rooms.Count - 1 - i; j++)
@@ -130,13 +139,14 @@ for (int i = 0; i < lectures.Count; i++)
             break;
         }
     }
-    if (lectures[i].Room == null)
+    if (lectures[i].Room == null) // There is no lecture done
     {
         // Assign to the next available room with the least capacity efficient for the lecture's capacity
         // Next Maxcapacity and InUse is false
 
         var index = rooms.FindIndex(r => r.MaxCapaciry >= lectures[i].Capacity && r.InUse == false);
         lectures[i].Room = rooms[index];
+        rooms[index].InUse = true;
     }
 }
 
@@ -144,7 +154,7 @@ Console.WriteLine("After assigning classroom");
 
 foreach (Lecture lecture in lectures)
 {
-    Console.WriteLine(lecture.Room.Id);
+    Console.WriteLine("Lecture Id: " + lecture.Id + " is assigned to room id: " + lecture.Room.Id);
 }
 
 public class Room
