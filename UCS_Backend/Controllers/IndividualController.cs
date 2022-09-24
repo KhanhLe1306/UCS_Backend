@@ -11,7 +11,7 @@ using UCS_Backend.Models;
 namespace UCS_Backend.Controllers
 {
     [ApiController]
-    [Route("api/{controller}")]
+    [Route("api/{controller}/")]
 
     public class IndividualController : ControllerBase
     {
@@ -27,6 +27,12 @@ namespace UCS_Backend.Controllers
             var individuals = this._individualRepository.GetAllIndividuals();
 
             return individuals;
+        }
+
+        [HttpGet("{id}")]
+        public Individual? GetIndividualById(int id)
+        {
+            return this._individualRepository.GetIndividualById(id);
         }
 
     }

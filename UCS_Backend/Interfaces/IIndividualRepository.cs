@@ -6,6 +6,7 @@ namespace UCS_Backend.Interfaces
     public interface IIndividualRepository
     {
         List<Individual> GetAllIndividuals();
+        Individual? GetIndividualById(int id);
     }
 }
 

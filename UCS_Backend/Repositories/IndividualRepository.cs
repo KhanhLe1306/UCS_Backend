@@ -18,6 +18,20 @@ namespace UCS_Backend.Repositories
         {
             return this.dataContext.Individuals.ToList();
         }
+
+        public Individual? GetIndividualById(int id)
+        {
+            var res = from i in this.dataContext.Individuals
+                      where i.IndividualId == id
+                      select new Individual
+                      {
+                          IndividualId = i.IndividualId,
+                          FirstName = i.FirstName,
+                          LastName = i.LastName,
+                      };
+            
+            return res.FirstOrDefault();
+        }
     }
 }
 

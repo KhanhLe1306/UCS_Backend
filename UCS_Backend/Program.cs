@@ -12,6 +12,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddTransient<IIndividualRepository, IndividualRepository>();
+builder.Services.AddTransient<IScheduleRepository, ScheduleRepository>();
 
 // Add DBContext
 builder.Services.AddDbContext<DataContext>(options =>
