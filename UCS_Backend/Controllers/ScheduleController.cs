@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using UCS_Backend.Interfaces;
+using UCS_Backend.Interfaces.IManagers;
 using UCS_Backend.Models;
 
 namespace UCS_Backend.Controllers
@@ -9,10 +10,12 @@ namespace UCS_Backend.Controllers
     public class ScheduleController : Controller
     {
         private IScheduleRepository _scheduleRepository;
+        private IScheduleManager _scheduleManager;
 
-        public ScheduleController(IScheduleRepository scheduleRepository)
+        public ScheduleController(IScheduleRepository scheduleRepository, IScheduleManager scheduleManager)
         {
-            this._scheduleRepository = scheduleRepository;  
+            this._scheduleRepository = scheduleRepository;
+            this._scheduleManager = scheduleManager;
         }
 
         [HttpGet]
@@ -20,5 +23,12 @@ namespace UCS_Backend.Controllers
         {
             return _scheduleRepository.GetAllSchedules();
         }
+
+        [HttpPost("/add")]
+        public Schedule AddSchedule([FromBody] ScheduleFormBody body)
+        {
+            return this._scheduleManager.AddSchedule(body);
+        }
+
     }
 }

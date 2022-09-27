@@ -17,10 +17,10 @@ namespace UCS_Backend.Controllers
     {
         private IIndividualRepository _individualRepository;
 
-        public IndividualController(IIndividualRepository individualRepository){
+        public IndividualController(IIndividualRepository individualRepository) {
             this._individualRepository = individualRepository;
         }
-        
+
         [HttpGet()]
         public IEnumerable<Individual> GetAllIndividuals()
         {
@@ -35,6 +35,23 @@ namespace UCS_Backend.Controllers
             return this._individualRepository.GetIndividualById(id);
         }
 
+        [HttpPost()]
+        public Individual AddIndividual(Individual individual)
+        {
+            return _individualRepository.AddIndividual(individual);
+        }
+
+        [HttpPut()]
+        public void UpdateIndividual(Individual individual)
+        {
+            _individualRepository.Update(individual);
+        }
+
+        [HttpDelete()]
+        public void DeleteIndividual(Individual individual)
+        {
+            _individualRepository.Delete(individual);
+        }
     }
 }
 
