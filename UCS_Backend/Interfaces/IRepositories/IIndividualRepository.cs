@@ -5,7 +5,7 @@ namespace UCS_Backend.Interfaces
 {
     public interface IIndividualRepository : IBaseRepository<Individual>
     {
-        List<Individual> GetAllIndividuals();
+        Task<List<Individual>> GetAllIndividuals();
         Individual? GetIndividualById(int id);
         Individual AddIndividual(Individual individual);
     }
