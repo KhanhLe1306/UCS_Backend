@@ -3,6 +3,7 @@ using UCS_Backend.Data;
 using UCS_Backend.Interfaces;
 using UCS_Backend.Models;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace UCS_Backend.Repositories
 {
@@ -17,9 +18,9 @@ namespace UCS_Backend.Repositories
 
         public IEnumerable<Individual> GetAll => this.dataContext.Individuals.AsEnumerable();
 
-        public List<Individual> GetAllIndividuals()
+        public async Task<List<Individual>> GetAllIndividuals()
         {
-            return this.dataContext.Individuals.ToList();
+            return await this.dataContext.Individuals.ToListAsync();
         }
 
         public Individual? GetIndividualById(int id)
@@ -62,7 +63,7 @@ namespace UCS_Backend.Repositories
 
         public Individual? FindById(int id)
         {
-            var res = from i in this.dataContext.Individuals
+            /*var res = from i in this.dataContext.Individuals
                       where i.IndividualId == id
                       select new Individual
                       {
@@ -70,8 +71,9 @@ namespace UCS_Backend.Repositories
                           FirstName = i.FirstName,
                           LastName = i.LastName,
                       };
+            return res.FirstOrDefault();*/
 
-            return res.FirstOrDefault();
+            return dataContext.Individuals.Find(id);
         }
 
         public void Delete(Individual individual)

@@ -22,9 +22,9 @@ namespace UCS_Backend.Controllers
         }
 
         [HttpGet()]
-        public IEnumerable<Individual> GetAllIndividuals()
+        public async Task<ActionResult<IEnumerable<Individual>>> GetAllIndividuals()
         {
-            var individuals = this._individualRepository.GetAllIndividuals();
+            var individuals = await this._individualRepository.GetAllIndividuals();
 
             return individuals;
         }
