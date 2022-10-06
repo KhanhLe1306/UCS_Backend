@@ -11,6 +11,11 @@ namespace UCS_Backend.Data
         }
 
         public virtual DbSet<Individual> Individuals { get; set; }
+        public virtual DbSet<Room> Rooms { get; set; }
+        public virtual DbSet<Class> Classes { get; set; }
+        public virtual DbSet<Time> Time { get; set; }
+        public virtual DbSet<Weekday> Weekdays { get; set; }
+        public virtual DbSet<Schedule> Schedules { get; set; }
     }
 }
 

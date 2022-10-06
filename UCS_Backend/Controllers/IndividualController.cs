@@ -11,22 +11,47 @@ using UCS_Backend.Models;
 namespace UCS_Backend.Controllers
 {
     [ApiController]
-    [Route("api/{controller}")]
+    [Route("api/{controller}/")]
 
     public class IndividualController : ControllerBase
     {
         private IIndividualRepository _individualRepository;
 
-        public IndividualController(IIndividualRepository individualRepository){
+        public IndividualController(IIndividualRepository individualRepository) {
             this._individualRepository = individualRepository;
         }
-        
+
         [HttpGet()]
-        public IEnumerable<Individual> GetAllIndividuals()
+        public async Task<ActionResult<IEnumerable<Individual>>> GetAllIndividuals()
         {
-            return this._individualRepository.GetAllIndividuals();
+            var individuals = await this._individualRepository.GetAllIndividuals();
+
+            return individuals;
         }
 
+        [HttpGet("{id}")]
+        public Individual? GetIndividualById(int id)
+        {
+            return this._individualRepository.GetIndividualById(id);
+        }
+
+        [HttpPost()]
+        public Individual AddIndividual(Individual individual)
+        {
+            return _individualRepository.AddIndividual(individual);
+        }
+
+        [HttpPut()]
+        public void UpdateIndividual(Individual individual)
+        {
+            _individualRepository.Update(individual);
+        }
+
+        [HttpDelete()]
+        public void DeleteIndividual(Individual individual)
+        {
+            _individualRepository.Delete(individual);
+        }
     }
 }
 
