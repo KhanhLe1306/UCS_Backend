@@ -23,7 +23,7 @@ namespace UCS_Backend.Repositories
             return await this.dataContext.Individuals.ToListAsync();
         }
 
-        public Individual? GetIndividualById(int id)
+        public async Task<Individual?> GetIndividualById(int id)
         {
             var res = from i in this.dataContext.Individuals
                       where i.IndividualId == id
@@ -34,12 +34,12 @@ namespace UCS_Backend.Repositories
                           LastName = i.LastName,
                       };
             
-            return res.FirstOrDefault();
+            return await res.FirstAsync();
         }
-        public Individual AddIndividual(Individual individual)
+        public async Task<Individual> AddIndividual(Individual individual)
         {
-            var res = dataContext.Individuals.Add(individual).Entity;
-            dataContext.SaveChanges();
+            var res = (await dataContext.Individuals.AddAsync(individual)).Entity;
+            await dataContext.SaveChangesAsync();
             return res;
         }
 
@@ -50,14 +50,31 @@ namespace UCS_Backend.Repositories
             return res;
         }
 
-        public void Update(Individual individual)
+        public async Task<(bool, Individual)> UpdateIndividual(Individual individual)
         {
-            var temp = this.dataContext.Individuals.Find(individual.IndividualId);
+            var temp = await this.dataContext.Individuals.Where(i => i.IndividualId == individual.IndividualId).FirstAsync(); 
             if(temp != null)
             {
                 temp.FirstName = individual.FirstName;
                 temp.LastName = individual.LastName;
-                dataContext.SaveChanges();
+                await dataContext.SaveChangesAsync();
+                return (true, temp);
+            }
+            else
+            {
+                return (false, individual);
+            }
+        }
+
+        public async Task<bool> DeleteIndividual(Individual individual)
+        {
+            var res = this.dataContext.Individuals.Remove(individual).Entity;
+            if (res != null)
+            {
+                return true;
+            }else
+            {
+                return false;
             }
         }
 
@@ -81,6 +98,13 @@ namespace UCS_Backend.Repositories
             this.dataContext.Individuals.Remove(individual);
             this.dataContext.SaveChanges();
         }
+
+        public void Update(Individual idnividual)
+        {
+            
+        }
+
+
     }
 }
 
