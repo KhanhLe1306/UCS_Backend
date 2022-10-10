@@ -6,6 +6,73 @@ using System.Text.RegularExpressions;
 
 class CVSParser
 {
+
+    static public Dictionary<string, string> dayMappings = new Dictionary<string, string> {
+        {"M", "Monday"},
+        {"T", "Tuesday"},
+        {"W", "Wednesday"},
+        {"Th", "Thursday"},
+        {"F", "Friday"},
+        {"Sa", "Satruday"},
+        {"Su", "Sunday"}
+    };
+
+
+    static public string weekdayConverter(string shorthand) {
+        if (shorthand.Length == 1){
+            return dayMappings[shorthand];
+        }
+        if (shorthand.Length == 2) {
+            if (Char.IsUpper(shorthand[1])) {
+                return dayMappings[shorthand[0].ToString()] + ", " + dayMappings[shorthand[1].ToString()];
+            } else {
+                return dayMappings[shorthand];
+            }
+        }
+        if (shorthand.Length == 3) {
+            return dayMappings[shorthand[0].ToString()] + ", " + dayMappings[shorthand.Substring(1)];
+        }
+        if (shorthand.Length == 4) {
+            if (Char.IsUpper(shorthand[2])) {
+                return dayMappings[shorthand[0].ToString()] + ", " + dayMappings[shorthand.Substring(1,3)] + ", " + dayMappings[shorthand[3].ToString()];
+            }
+        }
+        return "NULL";
+    }
+
+
+    static public int convertToMilitary(string stdTime) {
+        int stdTimeLength = stdTime.Length;
+        string amOrPm = stdTime.Substring(stdTimeLength - 2);
+        if (amOrPm == "am") {
+            if (stdTimeLength == 3) {
+                return Int32.Parse("0" + stdTime[0].ToString() + "00");
+            } else if (stdTimeLength == 4) {
+                Console.WriteLine(Int32.Parse(stdTime.Substring(0,2)));
+                return Int32.Parse(stdTime.Substring(0, 2) + "00");
+            } else if (stdTimeLength == 6) {
+                return Int32.Parse("0" + stdTime[0].ToString() + stdTime.Substring(2, 2));
+            } else if (stdTimeLength == 7) {
+                return Int32.Parse(stdTime.Substring(0, 2) + stdTime.Substring(3, 2));
+            }
+        } else if (amOrPm == "pm") {
+            if (stdTimeLength == 3) {
+                return Int32.Parse((12 + Int32.Parse(stdTime[0].ToString())).ToString() + "00");
+            } else if (stdTimeLength == 4) {
+                return Int32.Parse((12 + Int32.Parse(stdTime.Substring(0, 2))).ToString() + "00");
+            } else if (stdTimeLength == 6) {
+                return Int32.Parse((12 + Int32.Parse(stdTime[0].ToString())).ToString() + stdTime.Substring(2, 2));
+            } else if (stdTimeLength == 7) {
+                return Int32.Parse((12 + Int32.Parse(stdTime.Substring(0, 2))).ToString() + stdTime.Substring(3, 2));
+            }
+        } else {
+            Console.WriteLine("convertToMilitary(): ERROR: Hmm I am unsure what to do with" + stdTime +". . .");
+        }
+
+        
+        return -1;
+    }
+
     static public Dictionary<string, List<string[]>> processBaseFiles(List<string> inFiles)
     {
         Dictionary<string, List<string[]>> result = new Dictionary<string, List<string[]>>();
@@ -14,7 +81,7 @@ class CVSParser
         {
             int rowCount = 0;
             string currentCourse = "";
-            reader = new StreamReader(File.OpenRead(file));
+            reader = new StreamReader(File.OpenRead("bin/" + file));
             while (!reader.EndOfStream)
             {
                 string row = reader.ReadLine();
@@ -49,6 +116,26 @@ class CVSParser
         return result;
     }
 
+
+    static public int validateMilitaryTime(int militaryTime) {
+        if (militaryTime == -1) {
+            return -1;
+        }
+        int hour = militaryTime / 100;
+        int minute = militaryTime % 100;
+        if (!(minute <= 0) & !(minute >= 50)) {
+            hour += 1;
+            minute -= 60;
+        }
+
+        if (hour > 24) {
+            hour = 0;
+        }
+        if (hour == 24 & minute > 0) {
+            hour = 0;
+        }
+        return Int32.Parse(hour.ToString() + minute.ToString().PadRight(2));
+    }
 
     static public Dictionary<string, List<string[]>> process(Dictionary<string, List<string[]>> inData)
     {
@@ -97,9 +184,14 @@ class CVSParser
                     {
                         //Console.WriteLine("TIMEWEEK: " + TIMEWEEK);
                         string[] TIMEWEEKSplit = TIMEWEEK.Split(' ');
+                        string[] hourMinute = TIMEWEEKSplit[1].Split('-');
+                        TIME = validateMilitaryTime(convertToMilitary(hourMinute[0])).ToString() + "-" + validateMilitaryTime(convertToMilitary(hourMinute[1])).ToString();
+                        if (TIME == "-1--1") {
+                            TIME = "NULL";
+                        }
+                        Console.WriteLine("TIME: " + TIME);
                         //Console.WriteLine("TIMEWEEKSplit Length: " + TIMEWEEKSplit.Length);
-                        WEEKDAY = TIMEWEEKSplit[0];
-                        TIME = TIMEWEEKSplit[1];
+                        WEEKDAY = weekdayConverter(TIMEWEEKSplit[0]);
                         // Will need to implement convert to military . . . 
                     }
                     if (lecture[20] == "Totally Online")
@@ -107,7 +199,7 @@ class CVSParser
                         ROOM = "NULL";
                     }
                     result[course].Add(new string[] { ROOM, TIME, CID, WEEKDAY, CROSS, CROSSID, SID });
-                    foreach (string[] s1 in result[course])
+                    /*foreach (string[] s1 in result[course])
                     {
                         for (int k = 0; k < s1.Length; k++)
                         {
@@ -117,16 +209,18 @@ class CVSParser
                             }
                             else
                             {
-                                Console.Write(s1[k].PadRight(16, ' '));
+                                Console.Write(s1[k].PadRight(20, ' '));
                             }
                         }
                         Console.WriteLine();
-                    }
+                    }*/
                 }
             }
         }
         return result;
     }
+
+
 
 
     static void Main(string[] args)
