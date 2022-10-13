@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Linq;
 
 class CVSParser
 {
@@ -18,9 +19,31 @@ class CVSParser
     };
 
 
-    static public List<Tuple<int, int>> getAvailability(Dictionary<string, Dictionary<string, List<Tuple<Tuple<int, int>, string>>>> timeBlockings, string room, string day) {
+    static public void showAvailabilities(Dictionary<string, Dictionary<string, List<Tuple<int, int>>>> weekDayTimeBlockings) {
+        foreach(string room in weekDayTimeBlockings.Keys) {
+            Console.WriteLine(room);
+            foreach(string day in weekDayTimeBlockings[room].Keys) {
+                Console.WriteLine("\tThe available time for {0} on {1} is:", room, day);
+                if (!(weekDayTimeBlockings[room][day].Count == 0)) {
+                    Console.WriteLine("\t\tTAKEN: ");
+                    foreach(var block in weekDayTimeBlockings[room][day].OrderBy(t => t.Item1).Distinct().ToList()) {
+                        Console.WriteLine("\t\t\t{0} - {1}", block.Item1, block.Item2);
+                    }
+                }
+                List<Tuple<int,int>> result = getAvailability(weekDayTimeBlockings, room, day);
+                Console.WriteLine("\t\tAVAILABLE:");
+                foreach(var block in result) {
+                    Console.WriteLine("\t\t\t{0} - {1}", block.Item1, block.Item2);
+                }
+                Console.WriteLine();
+            }
+        }
+    }
+
+
+    static public List<Tuple<int, int>> getAvailability(Dictionary<string, Dictionary<string, List<Tuple<int, int>>>> timeBlockings, string room, string day) {
         int earliest = 900;
-        int lateset = 2200;
+        int latest = 2200;
         if (!timeBlockings.ContainsKey(room)) {
             Console.WriteLine("The room " + room + " does not exist, or perhaps it is not registered . . .");
             return null;
@@ -30,25 +53,43 @@ class CVSParser
             return null;
         }
         List<Tuple<int, int>> result = new List<Tuple<int, int>>();
-
-        List<Tuple<Tuple<int, int>, string>> roomDayBlock = timeBlockings[room][day];
+        List<Tuple<int, int>> roomDayBlock = timeBlockings[room][day];
         if (roomDayBlock.Count == 0) {
-            Console.WriteLine("The room is availabe from {0} to {1}", earliest, lateset);
-            result.Add(new Tuple<int, int>(earliest, lateset));
+            result.Add(new Tuple<int, int>(earliest, latest));
             return result;
         }
         else
         {
-            // Sort the roomDayBlock by start times . . . unsure how to do this . . .
-            // Calculate the availability
+            roomDayBlock = roomDayBlock.OrderBy(t => t.Item1).Distinct().ToList(); //sorting taken slots by start times
+
+            int dayBlockLength = roomDayBlock.Count;
+            if (dayBlockLength == 1) {
+                int upTo = roomDayBlock[0].Item1 - earliest + 15;
+                upTo = validateMilitaryTime(upTo);
+                if (upTo > 0) {
+                    result.Add(new Tuple<int, int>(earliest, earliest + upTo));
+                }
+                result.Add(new Tuple<int, int> (validateMilitaryTime(roomDayBlock[0].Item2 + 15), latest));
+            }
+            else
+            {
+                for(int i = 0; i < roomDayBlock.Count - 1; i++) {
+                    if (i == 0) {
+                        result.Add(new Tuple<int, int>(validateMilitaryTime(earliest), validateMilitaryTime(earliest + (roomDayBlock[i].Item1 - earliest) - 15)));
+                    } else {
+                        result.Add(new Tuple<int, int>(validateMilitaryTime(roomDayBlock[i-1].Item2 + 15), validateMilitaryTime(roomDayBlock[i].Item1 - 15)));
+                    }
+                }
+                result.Add(new Tuple<int, int>(validateMilitaryTime(roomDayBlock[dayBlockLength - 2].Item2 + 15), validateMilitaryTime(roomDayBlock[dayBlockLength - 1].Item1 - 15)));
+            }
         }
         return result;
     }
 
 
-    static public Dictionary<string, Dictionary<string, List<Tuple<Tuple<int, int>, string>>>> processWeekdayTimeBlockings(Dictionary<string, List<Tuple<string, Tuple<int, int>, string, string, string, string, string>>> coursesRev)
+    static public Dictionary<string, Dictionary<string, List<Tuple<int, int>>>> processWeekdayTimeBlockings(Dictionary<string, List<Tuple<string, Tuple<int, int>, string, string, string, string, string>>> coursesRev)
     {
-        Dictionary<string, Dictionary<string, List<Tuple<Tuple<int, int>, string>>>> result = new Dictionary<string, Dictionary<string, List<Tuple<Tuple<int, int>, string>>>>();
+        Dictionary<string, Dictionary<string, List<Tuple<int, int>>>> result = new Dictionary<string, Dictionary<string, List<Tuple<int, int>>>>();
         foreach (var item in coursesRev)
         {
             //Console.WriteLine(item.Key);
@@ -63,14 +104,14 @@ class CVSParser
                     //Console.WriteLine("Trying to add the room to the reuslt");
                     if (!result.ContainsKey(room))
                     {
-                        result.Add(room, new Dictionary<string, List<Tuple<Tuple<int, int>, string>>>(){
-                    {"Monday", new List<Tuple<Tuple<int, int>, string>>()},
-                    {"Tuesday", new List<Tuple<Tuple<int, int>, string>>()},
-                    {"Wednesday", new List<Tuple<Tuple<int, int>, string>>()},
-                    {"Thursday", new List<Tuple<Tuple<int, int>, string>>()},
-                    {"Friday", new List<Tuple<Tuple<int, int>, string>>()},
-                    {"Saturday", new List<Tuple<Tuple<int, int>, string>>()},
-                    {"Sunday", new List<Tuple<Tuple<int, int>, string>>()}
+                        result.Add(room, new Dictionary<string, List<Tuple<int, int>>>(){
+                    {"Monday", new List<Tuple<int, int>>()},
+                    {"Tuesday", new List<Tuple<int, int>>()},
+                    {"Wednesday", new List<Tuple<int, int>>()},
+                    {"Thursday", new List<Tuple<int, int>>()},
+                    {"Friday", new List<Tuple<int, int>>()},
+                    {"Saturday", new List<Tuple<int, int>>()},
+                    {"Sunday", new List<Tuple<int, int>>()}
                 });
                     }
                     //Console.WriteLine("Room was successfulyl added . . .");
@@ -82,14 +123,14 @@ class CVSParser
                         foreach (string day in weekdays)
                         {
                             //Console.WriteLine(day);
-                            result[room][day].Add(new Tuple<Tuple<int, int>, string>(time, cid));
+                            result[room][day].Add(time);
                         }
                     }
                     else
                     {
                         //Console.WriteLine("There is one day . . .");
                         //Console.WriteLine(weekday);
-                        result[room][weekday].Add(new Tuple<Tuple<int, int>, string>(time, cid));
+                        result[room][weekday].Add(time);
                     }
                 }
             }
@@ -174,7 +215,7 @@ class CVSParser
             }
             else if (stdTimeLength == 4)
             {
-                return Int32.Parse((12 + Int32.Parse(stdTime.Substring(0, 2))).ToString() + "00");
+                return Int32.Parse((Int32.Parse(stdTime.Substring(0, 2))).ToString() + "00");
             }
             else if (stdTimeLength == 6)
             {
@@ -260,6 +301,7 @@ class CVSParser
         {
             hour = 0;
         }
+        //Console.WriteLine("BEFORE: " + militaryTime + " AFTER: " + hour.ToString() + minute.ToString().PadRight(2, '0'));
         return Int32.Parse(hour.ToString() + minute.ToString().PadRight(2, '0'));
     }
 
@@ -355,22 +397,8 @@ class CVSParser
         List<string> csvfiles = new List<string> { "CSCI1191.csv", "BIOI1191.csv", "BMI1191.csv", "CYBR1191.csv", "ISQA1191.csv", "ITIN1191.csv" };
         Dictionary<string, List<string[]>> baseData = processBaseFiles(csvfiles);
         Dictionary<string, List<Tuple<string, Tuple<int, int>, string, string, string, string, string>>> coursesRevised = process(baseData);
-        Dictionary<string, Dictionary<string, List<Tuple<Tuple<int, int>, string>>>> weekDayTimeBlockings = processWeekdayTimeBlockings(coursesRevised);
-        Console.WriteLine("Enter a Room: ");
-        string room = Console.ReadLine();
-        if (room == null) {
-            room = "PKI 361";
-        }
-        Console.WriteLine("Enter a Day: ");
-        string day = Console.ReadLine();
-        if (day == null) {
-            day = "Tuesday";
-        }
-        List<Tuple<int, int>> available = getAvailability(weekDayTimeBlockings, room, day);
-        if (available != null) {
-            foreach(var item in available) {
-                Console.WriteLine(item);
-            }
-        }
+        Dictionary<string, Dictionary<string, List<Tuple<int, int>>>> weekDayTimeBlockings = processWeekdayTimeBlockings(coursesRevised);
+        
+        showAvailabilities(weekDayTimeBlockings);
     }
 }
