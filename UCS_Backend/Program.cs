@@ -19,7 +19,7 @@ builder.Services.AddTransient<IRoomRepository, RoomRepository>();
 // Add DBContext
 builder.Services.AddDbContext<DataContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("UCS_DB"));
+    options.UseSqlite(builder.Configuration.GetConnectionString("UCS_DB"));
 });
 
 // Enable Cors
