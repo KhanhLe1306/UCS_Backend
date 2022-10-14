@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using UCS_Backend.Data;
 using UCS_Backend.Interfaces;
+using UCS_Backend.Interfaces.IManagers;
 using UCS_Backend.Interfaces.IRepositories;
+using UCS_Backend.Managers;
 using UCS_Backend.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +17,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddTransient<IIndividualRepository, IndividualRepository>();
 builder.Services.AddTransient<IScheduleRepository, ScheduleRepository>();
 builder.Services.AddTransient<IRoomRepository, RoomRepository>();
+builder.Services.AddTransient<IScheduleManager, ScheduleManager>();
+builder.Services.AddTransient<IClassRepository, ClassRepository>();
 
 // Add DBContext
 builder.Services.AddDbContext<DataContext>(options =>

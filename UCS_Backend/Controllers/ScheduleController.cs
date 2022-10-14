@@ -1,21 +1,27 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using UCS_Backend.Interfaces;
 using UCS_Backend.Interfaces.IManagers;
+using UCS_Backend.Interfaces.IRepositories;
 using UCS_Backend.Models;
+using UCS_Backend.Utils;
 
 namespace UCS_Backend.Controllers
 {
     [ApiController]
-    [Route("api/{controller}")]
+    [Route("api/{controller}/")]
     public class ScheduleController : Controller
     {
         private IScheduleRepository _scheduleRepository;
         private IScheduleManager _scheduleManager;
+        private IClassRepository _classRepository;
+        private CSVParser parser;
 
-        public ScheduleController(IScheduleRepository scheduleRepository, IScheduleManager scheduleManager)
+        public ScheduleController(IScheduleRepository scheduleRepository, IScheduleManager scheduleManager, IClassRepository classRepository)
         {
             this._scheduleRepository = scheduleRepository;
             this._scheduleManager = scheduleManager;
+            this._classRepository = classRepository;
+            this.parser = new CSVParser(_classRepository);
         }
 
         [HttpGet]
@@ -24,10 +30,18 @@ namespace UCS_Backend.Controllers
             return _scheduleRepository.GetAllSchedules();
         }
 
-        [HttpPost("/add")]
+        [HttpPost("add")]
         public Schedule AddSchedule([FromBody] ScheduleFormBody body)
         {
             return this._scheduleManager.AddSchedule(body);
+        }
+
+        [HttpGet("parseCSV")]
+        public void ParseCSV()
+        {
+            List<string> csvfiles = new List<string> { "CSCI1191.csv" };
+            var processedData = this.parser.processBaseFiles(csvfiles);
+            this.parser.process(processedData);
         }
 
     }
