@@ -3,7 +3,7 @@
     public class Time
     {
         public int TimeId { get; set; }
-        public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
+        public int StartTime { get; set; }
+        public int EndTime { get; set; }
     }
 }
