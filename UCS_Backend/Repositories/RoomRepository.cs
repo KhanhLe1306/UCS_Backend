@@ -30,8 +30,7 @@ namespace UCS_Backend.Repositories
                     Name = room.Name,
                     Capacity = room.Capacity
                 };
-            }
-          
+            }         
         }
 
         public void Delete(Room entity)

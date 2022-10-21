@@ -30,27 +30,27 @@ namespace UCS_Backend.Controllers
         }
 
         [HttpGet("{id}")]
-        public Individual? GetIndividualById(int id)
+        public async Task<ActionResult<Individual?>> GetIndividualById(int id)
         {
-            return this._individualRepository.GetIndividualById(id);
+            return await this._individualRepository.GetIndividualById(id);
         }
 
         [HttpPost()]
-        public Individual AddIndividual(Individual individual)
+        public async Task<ActionResult<Individual>> AddIndividual(Individual individual)
         {
-            return _individualRepository.AddIndividual(individual);
+            return await _individualRepository.AddIndividual(individual);
         }
 
         [HttpPut()]
-        public void UpdateIndividual(Individual individual)
+        public async Task<ActionResult<(bool, Individual)>> UpdateIndividual(Individual individual)
         {
-            _individualRepository.Update(individual);
+            return await _individualRepository.UpdateIndividual(individual);
         }
 
         [HttpDelete()]
-        public void DeleteIndividual(Individual individual)
+        public async Task<ActionResult<bool>> DeleteIndividual(Individual individual)
         {
-            _individualRepository.Delete(individual);
+            return await _individualRepository.DeleteIndividual(individual);
         }
     }
 }
