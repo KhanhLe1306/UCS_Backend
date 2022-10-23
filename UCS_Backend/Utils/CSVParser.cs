@@ -10,12 +10,14 @@ namespace UCS_Backend.Utils
         private IRoomRepository _roomRepository;
         private ITimeRepository _timeRepository;
         private IWeekdayRepository _weekdayRepository;
+        private ICrossRepository _crossRepository;
         private List<Tuple<int, string>> crossLists;
-        public CSVParser(IClassRepository classRepository, IRoomRepository roomRepository, ITimeRepository timeRepository, IWeekdayRepository weekdayRepository) { 
+        public CSVParser(IClassRepository classRepository, IRoomRepository roomRepository, ITimeRepository timeRepository, IWeekdayRepository weekdayRepository, ICrossRepository crossRepository) { 
             this._classRepository = classRepository;
             this._roomRepository = roomRepository;
             this._timeRepository = timeRepository;
             this._weekdayRepository = weekdayRepository;
+            this._crossRepository = crossRepository;
         }
 
         static public Dictionary<string, string> dayMappings = new Dictionary<string, string> {
@@ -101,7 +103,8 @@ namespace UCS_Backend.Utils
                             Enrollments = enrollments,
                             CourseTitle = courseTitle,  
                             Course = course,
-                            Section = lecture[9]
+                            Section = lecture[9],
+                            CatalogNumber = lecture[7],
                         };
                         int classId = _classRepository.AddNewClass(classModel);
 
@@ -174,7 +177,15 @@ namespace UCS_Backend.Utils
                                 var i = 34;
                                 while (!string.IsNullOrEmpty(lecture[i]) && i < lecture.Length - 1)
                                 {
-                                    crossLists.Add(Tuple.Create(clssID, lecture[i].ToString()));
+                                    string crossListClass = lecture[i].ToString();
+                                    string section = crossListClass.Substring(crossListClass.Length - 3, 3);
+                                    string catalogNumber = crossListClass.Substring(crossListClass.Length - 8, 4);
+                                    int temp = _classRepository.FindClssID(catalogNumber, section);
+                                    _crossRepository.Add(new Cross { 
+                                        ClssID1 = clssID,
+                                        ClssID2 = temp,
+                                    });
+                                    crossLists.Add(Tuple.Create(clssID, temp.ToString()));
                                     i++;
                                     count++;
                                 }
@@ -187,14 +198,22 @@ namespace UCS_Backend.Utils
                                 var i = 35;
                                 while (!string.IsNullOrEmpty(lecture[i]) && i < lecture.Length - 1)
                                 {
-                                    crossLists.Add(Tuple.Create(clssID, lecture[i].ToString()));
+                                    string crossListClass = lecture[i].ToString();
+                                    string section = crossListClass.Substring(crossListClass.Length - 3, 3);
+                                    string catalogNumber = crossListClass.Substring(crossListClass.Length - 8, 4);
+                                    int temp = _classRepository.FindClssID(catalogNumber, section);
+                                    var res = _crossRepository.Add(new Cross
+                                    {
+                                        ClssID1 = clssID,
+                                        ClssID2 = temp,
+                                    });
+                                    crossLists.Add(Tuple.Create(clssID, temp.ToString()));
                                     i++;
                                     count++;
                                 }
                             }
-                            //crossLists.Add(Tuple.Create(clssID, lecture[35].ToString()));
-                            //var courseName = lecture[10];
-                            //count++;
+                                
+                        // Find clssID based on CatalogNumber and Section
                         }
                     }
                 }

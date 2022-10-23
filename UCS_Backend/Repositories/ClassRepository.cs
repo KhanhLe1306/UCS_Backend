@@ -21,6 +21,7 @@ namespace UCS_Backend.Repositories
                 temp.Course = classModel.Course;
                 temp.CourseTitle = classModel.CourseTitle;
                 temp.Section = classModel.Section;  
+                temp.CatalogNumber = classModel.CatalogNumber;
                 _context.SaveChanges();
                 return temp.ClassId;
             }
@@ -30,6 +31,12 @@ namespace UCS_Backend.Repositories
                 _context.SaveChanges();
                 return res.Entity.ClassId;
             }              
+        }
+
+        public int FindClssID(string catalogNumber, string section)
+        {
+            var res = _context.Classes.Where(x => x.CatalogNumber == catalogNumber && x.Section == section).FirstOrDefault();
+            return res != null ? res.ClssId : 0;
         }
     }
 }
