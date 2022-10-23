@@ -243,7 +243,7 @@ class CVSParser
         {
             int rowCount = 0;
             string currentCourse = "";
-            reader = new StreamReader(File.OpenRead("bin/" + file));
+            reader = new StreamReader(File.OpenRead(file));
             while (!reader.EndOfStream)
             {
                 string row = reader.ReadLine();

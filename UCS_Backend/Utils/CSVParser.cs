@@ -10,6 +10,7 @@ namespace UCS_Backend.Utils
         private IRoomRepository _roomRepository;
         private ITimeRepository _timeRepository;
         private IWeekdayRepository _weekdayRepository;
+        private List<Tuple<int, string>> crossLists;
         public CSVParser(IClassRepository classRepository, IRoomRepository roomRepository, ITimeRepository timeRepository, IWeekdayRepository weekdayRepository) { 
             this._classRepository = classRepository;
             this._roomRepository = roomRepository;
@@ -35,10 +36,11 @@ namespace UCS_Backend.Utils
             {
                 int rowCount = 0;
                 string currentCourse = "";
+                string currentClssID = "";
                 reader = new StreamReader(File.OpenRead("CSVFiles/" +file));
                 while (!reader.EndOfStream)
                 {
-    /*                for (int i = 0; i < 33; i++)
+                    /*for (int i = 0; i < 33; i++)
                     {
                         string row1 = reader.ReadLine();
                     }
@@ -50,19 +52,24 @@ namespace UCS_Backend.Utils
                         if (rowCount > 2 & !row.Contains(",") & !cross)
                         {
                             result.Add(row, new List<string[]>());
-                            currentCourse = row;
+                            currentCourse = row;                         
                         }
                         else if (cross & rowCount > 2 & row.Length < 50)
-                        {
-                            //Console.WriteLine(row);
-                            int x = 0;
+                        {                          
+                            /*var a = row.Split(',');
+                            foreach (var c in a)
+                            {
+                                crossLists.Add(Tuple.Create(currentClssID, c));
+                            }                       
+                            int x = 0;*/
                             // Find a way to apply this cross list to the previously processed line
                         }
                         else
                         {
-                            string[] rowSplit = row.Split(',');
-                            if (currentCourse != "" & rowCount > 2 & rowSplit.Length >= 38)
+                            string[] rowSplit = row.Split(',');                       
+                            if (currentCourse != "" & rowCount > 2 & rowSplit.Length >= 36)
                             {
+                                currentClssID = rowSplit[1];
                                 result[currentCourse].Add(rowSplit);
                             }
                         }
@@ -76,6 +83,8 @@ namespace UCS_Backend.Utils
 
         public void process(Dictionary<string, List<string[]>> inData)
         {
+            crossLists = new List<Tuple<int, string>>();
+            int count = 0; 
             //Dictionary<string, List<Tuple<string, Tuple<int, int>, string, string, string, string, string>>> result = new Dictionary<string, List<Tuple<string, Tuple<int, int>, string, string, string, string, string>>>();
             foreach (var item in inData)
             {
@@ -92,6 +101,7 @@ namespace UCS_Backend.Utils
                             Enrollments = enrollments,
                             CourseTitle = courseTitle,  
                             Course = course,
+                            Section = lecture[9]
                         };
                         int classId = _classRepository.AddNewClass(classModel);
 
@@ -108,32 +118,7 @@ namespace UCS_Backend.Utils
                                 Capacity = Int32.Parse(lecture[30])
                             });
                         }
-/*
-                        string CROSS = "N";
-                        string CROSSID = "NULL";
-                        if (lecture[35] != "")
-                        {
-                            Regex.Replace(lecture[35], "\n", " ");
-                            CROSS = "Y";
-                            s = Regex.Match(lecture[35], @"(.... \d{4}-\d{3})");
-                            if (s.Success)
-                            {
-                                CROSSID = s.Value;
-                            }
-                            else
-                            {
-                                s = Regex.Match(lecture[35], @"(.... \d{4})");
-                                if (s.Success)
-                                {
-                                    CROSSID = s.Value;
-                                }
-                                else
-                                {
-                                    Console.WriteLine("Couldn't get the Cross-List");
-                                }
-                            }
-                        }
-*/
+
                         string TIMEWEEK = lecture[13];
                         Tuple<int, int> TIME = new Tuple<int, int>(-1, -1);
                         string WEEKDAY = "NULL";
@@ -179,9 +164,42 @@ namespace UCS_Backend.Utils
                             }
                             Console.WriteLine();
                         }*/
+
+                        // Crosslisting
+                        if (lecture.Length == 37)
+                        {
+                            if(!string.IsNullOrEmpty(lecture[34]) && lecture[34].Length > 4)
+                            {
+                                var courseName = lecture[10];
+                                var i = 34;
+                                while (!string.IsNullOrEmpty(lecture[i]) && i < lecture.Length - 1)
+                                {
+                                    crossLists.Add(Tuple.Create(clssID, lecture[i].ToString()));
+                                    i++;
+                                    count++;
+                                }
+                            }
+                        }else if (lecture.Length >= 38)
+                        {
+                            if (!string.IsNullOrEmpty(lecture[35]) && lecture[35].Length > 4)
+                            {
+                                var courseName = lecture[10];
+                                var i = 35;
+                                while (!string.IsNullOrEmpty(lecture[i]) && i < lecture.Length - 1)
+                                {
+                                    crossLists.Add(Tuple.Create(clssID, lecture[i].ToString()));
+                                    i++;
+                                    count++;
+                                }
+                            }
+                            //crossLists.Add(Tuple.Create(clssID, lecture[35].ToString()));
+                            //var courseName = lecture[10];
+                            //count++;
+                        }
                     }
                 }
             }
+            Console.WriteLine(crossLists);
             //return result;
         }
 
