@@ -20,6 +20,7 @@ namespace UCS_Backend.Repositories
                 temp.Enrollments = classModel.Enrollments;
                 temp.Course = classModel.Course;
                 temp.CourseTitle = classModel.CourseTitle;
+                temp.Section = classModel.Section;  
                 _context.SaveChanges();
                 return temp.ClassId;
             }
