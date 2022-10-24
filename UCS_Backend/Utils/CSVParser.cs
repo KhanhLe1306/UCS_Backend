@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using UCS_Backend.Interfaces;
 using UCS_Backend.Interfaces.IRepositories;
 using UCS_Backend.Models;
 
@@ -11,13 +12,15 @@ namespace UCS_Backend.Utils
         private ITimeRepository _timeRepository;
         private IWeekdayRepository _weekdayRepository;
         private ICrossRepository _crossRepository;
+        private IScheduleRepository _scheduleRepository;
         private List<Tuple<int, string>> crossLists;
-        public CSVParser(IClassRepository classRepository, IRoomRepository roomRepository, ITimeRepository timeRepository, IWeekdayRepository weekdayRepository, ICrossRepository crossRepository) { 
+        public CSVParser(IClassRepository classRepository, IRoomRepository roomRepository, ITimeRepository timeRepository, IWeekdayRepository weekdayRepository, ICrossRepository crossRepository, IScheduleRepository scheduleRepository) { 
             this._classRepository = classRepository;
             this._roomRepository = roomRepository;
             this._timeRepository = timeRepository;
             this._weekdayRepository = weekdayRepository;
             this._crossRepository = crossRepository;
+            this._scheduleRepository = scheduleRepository;
         }
 
         static public Dictionary<string, string> dayMappings = new Dictionary<string, string> {
@@ -110,65 +113,58 @@ namespace UCS_Backend.Utils
 
 
                         string ROOM = lecture[16];
+                        Room room;
                         Match s = Regex.Match(ROOM, @"Peter Kiewit Institute");
                         if (s.Success)
                         {
                             ROOM = "PKI " + ROOM.Substring(23, 3);
                             // Insert room
-                            Room room = this._roomRepository.Add(new Room
+                            room = this._roomRepository.Add(new Room
                             {
                                 Name = ROOM,
                                 Capacity = Int32.Parse(lecture[30])
                             });
+                        }
+                        else // 'Online Class' => RoomID = 0
+                        {
+                            room = new Room
+                            {
+                                RoomId = 0
+                            };
                         }
 
                         string TIMEWEEK = lecture[13];
                         Tuple<int, int> TIME = new Tuple<int, int>(-1, -1);
                         string WEEKDAY = "NULL";
                         s = Regex.Match(TIMEWEEK, @"Does Not Meet");
-                        
+                        Time time = null;
+                        Weekday weekday = null;
                         if (!s.Success)
                         {
                             //Console.WriteLine("TIMEWEEK: " + TIMEWEEK);
                             string[] TIMEWEEKSplit = TIMEWEEK.Split(' ');
                             string[] hourMinute = TIMEWEEKSplit[1].Split('-');
                             TIME = new Tuple<int, int>(validateMilitaryTime(convertToMilitary(hourMinute[0])), validateMilitaryTime(convertToMilitary(hourMinute[1])));
-                            this._timeRepository.Add(new Time { 
+                            time = this._timeRepository.Add(new Time { 
                                 StartTime = TIME.Item1,
                                 EndTime = TIME.Item2
                             });
                             //Console.WriteLine("TIMEWEEKSplit Length: " + TIMEWEEKSplit.Length);
                             WEEKDAY = weekdayConverter(TIMEWEEKSplit[0]);
-                            this._weekdayRepository.Add(new Weekday
+                            weekday = this._weekdayRepository.Add(new Weekday
                             {
                                 Description = WEEKDAY
                             });
 
                             // Will need to implement convert to military . . . 
                         }
-                        /*if (lecture[20] == "Totally Online")
+                        else  // Does not meet
                         {
-                            ROOM = "NULL";
-                        }*/
 
-                        // result[course].Add(new Tuple<string, Tuple<int, int>, string, string, string, string, string>(ROOM, TIME, CID, WEEKDAY, CROSS, CROSSID, SID));
-                        /*foreach (string[] s1 in result[course])
-                        {
-                            for (int k = 0; k < s1.Length; k++)
-                            {
-                                if (k == 0)
-                                {
-                                    Console.Write(s1[k].PadRight(30, ' '));
-                                }
-                                else
-                                {
-                                    Console.Write(s1[k].PadRight(20, ' '));
-                                }
-                            }
-                            Console.WriteLine();
-                        }*/
+                        }
 
                         // Crosslisting
+                        Cross cross = null;
                         if (lecture.Length == 37)
                         {
                             if(!string.IsNullOrEmpty(lecture[34]) && lecture[34].Length > 4)
@@ -202,7 +198,7 @@ namespace UCS_Backend.Utils
                                     string section = crossListClass.Substring(crossListClass.Length - 3, 3);
                                     string catalogNumber = crossListClass.Substring(crossListClass.Length - 8, 4);
                                     int temp = _classRepository.FindClssID(catalogNumber, section);
-                                    var res = _crossRepository.Add(new Cross
+                                    cross = _crossRepository.Add(new Cross
                                     {
                                         ClssID1 = clssID,
                                         ClssID2 = temp,
@@ -212,8 +208,14 @@ namespace UCS_Backend.Utils
                                     count++;
                                 }
                             }
-                                
-                        // Find clssID based on CatalogNumber and Section
+
+                            // Insert all ClassID, RoomID, TimeID, WeekdayID, and CrossID here 
+                            _scheduleRepository.Add(new Schedule { 
+                                ClassId = classId,
+                                RoomId = room.RoomId,
+                                TimeId = time != null ? time.TimeId : 0,
+                                WeekdayId = weekday != null ? weekday.WeekdayId : 0,
+                            });
                         }
                     }
                 }

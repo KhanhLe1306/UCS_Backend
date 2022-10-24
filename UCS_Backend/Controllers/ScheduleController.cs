@@ -24,7 +24,7 @@ namespace UCS_Backend.Controllers
             this._scheduleRepository = scheduleRepository;
             this._scheduleManager = scheduleManager;
             this._classRepository = classRepository;
-            this.parser = new CSVParser(classRepository, roomRepository, timeRepository, weekdayRepository, crossRepository);
+            this.parser = new CSVParser(classRepository, roomRepository, timeRepository, weekdayRepository, crossRepository, scheduleRepository);
         }
 
         [HttpGet]
