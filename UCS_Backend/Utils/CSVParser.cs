@@ -1,4 +1,4 @@
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 using UCS_Backend.Interfaces;
 using UCS_Backend.Interfaces.IRepositories;
 using UCS_Backend.Models;
@@ -23,7 +23,7 @@ namespace UCS_Backend.Utils
             this._scheduleRepository = scheduleRepository;
         }
 
-        static public Dictionary<string, string> dayMappings = new Dictionary<string, string> {
+        public Dictionary<string, string> dayMappings = new Dictionary<string, string> {
             {"M", "Monday"},
             {"T", "Tuesday"},
             {"W", "Wednesday"},
@@ -36,50 +36,26 @@ namespace UCS_Backend.Utils
         public Dictionary<string, List<string[]>> processBaseFiles(List<string> inFiles)
         {
             Dictionary<string, List<string[]>> result = new Dictionary<string, List<string[]>>();
-            StreamReader reader = null;
-            foreach (var file in inFiles)
+            Match re;
+            string currentCourse = "";
+            string currentClssID = "";
+            string[] rawCSV = System.IO.File.ReadAllLines("CSVFiles/" + inFiles[0]);
+            for (int row = 0; row < rawCSV.Length; row++)
             {
-                int rowCount = 0;
-                string currentCourse = "";
-                string currentClssID = "";
-                reader = new StreamReader(File.OpenRead("CSVFiles/" +file));
-                while (!reader.EndOfStream)
-                {
-                    /*for (int i = 0; i < 33; i++)
-                    {
-                        string row1 = reader.ReadLine();
+                string[] tmp = rawCSV[row].Split(new string[] { ",\""}, StringSplitOptions.None);
+                for (int i = 0; i < tmp.Length; i++) {
+                    tmp[i] = tmp[i].Replace("\"", String.Empty);
+                }
+
+                if (row > 2) {
+                    if (tmp.Length == 1 & !tmp[0].Contains("ross")) { // Course
+                        currentCourse = tmp[0];
+                        result.Add(currentCourse, new List<string[]>());
+                    } else if (tmp.Length < 3) { // Crosslist Bug . . .
+                        //Console.WriteLine(tmp[0]);
+                    } else if (currentCourse != "") { // Section (Main) information
+                        result[currentCourse].Add(tmp);
                     }
-                    while (true)
-                    {*/
-                        string row = reader.ReadLine();
-                        row = Regex.Replace(row, "\"", string.Empty);
-                        bool cross = row.Contains("ross");
-                        if (rowCount > 2 & !row.Contains(",") & !cross)
-                        {
-                            result.Add(row, new List<string[]>());
-                            currentCourse = row;                         
-                        }
-                        else if (cross & rowCount > 2 & row.Length < 50)
-                        {                          
-                            /*var a = row.Split(',');
-                            foreach (var c in a)
-                            {
-                                crossLists.Add(Tuple.Create(currentClssID, c));
-                            }                       
-                            int x = 0;*/
-                            // Find a way to apply this cross list to the previously processed line
-                        }
-                        else
-                        {
-                            string[] rowSplit = row.Split(',');                       
-                            if (currentCourse != "" & rowCount > 2 & rowSplit.Length >= 36)
-                            {
-                                currentClssID = rowSplit[1];
-                                result[currentCourse].Add(rowSplit);
-                            }
-                        }
-                        rowCount++;
-                    /*} */                  
                 }
             }
 
@@ -88,140 +64,103 @@ namespace UCS_Backend.Utils
 
         public void process(Dictionary<string, List<string[]>> inData)
         {
-            crossLists = new List<Tuple<int, string>>();
-            int count = 0; 
-            //Dictionary<string, List<Tuple<string, Tuple<int, int>, string, string, string, string, string>>> result = new Dictionary<string, List<Tuple<string, Tuple<int, int>, string, string, string, string, string>>>();
-            foreach (var item in inData)
-            {
-                foreach (string[] lecture in item.Value)
-                {
-                    if (lecture.Length != 0)
-                    {                   
-                        int clssID = Int32.Parse(lecture[1]);
-                        int enrollments = lecture[29] == "" ? 0 : Int32.Parse(lecture[29]);
-                        string course = lecture[8];
-                        string courseTitle = lecture[10];
-                        ClassModel classModel = new ClassModel { 
-                            ClssId = clssID,
-                            Enrollments = enrollments,
-                            CourseTitle = courseTitle,  
-                            Course = course,
-                            Section = lecture[9],
-                            CatalogNumber = lecture[7],
+            Match re;
+            List<Tuple<int,string>> crossLists = new List<Tuple<int, string>>();
+            int count = 0;
+
+            foreach (var item in inData) {
+                foreach (string[] lecture in item.Value) {
+
+                    // = = = = = = Class = = = = = =
+                    int clssId = Int32.Parse(lecture[1]);
+                    int enrollments = lecture[28] == "" ? 0 : Int32.Parse(lecture[28]);
+                    string instructor = lecture[14];
+                    string course = lecture[8];
+                    string courseTitle = lecture[10];
+                    string section = lecture[9];
+                    string catNum = lecture[7];
+                    int classId = _classRepository.AddNewClass(new ClassModel
+                    {
+                        ClssId = clssId,
+                        Enrollments = enrollments,
+                        CourseTitle = courseTitle,
+                        Course = course,
+                        Section = section,
+                        CatalogNumber = catNum,
+                        Instructor = instructor,
+                    });
+
+                    // = = = = = = Room = = = = = =
+                    string roomName;
+                    Room room;
+                    re = Regex.Match(lecture[15], @"Peter Kiewit Institute");
+                    if (re.Success)
+                    {
+                        roomName = "PKI " + lecture[15].Substring(23, 3);
+                        room = this._roomRepository.Add(new Room
+                        {
+                            Name = roomName,
+                            Capacity = Int32.Parse(lecture[29]),
+                        });
+                    } else
+                    {
+                        room = new Room
+                        {
+                            RoomId = 0,
                         };
-                        int classId = _classRepository.AddNewClass(classModel);
-
-
-                        string ROOM = lecture[16];
-                        Room room;
-                        Match s = Regex.Match(ROOM, @"Peter Kiewit Institute");
-                        if (s.Success)
-                        {
-                            ROOM = "PKI " + ROOM.Substring(23, 3);
-                            // Insert room
-                            room = this._roomRepository.Add(new Room
-                            {
-                                Name = ROOM,
-                                Capacity = Int32.Parse(lecture[30])
-                            });
-                        }
-                        else // 'Online Class' => RoomID = 0
-                        {
-                            room = new Room
-                            {
-                                RoomId = 0
-                            };
-                        }
-
-                        string TIMEWEEK = lecture[13];
-                        Tuple<int, int> TIME = new Tuple<int, int>(-1, -1);
-                        string WEEKDAY = "NULL";
-                        s = Regex.Match(TIMEWEEK, @"Does Not Meet");
-                        Time time = null;
-                        Weekday weekday = null;
-                        if (!s.Success)
-                        {
-                            //Console.WriteLine("TIMEWEEK: " + TIMEWEEK);
-                            string[] TIMEWEEKSplit = TIMEWEEK.Split(' ');
-                            string[] hourMinute = TIMEWEEKSplit[1].Split('-');
-                            TIME = new Tuple<int, int>(validateMilitaryTime(convertToMilitary(hourMinute[0])), validateMilitaryTime(convertToMilitary(hourMinute[1])));
-                            time = this._timeRepository.Add(new Time { 
-                                StartTime = TIME.Item1,
-                                EndTime = TIME.Item2
-                            });
-                            //Console.WriteLine("TIMEWEEKSplit Length: " + TIMEWEEKSplit.Length);
-                            WEEKDAY = weekdayConverter(TIMEWEEKSplit[0]);
-                            weekday = this._weekdayRepository.Add(new Weekday
-                            {
-                                Description = WEEKDAY
-                            });
-
-                            // Will need to implement convert to military . . . 
-                        }
-                        else  // Does not meet
-                        {
-
-                        }
-
-                        // Crosslisting
-                        Cross cross = null;
-                        if (lecture.Length == 37)
-                        {
-                            if(!string.IsNullOrEmpty(lecture[34]) && lecture[34].Length > 4)
-                            {
-                                var courseName = lecture[10];
-                                var i = 34;
-                                while (!string.IsNullOrEmpty(lecture[i]) && i < lecture.Length - 1)
-                                {
-                                    string crossListClass = lecture[i].ToString();
-                                    string section = crossListClass.Substring(crossListClass.Length - 3, 3);
-                                    string catalogNumber = crossListClass.Substring(crossListClass.Length - 8, 4);
-                                    int temp = _classRepository.FindClssID(catalogNumber, section);
-                                    _crossRepository.Add(new Cross { 
-                                        ClssID1 = clssID,
-                                        ClssID2 = temp,
-                                    });
-                                    crossLists.Add(Tuple.Create(clssID, temp.ToString()));
-                                    i++;
-                                    count++;
-                                }
-                            }
-                        }else if (lecture.Length >= 38)
-                        {
-                            if (!string.IsNullOrEmpty(lecture[35]) && lecture[35].Length > 4)
-                            {
-                                var courseName = lecture[10];
-                                var i = 35;
-                                while (!string.IsNullOrEmpty(lecture[i]) && i < lecture.Length - 1)
-                                {
-                                    string crossListClass = lecture[i].ToString();
-                                    string section = crossListClass.Substring(crossListClass.Length - 3, 3);
-                                    string catalogNumber = crossListClass.Substring(crossListClass.Length - 8, 4);
-                                    int temp = _classRepository.FindClssID(catalogNumber, section);
-                                    cross = _crossRepository.Add(new Cross
-                                    {
-                                        ClssID1 = clssID,
-                                        ClssID2 = temp,
-                                    });
-                                    crossLists.Add(Tuple.Create(clssID, temp.ToString()));
-                                    i++;
-                                    count++;
-                                }
-                            }
-
-                            // Insert all ClassID, RoomID, TimeID, WeekdayID, and CrossID here 
-                            _scheduleRepository.Add(new Schedule { 
-                                ClassId = classId,
-                                RoomId = room.RoomId,
-                                TimeId = time != null ? time.TimeId : 0,
-                                WeekdayId = weekday != null ? weekday.WeekdayId : 0,
-                            });
-                        }
                     }
+
+                    // = = = = = = Time = = = = = =
+                    string weekdayVal;
+                    string timeWeek = lecture[13];
+                    Tuple<int, int> timeVal = new Tuple<int, int>(-1, -1);
+                    re = Regex.Match(timeWeek, @"Does Not Meet");
+                    Time time = null;
+                    Weekday weekday = null;
+                    if (!re.Success)
+                    {
+                        string[] timeWeekSplit = timeWeek.Split(' ');
+                        string[] hourMinute = timeWeekSplit[1].Split('-');
+                        timeVal = new Tuple<int, int> (validateMilitaryTime(convertToMilitary(hourMinute[0])), validateMilitaryTime(convertToMilitary(hourMinute[1])));
+                        Console.WriteLine("TIME AFTER CONVERSION AND VALIDATION: " + timeVal.Item1 + " - " + timeVal.Item2);
+                        time = this._timeRepository.Add(new Time
+                        {
+                            StartTime = timeVal.Item1,
+                            EndTime = timeVal.Item2,
+                        });
+                        weekdayVal = weekdayConverter(timeWeekSplit[0]);
+                        weekday = this._weekdayRepository.Add(new Weekday
+                        {
+                            Description = weekdayVal,
+                        });
+                    }
+
+                    // = = = = = = Cross Listing = = = = = =
+                    Cross cross;
+                    if (!string.IsNullOrEmpty(lecture[34]))
+                    {
+                        string crossListClass = lecture[34];
+                        string crossListSection = crossListClass.Substring(crossListClass.Length - 3, 3);
+                        string crossListCat = crossListClass.Substring(crossListClass.Length - 8, 4);
+                        int temp = _classRepository.FindClssID(crossListCat, section);
+                        _crossRepository.Add(new Cross
+                        {
+                            ClssID1 = clssId,
+                            ClssID2 = temp,
+                        });
+                    }
+
+                    
+                    // = = = = = = Schedule = = = = = =
+                    _scheduleRepository.Add(new Schedule
+                    {
+                        ClassId = classId,
+                        RoomId = room.RoomId,
+                        TimeId = time != null ? time.TimeId : 0,
+                        WeekdayId = weekday != null ? weekday.WeekdayId : 0,
+                    });
                 }
             }
-            Console.WriteLine(crossLists);
-            //return result;
         }
 
         public int validateMilitaryTime(int militaryTime)
@@ -246,52 +185,68 @@ namespace UCS_Backend.Utils
             {
                 hour = 0;
             }
-            //Console.WriteLine("BEFORE: " + militaryTime + " AFTER: " + hour.ToString() + minute.ToString().PadRight(2, '0'));
             return Int32.Parse(hour.ToString() + minute.ToString().PadRight(2, '0'));
         }
 
         public int convertToMilitary(string stdTime)
         {
+            int result = -1;
             int stdTimeLength = stdTime.Length;
             string amOrPm = stdTime.Substring(stdTimeLength - 2);
             if (amOrPm == "am")
             {
                 if (stdTimeLength == 3)
                 {
-                    return Int32.Parse("0" + stdTime[0].ToString() + "00");
+                    result = Int32.Parse("0" + stdTime[0].ToString() + "00");
                 }
                 else if (stdTimeLength == 4)
                 {
-                    //Console.WriteLine(Int32.Parse(stdTime.Substring(0, 2)));
-                    return Int32.Parse(stdTime.Substring(0, 2) + "00");
+                    result = Int32.Parse(stdTime.Substring(0, 2) + "00");
                 }
                 else if (stdTimeLength == 6)
                 {
-                    return Int32.Parse("0" + stdTime[0].ToString() + stdTime.Substring(2, 2));
+                    result = Int32.Parse("0" + stdTime[0].ToString() + stdTime.Substring(2, 2));
                 }
                 else if (stdTimeLength == 7)
                 {
-                    return Int32.Parse(stdTime.Substring(0, 2) + stdTime.Substring(3, 2));
+                    result = Int32.Parse(stdTime.Substring(0, 2) + stdTime.Substring(3, 2));
                 }
+                //Console.WriteLine("CONVERTTOMILITARY: " + stdTime + " -> " + result);
+                return result;
             }
             else if (amOrPm == "pm")
             {
                 if (stdTimeLength == 3)
                 {
-                    return Int32.Parse((12 + Int32.Parse(stdTime[0].ToString())).ToString() + "00");
+                    result =  Int32.Parse((12 + Int32.Parse(stdTime[0].ToString())).ToString() + "00");
                 }
                 else if (stdTimeLength == 4)
                 {
-                    return Int32.Parse((Int32.Parse(stdTime.Substring(0, 2))).ToString() + "00");
+                    int hour = Int32.Parse(stdTime.Substring(0, 2));
+                    if (hour != 12) {
+                        result = Int32.Parse((hour + 12).ToString() + "00");
+                    } else
+                    {
+                        result = Int32.Parse(hour.ToString() + "00");
+                    }
                 }
                 else if (stdTimeLength == 6)
                 {
-                    return Int32.Parse((12 + Int32.Parse(stdTime[0].ToString())).ToString() + stdTime.Substring(2, 2));
+                    result = Int32.Parse((12 + Int32.Parse(stdTime[0].ToString())).ToString() + stdTime.Substring(2, 2));
                 }
                 else if (stdTimeLength == 7)
                 {
-                    return Int32.Parse((12 + Int32.Parse(stdTime.Substring(0, 2))).ToString() + stdTime.Substring(3, 2));
+                    int hour = Int32.Parse(stdTime.Substring(0, 2));
+                    if (hour != 12)
+                    {
+                        result = Int32.Parse((hour + 12).ToString() + stdTime.Substring(3, 2));
+                    } else
+                    {
+                        result = Int32.Parse(hour.ToString() + stdTime.Substring(3, 2));
+                    }
                 }
+                //Console.WriteLine("CONVERTTOMILITARY: " + stdTime + " -> " + result);
+                return result;
             }
             else
             {
@@ -299,7 +254,7 @@ namespace UCS_Backend.Utils
             }
 
 
-            return -1;
+            return result;
         }
 
         public string weekdayConverter(string shorthand)
