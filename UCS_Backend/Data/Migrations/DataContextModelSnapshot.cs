@@ -40,10 +40,6 @@ namespace UCS_Backend.Data.Migrations
                     b.Property<int>("Enrollments")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Instructor")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Section")
                         .IsRequired()
                         .HasColumnType("TEXT");
