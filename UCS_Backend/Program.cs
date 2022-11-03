@@ -21,6 +21,7 @@ builder.Services.AddTransient<IScheduleManager, ScheduleManager>();
 builder.Services.AddTransient<IClassRepository, ClassRepository>();
 builder.Services.AddTransient<ITimeRepository, TimeRepository>();
 builder.Services.AddTransient<IWeekdayRepository, WeekdayRepository>();
+builder.Services.AddTransient<ICrossRepository, CrossRepository>();
 
 
 // Add DBContext

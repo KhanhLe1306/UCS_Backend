@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -15,12 +14,30 @@ namespace UCS_Backend.Data.Migrations
                 {
                     ClassId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    Enrollments = table.Column<int>(type: "INTEGER", nullable: false)
+                    ClssId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Course = table.Column<string>(type: "TEXT", nullable: false),
+                    CourseTitle = table.Column<string>(type: "TEXT", nullable: false),
+                    Enrollments = table.Column<int>(type: "INTEGER", nullable: false),
+                    Section = table.Column<string>(type: "TEXT", nullable: false),
+                    CatalogNumber = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Classes", x => x.ClassId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Cross",
+                columns: table => new
+                {
+                    CrossId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ClssID1 = table.Column<int>(type: "INTEGER", nullable: false),
+                    ClssID2 = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Cross", x => x.CrossId);
                 });
 
             migrationBuilder.CreateTable(
@@ -74,8 +91,8 @@ namespace UCS_Backend.Data.Migrations
                 {
                     TimeId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    StartTime = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    EndTime = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    StartTime = table.Column<int>(type: "INTEGER", nullable: false),
+                    EndTime = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -100,6 +117,9 @@ namespace UCS_Backend.Data.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Classes");
+
+            migrationBuilder.DropTable(
+                name: "Cross");
 
             migrationBuilder.DropTable(
                 name: "Individuals");

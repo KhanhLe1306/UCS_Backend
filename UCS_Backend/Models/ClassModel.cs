@@ -10,5 +10,8 @@ namespace UCS_Backend.Models
         public string Course { get; set; }
         public string CourseTitle { get; set; } 
         public int Enrollments { get; set; }
+        public string Section { get; set; }
+        public string CatalogNumber { get; set; }
+        public string Instructor { get; set; }
     }
 }

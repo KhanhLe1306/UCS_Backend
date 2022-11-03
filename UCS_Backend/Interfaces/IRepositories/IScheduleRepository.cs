@@ -2,7 +2,7 @@
 
 namespace UCS_Backend.Interfaces
 {
-    public interface IScheduleRepository
+    public interface IScheduleRepository : IBaseRepository<Schedule>
     {
         List<Schedule> GetAllSchedules();
     }
