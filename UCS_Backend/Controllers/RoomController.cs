@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using UCS_Backend.Interfaces.IRepositories;
 using UCS_Backend.Models;
+using UCS_Backend.Models.SubModels;
 
 namespace UCS_Backend.Controllers
 {
     [ApiController]
-    [Route("api/{controller}/")]
+    [Route("api/[controller]/")]
     public class RoomController : Controller
     {
         private IRoomRepository _roomRepository;
@@ -17,6 +18,13 @@ namespace UCS_Backend.Controllers
         public Room Add(Room room)
         {
             return _roomRepository.Add(room);
+        }
+
+        [HttpGet("getScheduleByRoomNumber/{roomNumber}")]
+        public List<ScheduleInfo> GetScheduleByRoomNumber(int roomNumber)
+        {
+            var res = _roomRepository.GetScheduleByRoomNumber(roomNumber);
+            return res;
         }
     }
 }
