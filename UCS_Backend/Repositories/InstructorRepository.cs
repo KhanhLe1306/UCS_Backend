@@ -2,6 +2,7 @@
 using UCS_Backend.Data;
 using UCS_Backend.Interfaces;
 using UCS_Backend.Models;
+using UCS_Backend.Models.SubModels;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,20 +10,20 @@ namespace UCS_Backend.Repositories
 {
     public class InstructorRepository: IInstructorRepository, IBaseRepository<Instructor>
     {
-        private DataContext dataContext;
+        private DataContext _dataContext;
         public InstructorRepository(DataContext dataContext)
         {
-            this.dataContext = dataContext;
+            this._dataContext = dataContext;
         }
-        public IEnumerable<Instructor> GetAll => this.dataContext.Instructors.AsEnumerable();
+        public IEnumerable<Instructor> GetAll => this._dataContext.Instructors.AsEnumerable();
 
         public async Task<List<Instructor>> GetAllInstructors()
         {
-            return await this.dataContext.Instructors.ToListAsync();
+            return await this._dataContext.Instructors.ToListAsync();
         }
         public async Task<Instructor?> GetInstructorById(int id)
         {
-            var res = from i in this.dataContext.Instructors
+            var res = from i in this._dataContext.Instructors
                       where i.InstructorId == id
                       select new Instructor
                       {
@@ -36,26 +37,31 @@ namespace UCS_Backend.Repositories
 
         public async Task<Instructor> AddInstructor(Instructor instructor)
         {
-            var res = (await dataContext.Instructors.AddAsync(instructor)).Entity;
-            await dataContext.SaveChangesAsync();
+            var res = (await _dataContext.Instructors.AddAsync(instructor)).Entity;
+            await _dataContext.SaveChangesAsync();
             return res;
         }
 
         public Instructor Add(Instructor instructor)
         {
-            var res =  dataContext.Instructors.Add(instructor).Entity;
-            dataContext.SaveChanges();
-            return res;
+            int instructorId = FindInstructorByName(instructor.FirstName, instructor.LastName);
+            if (instructorId == 0)
+            {
+                var res = _dataContext.Instructors.Add(instructor).Entity;
+                _dataContext.SaveChanges();
+                return res;
+            }
+            return null;
         }
 
         public async Task<(bool, Instructor)> UpdateIndividual(Instructor instructor)
         {
-            var temp = await this.dataContext.Instructors.Where(i => i.InstructorId == instructor.InstructorId).FirstAsync();
+            var temp = await this._dataContext.Instructors.Where(i => i.InstructorId == instructor.InstructorId).FirstAsync();
             if (temp != null)
             {
                 temp.FirstName = instructor.FirstName;
                 temp.LastName = instructor.LastName;
-                await dataContext.SaveChangesAsync();
+                await _dataContext.SaveChangesAsync();
                 return (true, temp);
             }
             else
@@ -65,7 +71,7 @@ namespace UCS_Backend.Repositories
         }
         public async Task<bool> DeleteInstructor(Instructor instructor)
         {
-            var res = this.dataContext.Instructors.Remove(instructor).Entity;
+            var res = this._dataContext.Instructors.Remove(instructor).Entity;
             if (res != null)
             {
                 return true;
@@ -78,13 +84,21 @@ namespace UCS_Backend.Repositories
         
         public Instructor? FindById(int id)
         {
-            return dataContext.Instructors.Find(id);
+            return _dataContext.Instructors.Find(id);
+        }
+
+        public int FindInstructorByName(string firstName, string lastName)
+        {
+            var res = from r in _dataContext.Instructors
+                      where r.FirstName == firstName && r.LastName == lastName
+                      select r.InstructorId;
+            return res.FirstOrDefault();
         }
 
         public void Delete(Instructor instructor)
         {
-            this.dataContext.Instructors.Remove(instructor);
-            this.dataContext.SaveChanges();
+            this._dataContext.Instructors.Remove(instructor);
+            this._dataContext.SaveChanges();
         }
 
         public void Update(Instructor instructor)
