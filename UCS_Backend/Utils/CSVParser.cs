@@ -14,8 +14,9 @@ namespace UCS_Backend.Utils
         private ICrossRepository _crossRepository;
         private IScheduleRepository _scheduleRepository;
         private IInstructorRepository _instructorRepository;
+        private IInstructorClassRepository _instructorClassRepository;
         private List<Tuple<int, string>> crossLists;
-        public CSVParser(IClassRepository classRepository, IRoomRepository roomRepository, ITimeRepository timeRepository, IWeekdayRepository weekdayRepository, ICrossRepository crossRepository, IScheduleRepository scheduleRepository, IInstructorRepository instructorRepository) { 
+        public CSVParser(IClassRepository classRepository, IRoomRepository roomRepository, ITimeRepository timeRepository, IWeekdayRepository weekdayRepository, ICrossRepository crossRepository, IScheduleRepository scheduleRepository, IInstructorRepository instructorRepository, IInstructorClassRepository instructorClassRepository) { 
             this._classRepository = classRepository;
             this._roomRepository = roomRepository;
             this._timeRepository = timeRepository;
@@ -23,6 +24,7 @@ namespace UCS_Backend.Utils
             this._crossRepository = crossRepository;
             this._scheduleRepository = scheduleRepository;
             this._instructorRepository = instructorRepository;
+            this._instructorClassRepository = instructorClassRepository;
         }
 
         public Dictionary<string, string> dayMappings = new Dictionary<string, string> {
@@ -91,10 +93,15 @@ namespace UCS_Backend.Utils
                     // = = = = = = Instructor = = = = = =
                     if (instructor == "Staff") // STAFF
                     {
-                        _instructorRepository.Add(new Instructor
+                        var instructorReturn = _instructorRepository.Add(new Instructor
                         {
                             FirstName = instructor,
                             LastName = ""
+                        });
+                        _instructorClassRepository.Add(new InstructorClass
+                        {
+                            ClassId = classId,
+                            InstructorId = instructorReturn.InstructorId
                         });
                     } 
                     else if (instructor.Contains(';')) // TWO OR MORE INSTRUCTORS
@@ -103,20 +110,33 @@ namespace UCS_Backend.Utils
                         foreach (string inst in instructors)
                         {
                             string[] isplit = inst.Split(", ");
-                            _instructorRepository.Add(new Instructor
+                            var instructorReturn = _instructorRepository.Add(new Instructor
                             {
                                 FirstName = isplit[0],
                                 LastName = isplit[1].Split(" ")[0]
+                            });
+                            _instructorClassRepository.Add(new InstructorClass
+                            {
+                                ClassId = classId,
+                                InstructorId = instructorReturn.InstructorId
                             });
                         }
                     } 
                     else // ONE INSTRUCTOR
                     {
                         string[] isplit = instructor.Split(", ");
-                        _instructorRepository.Add(new Instructor
+                        // Add the instructor
+                        var instructorReturn = _instructorRepository.Add(new Instructor
                         {
                             FirstName = isplit[0],
                             LastName = isplit[1].Split(" ")[0]
+                        });
+
+                        // Add the InstructorClass
+                        _instructorClassRepository.Add(new InstructorClass
+                        {
+                            ClassId = classId,
+                            InstructorId = instructorReturn.InstructorId
                         });
                     }
 

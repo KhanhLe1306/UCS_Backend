@@ -17,14 +17,18 @@ namespace UCS_Backend.Controllers
         private IRoomRepository _roomRepository;
         private ITimeRepository _timeRepository;
         private ICrossRepository _crossRepository;
+        private IInstructorRepository _instructorRepository;
+        private IInstructorClassRepository _instructorClassRepository;
         private CSVParser parser;
 
-        public ScheduleController(IScheduleRepository scheduleRepository, IScheduleManager scheduleManager, IClassRepository classRepository, IRoomRepository roomRepository, ITimeRepository timeRepository, IWeekdayRepository weekdayRepository, ICrossRepository crossRepository)
+        public ScheduleController(IScheduleRepository scheduleRepository, IScheduleManager scheduleManager, IClassRepository classRepository, IRoomRepository roomRepository, ITimeRepository timeRepository, IWeekdayRepository weekdayRepository, ICrossRepository crossRepository, IInstructorRepository instructorRepository, IInstructorClassRepository instructorClassRepository)
         {
             this._scheduleRepository = scheduleRepository;
             this._scheduleManager = scheduleManager;
             this._classRepository = classRepository;
-            this.parser = new CSVParser(classRepository, roomRepository, timeRepository, weekdayRepository, crossRepository, scheduleRepository);
+            this._instructorRepository = instructorRepository;
+            this._instructorClassRepository = instructorClassRepository;
+            this.parser = new CSVParser(classRepository, roomRepository, timeRepository, weekdayRepository, crossRepository, scheduleRepository, instructorRepository, instructorClassRepository);
         }
 
         [HttpGet]

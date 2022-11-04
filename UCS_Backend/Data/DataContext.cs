@@ -18,6 +18,7 @@ namespace UCS_Backend.Data
         public virtual DbSet<Schedule> Schedules { get; set; }
         public virtual DbSet<Cross> Cross { get; set; }
         public virtual DbSet<Instructor> Instructors { get; set; }
+        public virtual DbSet<InstructorClass> InstructorClasses { get; set; }
     }
 }
 

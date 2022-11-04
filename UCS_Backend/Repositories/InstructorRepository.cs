@@ -45,16 +45,21 @@ namespace UCS_Backend.Repositories
         public Instructor Add(Instructor instructor)
         {
             int instructorId = FindInstructorByName(instructor.FirstName, instructor.LastName);
+            Console.WriteLine(instructorId);
             if (instructorId == 0)
             {
                 var res = _dataContext.Instructors.Add(instructor).Entity;
                 _dataContext.SaveChanges();
                 return res;
+            } 
+            else
+            {
+                return _dataContext.Instructors.Find(instructorId);
             }
             return null;
         }
 
-        public async Task<(bool, Instructor)> UpdateIndividual(Instructor instructor)
+        public async Task<(bool, Instructor)> UpdateInstructor(Instructor instructor)
         {
             var temp = await this._dataContext.Instructors.Where(i => i.InstructorId == instructor.InstructorId).FirstAsync();
             if (temp != null)
