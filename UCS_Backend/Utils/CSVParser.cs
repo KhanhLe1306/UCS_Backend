@@ -13,14 +13,18 @@ namespace UCS_Backend.Utils
         private IWeekdayRepository _weekdayRepository;
         private ICrossRepository _crossRepository;
         private IScheduleRepository _scheduleRepository;
+        private IInstructorRepository _instructorRepository;
+        private IInstructorClassRepository _instructorClassRepository;
         private List<Tuple<int, string>> crossLists;
-        public CSVParser(IClassRepository classRepository, IRoomRepository roomRepository, ITimeRepository timeRepository, IWeekdayRepository weekdayRepository, ICrossRepository crossRepository, IScheduleRepository scheduleRepository) { 
+        public CSVParser(IClassRepository classRepository, IRoomRepository roomRepository, ITimeRepository timeRepository, IWeekdayRepository weekdayRepository, ICrossRepository crossRepository, IScheduleRepository scheduleRepository, IInstructorRepository instructorRepository, IInstructorClassRepository instructorClassRepository) { 
             this._classRepository = classRepository;
             this._roomRepository = roomRepository;
             this._timeRepository = timeRepository;
             this._weekdayRepository = weekdayRepository;
             this._crossRepository = crossRepository;
             this._scheduleRepository = scheduleRepository;
+            this._instructorRepository = instructorRepository;
+            this._instructorClassRepository = instructorClassRepository;
         }
 
         public Dictionary<string, string> dayMappings = new Dictionary<string, string> {
@@ -36,9 +40,7 @@ namespace UCS_Backend.Utils
         public Dictionary<string, List<string[]>> processBaseFiles(List<string> inFiles)
         {
             Dictionary<string, List<string[]>> result = new Dictionary<string, List<string[]>>();
-            Match re;
             string currentCourse = "";
-            string currentClssID = "";
             string[] rawCSV = System.IO.File.ReadAllLines("CSVFiles/" + inFiles[0]);
             for (int row = 0; row < rawCSV.Length; row++)
             {
@@ -66,8 +68,6 @@ namespace UCS_Backend.Utils
         {
             Match re;
             List<Tuple<int,string>> crossLists = new List<Tuple<int, string>>();
-            int count = 0;
-
             foreach (var item in inData) {
                 foreach (string[] lecture in item.Value) {
 
@@ -89,6 +89,56 @@ namespace UCS_Backend.Utils
                         CatalogNumber = catNum,
                         Instructor = instructor,
                     });
+
+                    // = = = = = = Instructor = = = = = =
+                    if (instructor == "Staff") // STAFF
+                    {
+                        var instructorReturn = _instructorRepository.Add(new Instructor
+                        {
+                            FirstName = instructor,
+                            LastName = ""
+                        });
+                        _instructorClassRepository.Add(new InstructorClass
+                        {
+                            ClassId = classId,
+                            InstructorId = instructorReturn.InstructorId
+                        });
+                    } 
+                    else if (instructor.Contains(';')) // TWO OR MORE INSTRUCTORS
+                    {
+                        string[] instructors = instructor.Split("; ");
+                        foreach (string inst in instructors)
+                        {
+                            string[] isplit = inst.Split(", ");
+                            var instructorReturn = _instructorRepository.Add(new Instructor
+                            {
+                                FirstName = isplit[0],
+                                LastName = isplit[1].Split(" ")[0]
+                            });
+                            _instructorClassRepository.Add(new InstructorClass
+                            {
+                                ClassId = classId,
+                                InstructorId = instructorReturn.InstructorId
+                            });
+                        }
+                    } 
+                    else // ONE INSTRUCTOR
+                    {
+                        string[] isplit = instructor.Split(", ");
+                        // Add the instructor
+                        var instructorReturn = _instructorRepository.Add(new Instructor
+                        {
+                            FirstName = isplit[0],
+                            LastName = isplit[1].Split(" ")[0]
+                        });
+
+                        // Add the InstructorClass
+                        _instructorClassRepository.Add(new InstructorClass
+                        {
+                            ClassId = classId,
+                            InstructorId = instructorReturn.InstructorId
+                        });
+                    }
 
                     // = = = = = = Room = = = = = =
                     string roomName;
