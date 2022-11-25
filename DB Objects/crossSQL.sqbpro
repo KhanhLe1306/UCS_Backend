@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="C:/Users/khanh/Desktop/CapstoneProject/UCS_Backend/UCS_Backend/UCSDatabase.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="1909"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><current_table name="4,7:mainClasses"/><default_encoding codec=""/><browse_table_settings/></tab_browse><tab_sql><sql name="SQL 1">select a.ClssID1, c.Course, a.ClssID2, b.Course, * from Cross a
+join Classes c on c.ClssId = a.ClssID1
+join Classes b on b.ClssId = a.ClssID2
+where a.ClssID2 != 0
+
+select DISTINCT c.Course, b.Course from Cross a
+join Classes c on c.ClssId = a.ClssID1
+join Classes b on b.ClssId = a.ClssID2
+where a.ClssID2 != 0 and c.Course != b.Course
+
+select * from cross</sql><current_tab id="0"/></tab_sql></sqlb_project>

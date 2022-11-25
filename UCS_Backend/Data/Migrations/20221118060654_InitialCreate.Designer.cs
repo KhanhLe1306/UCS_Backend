@@ -10,7 +10,7 @@ using UCS_Backend.Data;
 namespace UCS_Backend.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20221023032630_InitialCreate")]
+    [Migration("20221118060654_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -41,6 +41,10 @@ namespace UCS_Backend.Data.Migrations
 
                     b.Property<int>("Enrollments")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Instructor")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Section")
                         .IsRequired()
@@ -85,6 +89,42 @@ namespace UCS_Backend.Data.Migrations
                     b.HasKey("IndividualId");
 
                     b.ToTable("Individuals");
+                });
+
+            modelBuilder.Entity("UCS_Backend.Models.Instructor", b =>
+                {
+                    b.Property<int>("InstructorId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("InstructorId");
+
+                    b.ToTable("Instructors");
+                });
+
+            modelBuilder.Entity("UCS_Backend.Models.InstructorClass", b =>
+                {
+                    b.Property<int>("InstructorClassId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ClassId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("InstructorId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("InstructorClassId");
+
+                    b.ToTable("InstructorClasses");
                 });
 
             modelBuilder.Entity("UCS_Backend.Models.Room", b =>
