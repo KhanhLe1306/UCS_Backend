@@ -19,7 +19,8 @@ namespace UCS_Backend.Data.Migrations
                     CourseTitle = table.Column<string>(type: "TEXT", nullable: false),
                     Enrollments = table.Column<int>(type: "INTEGER", nullable: false),
                     Section = table.Column<string>(type: "TEXT", nullable: false),
-                    CatalogNumber = table.Column<string>(type: "TEXT", nullable: false)
+                    CatalogNumber = table.Column<string>(type: "TEXT", nullable: false),
+                    Instructor = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -52,6 +53,34 @@ namespace UCS_Backend.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Individuals", x => x.IndividualId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "InstructorClasses",
+                columns: table => new
+                {
+                    InstructorClassId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ClassId = table.Column<int>(type: "INTEGER", nullable: false),
+                    InstructorId = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_InstructorClasses", x => x.InstructorClassId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Instructors",
+                columns: table => new
+                {
+                    InstructorId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    FirstName = table.Column<string>(type: "TEXT", nullable: false),
+                    LastName = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Instructors", x => x.InstructorId);
                 });
 
             migrationBuilder.CreateTable(
@@ -123,6 +152,12 @@ namespace UCS_Backend.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Individuals");
+
+            migrationBuilder.DropTable(
+                name: "InstructorClasses");
+
+            migrationBuilder.DropTable(
+                name: "Instructors");
 
             migrationBuilder.DropTable(
                 name: "Rooms");
