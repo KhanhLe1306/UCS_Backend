@@ -57,8 +57,6 @@ namespace UCS_Backend.Repositories
 
         public List<ScheduleInfo> GetScheduleByRoomNumber(int roomNumber)
         {
-            Console.WriteLine("INCOMING ROOM NUMBER SEARCH: " + roomNumber);
-            Console.ReadLine();
             var res = (from r in _dataContext.Rooms
                        join s in _dataContext.Schedules on r.RoomId equals s.RoomId
                        join t in _dataContext.Time on s.TimeId equals t.TimeId
