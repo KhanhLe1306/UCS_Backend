@@ -57,21 +57,21 @@ namespace UCS_Backend.Repositories
 
         public List<ScheduleInfo> GetScheduleByRoomNumber(int roomNumber)
         {
-            var res = (from r in _dataContext.Rooms 
-                      join s in _dataContext.Schedules on r.RoomId equals s.RoomId
-                      join t in _dataContext.Time on s.TimeId equals t.TimeId 
-                      join c in _dataContext.Classes on s.ClassId equals c.ClassId
-                      join w in _dataContext.Weekdays on s.WeekdayId equals w.WeekdayId
-                      where r.Name.Contains(roomNumber.ToString())
-                      select new ScheduleInfo { 
-                            ClssID = c.ClssId.ToString(),
-                            RoomName = r.Name,
-                            StartTime = t.StartTime.ToString(),
-                            EndTime = t.EndTime.ToString(), 
-                            Course = c.Course,
-                            CourseTitle = c.CourseTitle,
-                            MeetingDays = w.Description.ToString(),
-                      }).ToList();
+            var res = (from r in _dataContext.Rooms
+                       join s in _dataContext.Schedules on r.RoomId equals s.RoomId
+                       join t in _dataContext.Time on s.TimeId equals t.TimeId
+                       join c in _dataContext.Classes on s.ClassId equals c.ClassId
+                       join w in _dataContext.Weekdays on s.WeekdayId equals w.WeekdayId
+                       where r.Name.Substring(3, r.Name.Length - 3).Contains(roomNumber.ToString()) & roomNumber.ToString().Length == 3
+                       select new ScheduleInfo {
+                           ClssID = c.ClssId.ToString(),
+                           RoomName = r.Name,
+                           StartTime = t.StartTime.ToString(),
+                           EndTime = t.EndTime.ToString(),
+                           Course = c.Course,
+                           CourseTitle = c.CourseTitle,
+                           MeetingDays = w.Description.ToString(),
+                       }).ToList();
                         
             return CheckCrossListedClasses(res);
         }
