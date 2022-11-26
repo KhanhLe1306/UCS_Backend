@@ -87,41 +87,54 @@ namespace UCS_Backend.Utils
                         Course = course,
                         Section = section,
                         CatalogNumber = catNum,
-                        Instructor = instructor,
                     });
 
                     // = = = = = = Instructor = = = = = =
+
                     if (instructor == "Staff") // STAFF
                     {
+
                         var instructorReturn = _instructorRepository.Add(new Instructor
                         {
                             FirstName = instructor,
-                            LastName = ""
+                            LastName = "",
+                            EmployeeNumber = ""
                         });
                         _instructorClassRepository.Add(new InstructorClass
                         {
                             ClassId = classId,
                             InstructorId = instructorReturn.InstructorId
                         });
-                    } 
+                    }
                     else if (instructor.Contains(';')) // TWO OR MORE INSTRUCTORS
                     {
                         string[] instructors = instructor.Split("; ");
-                        foreach (string inst in instructors)
+                        for (int i = 0; i < instructors.Length; i++)
                         {
-                            string[] isplit = inst.Split(", ");
+                            string[] isplit = instructors[i].Split(", ");
                             var instructorReturn = _instructorRepository.Add(new Instructor
                             {
                                 FirstName = isplit[0],
-                                LastName = isplit[1].Split(" ")[0]
+                                LastName = isplit[1].Split(" ")[0],
+                                EmployeeNumber = isplit[1].Split(" ")[1].Replace("(", String.Empty).Replace(")", String.Empty)
                             });
-                            _instructorClassRepository.Add(new InstructorClass
+                            if (i == 0)
                             {
-                                ClassId = classId,
-                                InstructorId = instructorReturn.InstructorId
-                            });
+                                _instructorClassRepository.Add(new InstructorClass
+                                {
+                                    ClassId = classId,
+                                    InstructorId = instructorReturn.InstructorId
+                                });
+                            } else
+                            {
+                                _instructorClassRepository.Add(new InstructorClass
+                                {
+                                    ClassId = classId,
+                                    InstructorId = instructorReturn.InstructorId
+                                });
+                            }
                         }
-                    } 
+                    }
                     else // ONE INSTRUCTOR
                     {
                         string[] isplit = instructor.Split(", ");
@@ -129,7 +142,8 @@ namespace UCS_Backend.Utils
                         var instructorReturn = _instructorRepository.Add(new Instructor
                         {
                             FirstName = isplit[0],
-                            LastName = isplit[1].Split(" ")[0]
+                            LastName = isplit[1].Split(" ")[0],
+                            EmployeeNumber = isplit[1].Split(" ")[1].Replace("(", String.Empty).Replace(")", String.Empty)
                         });
 
                         // Add the InstructorClass
@@ -200,7 +214,7 @@ namespace UCS_Backend.Utils
                         });
                     }
 
-                    
+
                     // = = = = = = Schedule = = = = = =
                     _scheduleRepository.Add(new Schedule
                     {
