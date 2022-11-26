@@ -57,6 +57,8 @@ namespace UCS_Backend.Repositories
 
         public List<ScheduleInfo> GetScheduleByRoomNumber(int roomNumber)
         {
+            Console.WriteLine("INCOMING ROOM NUMBER SEARCH: " + roomNumber);
+            Console.ReadLine();
             var res = (from r in _dataContext.Rooms
                        join s in _dataContext.Schedules on r.RoomId equals s.RoomId
                        join t in _dataContext.Time on s.TimeId equals t.TimeId
@@ -72,8 +74,27 @@ namespace UCS_Backend.Repositories
                            CourseTitle = c.CourseTitle,
                            MeetingDays = w.Description.ToString(),
                        }).ToList();
-                        
-            return CheckCrossListedClasses(res);
+
+            // If the search didn't return anything, return a list with a single 
+            // empty entry to clear what is seen on the front end
+            if (res.Count == 0)
+            {
+                return new List<ScheduleInfo> {
+                    new ScheduleInfo {
+                        ClssID = "",
+                        RoomName = "",
+                        StartTime = "",
+                        EndTime = "",
+                        Course ="",
+                        CourseTitle = "",
+                        MeetingDays = "",
+                    }
+                };
+            }
+            else
+            {
+                return CheckCrossListedClasses(res);
+            }
         }
 
         public List<ScheduleInfo> CheckCrossListedClasses(List<ScheduleInfo> scheduleInfos)
