@@ -50,5 +50,20 @@ namespace UCS_Backend.Repositories
         {
             throw new NotImplementedException();
         }
+
+        public bool ValidateInsert(string cls, string section, string instructor, string classSize, string classTime, string room, string days)
+        {
+            Tuple<int, int> time = Tuple.Create(Int32.Parse(classTime.Split('-')[0]), Int32.Parse(classTime.Split('-')[1]));
+            bool roomCheck = true;
+            bool instructorCheck = true;
+            if (roomCheck & instructorCheck)
+            {
+                return true;
+            } else
+            {
+                return false;
+            }
+
+        }
     }
 }

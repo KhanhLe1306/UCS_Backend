@@ -1,5 +1,5 @@
-﻿using System;
-using UCS_Backend.Models;
+﻿using UCS_Backend.Models;
+using UCS_Backend.Models.SubModels;
 
 namespace UCS_Backend.Interfaces
 { 
@@ -10,5 +10,6 @@ namespace UCS_Backend.Interfaces
         Task<Instructor> AddInstructor(Instructor instructor);
         Task<(bool, Instructor)> UpdateInstrutor(Instructor instructor);
         Task<bool> DeleteInstructor(Instructor instructor);
+        List<ScheduleInfo> GetScheduleByInstructor(int employeeNumber);
     }
 }

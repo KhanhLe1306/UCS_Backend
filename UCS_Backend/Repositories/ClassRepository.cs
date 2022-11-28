@@ -22,7 +22,6 @@ namespace UCS_Backend.Repositories
                 temp.CourseTitle = classModel.CourseTitle;
                 temp.Section = classModel.Section;  
                 temp.CatalogNumber = classModel.CatalogNumber;
-                temp.Instructor = classModel.Instructor;
                 _context.SaveChanges();
                 return temp.ClassId;
             }

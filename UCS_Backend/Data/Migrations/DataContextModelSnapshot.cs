@@ -89,6 +89,42 @@ namespace UCS_Backend.Data.Migrations
                     b.ToTable("Individuals");
                 });
 
+            modelBuilder.Entity("UCS_Backend.Models.Instructor", b =>
+                {
+                    b.Property<int>("InstructorId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("InstructorId");
+
+                    b.ToTable("Instructors");
+                });
+
+            modelBuilder.Entity("UCS_Backend.Models.InstructorClass", b =>
+                {
+                    b.Property<int>("InstructorClassId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ClassId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("InstructorId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("InstructorClassId");
+
+                    b.ToTable("InstructorClasses");
+                });
+
             modelBuilder.Entity("UCS_Backend.Models.Room", b =>
                 {
                     b.Property<int>("RoomId")
