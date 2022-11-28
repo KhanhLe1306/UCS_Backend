@@ -80,13 +80,6 @@ namespace UCS_Backend.Repositories
             {
                 return new List<ScheduleInfo> {
                     new ScheduleInfo {
-                        ClssID = "",
-                        RoomName = "",
-                        StartTime = "",
-                        EndTime = "",
-                        Course ="",
-                        CourseTitle = "",
-                        MeetingDays = "",
                     }
                 };
             }
