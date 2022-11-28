@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Linq.Expressions;
 using UCS_Backend.Interfaces;
 using UCS_Backend.Interfaces.IManagers;
 using UCS_Backend.Interfaces.IRepositories;
@@ -32,11 +33,11 @@ namespace UCS_Backend.Controllers
             this._weekdayRepository = weekdayRepository;
         }
 
-        [HttpPost("addClass")]
-        public void addCourse()
+        [HttpPost("addClass/{cls}&{section}&{instructor}&{classSize}&{classTime}&{room}&{days}")]
+        public bool addClass(string cls, string section, string instructor, string classSize, string classTime, string room, string days)
         {
-            Console.WriteLine("API ADD CLASS ROUTE WORKS . . . PRESS ENTER");
-            Console.ReadLine();
+            var valid = this._scheduleRepository.ValidateInsert(cls, section, instructor, classSize, classTime, room, days);
+            return true;
         }
     }
 }

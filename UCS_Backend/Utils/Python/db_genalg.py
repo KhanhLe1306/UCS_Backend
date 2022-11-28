@@ -20,6 +20,7 @@ class DBMgr:
         self._cross = self.get_cross()
         self._classes = self.get_classes()
         self._weekdays = self.get_weekdays()
+        self._instructorClasses = self.get_instructorClasses()
 
     def get_rooms(self):
         self._c.execute("SELECT * FROM Rooms")
@@ -49,6 +50,10 @@ class DBMgr:
         self._c.execute("SELECT * FROM Weekdays")
         return self._c.fetchall()
 
+    def get_instructorClasses(self):
+        self._c.execute("SELECT * FROM InstructorClasses")
+        return self._c.fetchall()
+
 
 class Data:
 
@@ -56,6 +61,7 @@ class Data:
         manager = DBMgr()
         self.rooms = manager._rooms
         self.instructors = manager._instructors
+        self.instructorClasses = manager._instructorClasses
         self.classes = manager._classes
         self.times = manager._times
         self.crosslistings = manager._cross
@@ -112,6 +118,12 @@ class Data:
                     or cross[1] == clssId2 and cross[2] == clssId1):
                 return True
         return False
+    
+    def get_instructorClasses(self):
+        res = {}
+        for i, ins in enumerate(self.instructorClasses):
+            res[i+1] = list(ins)
+        return res
 
 
 data = Data()
@@ -151,10 +163,16 @@ class Schedule:
                 self._class_number += 1
                 new_class.set_meetingTime(
                     self._data.get_times()[schedule_item[2]])
+                print(schedule_item)
                 new_class.set_meetingDay(self._data.get_weekdays()[
                                          schedule_item[4]][-1])
-                new_class.set_instructor(self._data.get_classes()[
-                                         schedule_item[3]][-1])
+                inst = [None, None, None, None]
+                for key, val in self._data.get_instructorClasses().items():
+                    if val[1] == schedule_item[3]:
+                        inst = self._data.get_instructors()[val[2]][-1]
+                        break
+
+                new_class.set_instructor(inst)
                 if schedule_item[1] != 0:
                     new_class.set_room(self._data.get_rooms()[
                                        schedule_item[1]])
@@ -172,8 +190,8 @@ class Schedule:
         if check_data:
             for c in check_data:
                 if c[0]<=time[0]<=c[1] or c[0]<=time[1]<=c[1]:
-                    return False
-        return True 
+                    return False, (room, day, c)
+        return True, None 
 
     def check_inst(self, ins, day, time):
         data = self._blocking_view
@@ -183,21 +201,20 @@ class Schedule:
                 for c in check_data:
                     if c[2] == ins:
                         if c[0]<=time[0]<=c[1] or c[0]<=time[1]<=c[1]:
-                            return False
-        return True
+                            return False, (ins, day, room, c)
+        return True, None
 
-
-    def check(self, ins, room, day, time):
-        rm = self.check_room(room, day, time)
-        inst = self.check_inst(ins,  day, time)
-        if rm and inst:
-            print("\tCLASS CAN BE ADDED")
-        else:
-            print("\tCLASS CANNOT BE ADDED")
-        input()
-
-
-
+    def check(self, ins, room, days, time):
+        for day in days:
+            rm, info1 = self.check_room(room, day, time)
+            inst, info2 = self.check_inst(ins,  day, time)
+            if not rm and not inst:
+                return [rm, inst], [info1, info2]
+            if not rm:
+                return [rm, False], [info1, None]
+            if not inst:
+                return [False, inst], [None, info2]
+        return [rm, inst], [info1, info2]
 
     # These are the taken spots for each day. 
     # Use this to calculate the open blocks
@@ -207,7 +224,6 @@ class Schedule:
             inst = cls.get_instructor()
             days = cls.get_meetinDay().split(',')
             if cls.get_room()[1] in res:
-                print(days)
                 if len(days) == 1:
                     if days[0] in res[cls.get_room()[1]]:
                         res[cls.get_room()[1]][days[0]].append((cls.get_meetingTime()[1], cls.get_meetingTime()[2], inst))
@@ -223,7 +239,6 @@ class Schedule:
                     else:
                         res[cls.get_room()[1]][days[1]] = [(cls.get_meetingTime()[1], cls.get_meetingTime()[2], inst)]
             else:
-                print(days)
                 if len(days) == 1:
                     res[cls.get_room()[1]] = {days[0]: [
                         (cls.get_meetingTime()[1], cls.get_meetingTime()[2], inst)]}
@@ -248,10 +263,6 @@ class Schedule:
                 for time in res[room][day]:
                     print(f"\t\t{time}")
 
-    def get_blockings_for_day_room(self, room, day):
-        start = 8_00
-        end = 22_00
-
     def fill_openings(self):
         # Loop through the schedule, and for each day, add a class to
         # the schedule representing an opening. Then modify the GA to
@@ -260,28 +271,33 @@ class Schedule:
         end = 22_00
         self.get_blockings()
         self.print_blockings()
-        self.add_class()
-        input()
-
-    def get_instructor_classes(self, instructor):
-        res = []
-        for cls in self._classes:
-            if cls.get_instructor() == instructor:
-                res.append(cls)
-        return res
 
     def add_class(self):
-        print("ADD A CLASS:")
-        inst = input("\tinst: ")
-        room = input("\troom: ")
-        day = input("\tday:  ")
-        time = input("\ttime: ").split(' ')
-        time = (int(time[0]), int(time[1]))
-        check = self.check(inst, room, day, time)
-        if check:
-            print("\tNO CONFLICTS PRESENT")
-        else:
-            print("\tCONFLICT PRESENT")
+        print("\nADD A CLASS:")
+        cnum = input("\tCourse Number: ")
+        section = input("\tSection Number: ")
+        inst = input("\tInstructor ID: ")
+        room = "PKI " + input("\tRoom Number: ")
+        days = input("\tDAYS:  ").split(' ')
+        start = input("\tSTART TIME: ")
+        end = input("\tEND TIME: ")
+        time = (int(start), int(end))
+        return self.check(inst, room, days, time)
+        
+    def add_class_testing(self):
+        ans = True
+        while ans == True:
+            res = self.add_class()
+            if res[0][0] and res[0][1] and res[0][0] != False:
+                print("NO CONFLICTS PRESENT\n")
+            else:
+                print("CONFLICTS PRESENT\n")
+                if res[1][0]:
+                    print(f"TIME CONFLICT:\n\tThe room {res[1][0][0]} is already booked {res[1][0][2][0]} - {res[1][0][2][1]} on {res[1][0][1]} by {res[1][0][2][2]}\n")
+                if res[1][1]:
+                    print(f"INSTRUCTOR CONFLICT:\n\tInstructor {res[1][1][0]} already has an obligation during this time -> {res[1][1][3][0]} - {res[1][1][3][1]} in room {res[1][1][2]}")
+            ans = True if input("Add Another ? (y/n): ").strip().lower() == 'y' else False
+            print()
 
     def calculate_fitness(self):
         cross_listings = self._data.get_crosslistings()
@@ -297,16 +313,12 @@ class Schedule:
                         if classes[i].get_room() == classes[j].get_room() and classes[i].get_room()[1] != "TBA":
                             self._conflicts += 1
                             print(f"ROOM CONFLICT WITH THESE CLASSES:\n{classes[i]} -> {classes[i].get_room()}\n{classes[j]} -> {classes[j].get_room()}\n")
-                            input()
                         if classes[i].get_room() == classes[j].get_room() and classes[i].get_room()[1] == "TBA":
                             print(f"POTENTIAL CONFLICT WITH: \n{classes[i].get_course()[2]} -> {classes[i].get_room()} : {classes[i].get_meetingTime()} : {classes[i].get_meetinDay()}\n{classes[j].get_course()[2]} -> {classes[j].get_room()} : {classes[j].get_meetingTime()} : {classes[j].get_meetinDay()}\n")
-                            print(f"{classes[i]}\n{classes[j]}\n{self._data.is_a_crosslist(classes[i].get_course()[1], classes[j].get_course()[1])}")
-                            input()
+                            print(f"{classes[i]}\n{classes[j]}\nCROSSLIST ? : {self._data.is_a_crosslist(classes[i].get_course()[1], classes[j].get_course()[1])}\n")
                         if classes[i].get_instructor() == classes[j].get_instructor():
                             print(f"INSTRUCTOR CONFLICT WITH THESE CLASSES:\n{classes[i]} -> {classes[i].get_instructor()}\n{classes[j]} -> {classes[j].get_instructor()}\n")
-                            input()
                             self._conflicts += 1
-
         return 1 / (1.0 * self._conflicts + 1)
 
     def __str__(self):
@@ -424,3 +436,8 @@ print("Generation:", generation)
 print("Fitness:",populaion.get_schedules()[0].get_fitness())
 
 main_schedule = populaion.get_schedules()[0]
+
+main_schedule.add_class_testing()
+
+print("Generation:", generation)
+print("Fitness:",main_schedule.get_fitness())
