@@ -11,6 +11,7 @@
         public string MeetingDays { get; set; }
         public string CrossListedWith { get; set; }
         public string CrossListedClssID { get; set; }
+        public string Instructor { get; set; }
         public Dictionary<string, Dictionary<string, string>> PriorCourseInfo { get; set; }
     }
 }
