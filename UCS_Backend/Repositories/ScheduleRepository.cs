@@ -90,6 +90,8 @@ namespace UCS_Backend.Repositories
                 }
             }
 
+            // NEED TO DO INSTRUCTOR 
+
             /*res = (from i in _dataContext.Instructors
                        join ic in _dataContext.InstructorClasses on i.InstructorId equals ic.InstructorId
                        join s in _dataContext.Schedules on ic.ClassId equals s.ClassId
@@ -112,13 +114,9 @@ namespace UCS_Backend.Repositories
 
             // INSTRUCTOR CHECK
             if (!roomCheck)
-            {
                 return false;
-            }
             if (!instructorCheck)
-            {
                 return false;
-            }
             return true;
 
         }
