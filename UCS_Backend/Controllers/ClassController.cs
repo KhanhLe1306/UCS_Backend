@@ -39,5 +39,12 @@ namespace UCS_Backend.Controllers
             var valid = this._scheduleRepository.ValidateInsert(cls, section, instructor, classSize, classTime, roomCode, room, days);
             return valid;
         }
+
+        [HttpPost("addClass")]
+        public bool AddClassTest([FromBody] AddClassModel addClassModel)
+        {
+            //var valid = this._scheduleRepository.ValidateInsert(cls, section, instructor, classSize, classTime, roomCode, room, days);
+            return true;
+        }
     }
 }
