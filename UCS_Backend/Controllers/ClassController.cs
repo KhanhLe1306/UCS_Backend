@@ -33,11 +33,11 @@ namespace UCS_Backend.Controllers
             this._weekdayRepository = weekdayRepository;
         }
 
-        [HttpPost("addClass/{cls}&{section}&{instructor}&{classSize}&{classTime}&{room}&{days}")]
-        public bool addClass(string cls, string section, string instructor, string classSize, string classTime, string room, string days)
+        [HttpPost("addClass/{cls}&{section}&{instructor}&{classSize}&{classTime}&{roomCode}&{room}&{days}")]
+        public bool addClass(string cls, string section, string instructor, string classSize, string classTime, string roomCode, string room, string days)
         {
-            var valid = this._scheduleRepository.ValidateInsert(cls, section, instructor, classSize, classTime, room, days);
-            return true;
+            var valid = this._scheduleRepository.ValidateInsert(cls, section, instructor, classSize, classTime, roomCode, room, days);
+            return valid;
         }
     }
 }
