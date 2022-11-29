@@ -90,7 +90,7 @@ namespace UCS_Backend.Repositories
                 }
             }
 
-            // NEED TO DO INSTRUCTOR 
+            // NEED TO DO INSTRUCTOR
 
             /*res = (from i in _dataContext.Instructors
                        join ic in _dataContext.InstructorClasses on i.InstructorId equals ic.InstructorId
