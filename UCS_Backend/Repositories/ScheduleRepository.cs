@@ -57,6 +57,7 @@ namespace UCS_Backend.Repositories
             Tuple<int, int> time = Tuple.Create(Int32.Parse(classTime.Split('-')[0]), Int32.Parse(classTime.Split('-')[1]));
             bool roomCheck = true;
             bool instructorCheck = true;
+
             // ROOM CHECK
             var res = (from r in _dataContext.Rooms
                        join s in _dataContext.Schedules on r.RoomId equals s.RoomId
@@ -90,9 +91,8 @@ namespace UCS_Backend.Repositories
                 }
             }
 
-            // NEED TO DO INSTRUCTOR
-
-            /*res = (from i in _dataContext.Instructors
+            // INSTRUCTOR CHECK
+            res = (from i in _dataContext.Instructors
                        join ic in _dataContext.InstructorClasses on i.InstructorId equals ic.InstructorId
                        join s in _dataContext.Schedules on ic.ClassId equals s.ClassId
                        join t in _dataContext.Time on s.TimeId equals t.TimeId
@@ -109,7 +109,24 @@ namespace UCS_Backend.Repositories
                            Course = c.Course,
                            CourseTitle = c.CourseTitle,
                            MeetingDays = w.Description.ToString(),
-                       }).ToList();*/
+                           Instructor = instructor
+                       }).ToList();
+
+            foreach (var item in res)
+            {
+                foreach (var day in days.Split(','))
+                {
+                    if (item.MeetingDays.Contains(day))
+                    {
+                        if ((time.Item1 >= Int32.Parse(item.StartTime)) & time.Item1 <= Int32.Parse(item.EndTime) | ((time.Item2 >= Int32.Parse(item.StartTime)) & time.Item2 <= Int32.Parse(item.EndTime)))
+                        {
+                            Console.WriteLine("TIME CONFLICT:\n\tROOM IS BOOKED ON " + day + "\n\tDURING THE TIME " + item.StartTime + " : " + item.EndTime);
+                            roomCheck = false;
+                        }
+                    }
+                }
+            }
+
             Console.ReadLine();
 
             // INSTRUCTOR CHECK
