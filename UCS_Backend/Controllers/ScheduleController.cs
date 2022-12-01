@@ -9,6 +9,10 @@ namespace UCS_Backend.Controllers
 {
     [ApiController]
     [Route("api/{controller}/")]
+
+    /// <summary>
+    /// Creates a class for ScheduleController
+    /// </summary> 
     public class ScheduleController : Controller
     {
         private IScheduleRepository _scheduleRepository;

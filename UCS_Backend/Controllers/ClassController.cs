@@ -10,6 +10,10 @@ namespace UCS_Backend.Controllers
 {
     [ApiController]
     [Route("api/{controller}/")]
+
+     /// <summary>
+    /// Creates a class for ClassController
+    /// </summary> 
     public class ClassController : Controller
     {
         private IScheduleRepository _scheduleRepository;
@@ -33,18 +37,31 @@ namespace UCS_Backend.Controllers
             this._weekdayRepository = weekdayRepository;
         }
 
+
         [HttpPost("addClass/{cls}&{section}&{instructor}&{classSize}&{classTime}&{roomCode}&{room}&{days}")]
+
+
         public bool addClass(string cls, string section, string instructor, string classSize, string classTime, string roomCode, string room, string days)
         {
             var valid = this._scheduleRepository.ValidateInsert(cls, section, instructor, classSize, classTime, roomCode, room, days);
             return valid;
         }
 
+
+           /// <summary>
+         /// Uses addClass to pass all the classroom information
+        /// </summary>
+        /// <param name="addClass">Room info to be passed in</param>
         [HttpPost("addClass")]
         public bool AddClassTest([FromBody] AddClassModel addClassModel)
         {
             //var valid = this._scheduleRepository.ValidateInsert();
             return true;
         }
+
+           /// <summary>
+             /// Updates the ScheduleRepository and RoomRepository to be passed
+            /// </summary>
+         /// <param name="roomRepository">Room to be passed in</param>
     }
 }

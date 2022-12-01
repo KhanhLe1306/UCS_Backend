@@ -5,6 +5,11 @@ using UCS_Backend.Models.SubModels;
 
 namespace UCS_Backend.Repositories
 {
+
+
+    /// <summary>
+    /// Creates a class for ScheduleRepositoty
+    /// </summary> 
     public class ScheduleRepository : IScheduleRepository
     {
         private DataContext _dataContext;

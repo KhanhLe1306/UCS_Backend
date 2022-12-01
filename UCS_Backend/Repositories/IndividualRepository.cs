@@ -7,6 +7,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace UCS_Backend.Repositories
 {
+
+    /// <summary>
+    /// Creates a class for IndividualRepositoty
+    /// </summary> 
     public class IndividualRepository : IIndividualRepository, IBaseRepository<Individual>
     {
         private DataContext dataContext;

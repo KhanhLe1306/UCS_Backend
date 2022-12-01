@@ -7,6 +7,10 @@ namespace UCS_Backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]/")]
+
+    /// <summary>
+    /// Creates a class for RoomController
+    /// </summary> 
     public class RoomController : Controller
     {
         private IRoomRepository _roomRepository;

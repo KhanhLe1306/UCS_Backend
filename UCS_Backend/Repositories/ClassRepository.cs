@@ -4,6 +4,10 @@ using UCS_Backend.Models;
 
 namespace UCS_Backend.Repositories
 {
+
+     /// <summary>
+    /// Creates a class for ClassRepositoty
+    /// </summary> 
     public class ClassRepository : IClassRepository
     {
         private DataContext _context;

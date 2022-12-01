@@ -1,5 +1,9 @@
 ﻿namespace UCS_Backend.Models.SubModels
 {
+
+     /// <summary>
+    /// Creates a class for Scheduleinfo
+    /// </summary> 
     public class ScheduleInfo
     {
         public string ClssID { get; set; }

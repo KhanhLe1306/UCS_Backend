@@ -6,6 +6,11 @@ using UCS_Backend.Models.SubModels;
 
 namespace UCS_Backend.Repositories
 {
+
+
+    /// <summary>
+    /// Creates a class for RoomRepositoty
+    /// </summary> 
     public class RoomRepository : IRoomRepository
     {
         private DataContext _dataContext;

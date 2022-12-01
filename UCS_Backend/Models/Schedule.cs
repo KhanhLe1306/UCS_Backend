@@ -1,5 +1,9 @@
 ﻿namespace UCS_Backend.Models
 {
+
+     /// <summary>
+    /// Creates a class for Schedule
+    /// </summary> 
     public class Schedule
     {
         public int ScheduleId { get; set; }

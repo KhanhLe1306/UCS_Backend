@@ -9,6 +9,11 @@ using UCS_Backend.Interfaces.IRepositories;
 
 namespace UCS_Backend.Repositories
 {
+
+
+    /// <summary>
+    /// Creates a class for IndividualClassRepositoty
+    /// </summary> 
     public class InstructorClassRepository : IInstructorClassRepository, IBaseRepository<InstructorClass>
     {
         private DataContext _dataContext;

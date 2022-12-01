@@ -8,6 +8,10 @@ namespace UCS_Backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]/")]
+
+    /// <summary>
+    /// Creates a class for InstructorController
+    /// </summary> 
     public class InstructorController : Controller
     {
         private IInstructorRepository _instructorRepository;

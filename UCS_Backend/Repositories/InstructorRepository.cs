@@ -8,6 +8,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace UCS_Backend.Repositories
 {
+
+
+    /// <summary>
+    /// Creates a class for InstructorRepositoty
+    /// </summary> 
     public class InstructorRepository: IInstructorRepository, IBaseRepository<Instructor>
     {
         private DataContext _dataContext;

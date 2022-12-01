@@ -4,6 +4,10 @@ using UCS_Backend.Models;
 
 namespace UCS_Backend.Repositories
 {
+
+    /// <summary>
+    /// Creates a class for CrossRepositoty
+    /// </summary> 
     public class CrossRepository : ICrossRepository
     {
         private DataContext dataContext;

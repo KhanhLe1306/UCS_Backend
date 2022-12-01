@@ -4,6 +4,11 @@ using UCS_Backend.Models;
 
 namespace UCS_Backend.Repositories
 {
+
+
+    /// <summary>
+    /// Creates a class for WeekdayRepositoty
+    /// </summary> 
     public class WeekdayRepository : IWeekdayRepository
     {
         private DataContext _dataContext;
