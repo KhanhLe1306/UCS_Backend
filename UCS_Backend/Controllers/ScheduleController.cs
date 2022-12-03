@@ -54,20 +54,20 @@ namespace UCS_Backend.Controllers
         {
             return _scheduleRepository.GetAllSchedules();
         }
-        [HttpPost("add")]
-        /// <summary>
+         /// <summary>
         /// adds schedule from body
         /// </summary>
         /// <param name="body"></param>
         /// <returns></returns>
+        [HttpPost("add")]
         public Schedule AddSchedule([FromBody] ScheduleFormBody body)
         {
             return this._scheduleManager.AddSchedule(body);
         }
-        [HttpGet("parseCSV")]
         /// <summary>
         /// creates list for csv file
         /// </summary>
+        [HttpGet("parseCSV")]
         public void ParseCSV()
         {
             List<string> csvfiles = new List<string> { "CSCI1191.csv" };

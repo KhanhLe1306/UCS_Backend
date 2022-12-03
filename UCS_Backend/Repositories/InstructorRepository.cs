@@ -8,8 +8,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace UCS_Backend.Repositories
 {
-
-
     /// <summary>
     /// Creates a class for InstructorRepositoty
     /// </summary> 
@@ -168,8 +166,6 @@ namespace UCS_Backend.Repositories
         {
             throw new NotImplementedException();
         }
-        
-        
         /// <summary>
         /// method to have employee number in data schedule
         /// </summary>
