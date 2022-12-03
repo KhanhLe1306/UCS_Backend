@@ -24,13 +24,14 @@ namespace UCS_Backend.Models
 
     public class AddClassModel
     {
-        public string Cls { get; set; }
-        public string Section { get; set; }
-        public string Instructor { get; set; }
-        public string ClassSize { get; set; }
-        public string ClassTime { get; set; }
-        public string RoomCode { get; set; }
-        public string Room { get; set; }
-        public string Days { get; set; }
+        public string cls { get; set; }
+        public string section { get; set; }
+        public string instructor { get; set; }
+        public string classSize { get; set; }
+        public string classStart { get; set; }
+        public string classEnd { get; set; }
+        public string roomCode { get; set; }
+        public string room { get; set; }
+        public string days { get; set; }
     }
 }

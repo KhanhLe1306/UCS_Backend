@@ -38,6 +38,7 @@ namespace UCS_Backend.Controllers
             return individuals;
         }
 
+   
         [HttpGet("{id}")]
         /// <summary>
         /// get individuals by individual_id

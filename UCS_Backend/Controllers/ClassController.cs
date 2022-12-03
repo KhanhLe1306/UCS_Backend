@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.OpenApi.Any;
 using System.Linq.Expressions;
 using UCS_Backend.Interfaces;
 using UCS_Backend.Interfaces.IManagers;
 using UCS_Backend.Interfaces.IRepositories;
 using UCS_Backend.Models;
+using UCS_Backend.Models.SubModels;
 using UCS_Backend.Utils;
 
 namespace UCS_Backend.Controllers
@@ -47,27 +49,6 @@ namespace UCS_Backend.Controllers
             this._timeRepository = timeRepository;
             this._weekdayRepository = weekdayRepository;
         }
-
-
-        [HttpPost("addClass/{cls}&{section}&{instructor}&{classSize}&{classTime}&{roomCode}&{room}&{days}")]
-
-/// <summary>
-/// add class method inside of class
-/// </summary>
-/// <param name="cls"></param>
-/// <param name="section"></param>
-/// <param name="instructor"></param>
-/// <param name="classSize"></param>
-/// <param name="classTime"></param>
-/// <param name="roomCode"></param>
-/// <param name="room"></param>
-/// <param name="days"></param>
-/// <returns></returns>
-        public bool addClass(string cls, string section, string instructor, string classSize, string classTime, string roomCode, string room, string days)
-        {
-            var valid = this._scheduleRepository.ValidateInsert(cls, section, instructor, classSize, classTime, roomCode, room, days);
-            return valid;
-        }
 /// <summary>
 /// add class model to class test
 /// </summary>
@@ -75,10 +56,9 @@ namespace UCS_Backend.Controllers
 /// <returns></returns>
       
         [HttpPost("addClass")]
-        public bool AddClassTest([FromBody] AddClassModel addClassModel)
+        public SuccessInfo addClass(AddClassModel addClassModel)
         {
-            //var valid = this._scheduleRepository.ValidateInsert();
-            return true;
+            return this._scheduleRepository.ValidateInsert(addClassModel);
         }
 
            /// <summary>

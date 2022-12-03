@@ -250,9 +250,11 @@ namespace UCS_Backend.Repositories
             List<int> times = monStartTimes.Concat(tueStartTimes).Concat(wedStartTimes).Concat(thuStartTimes).Concat(friStartTimes).ToList();
             times.Sort();
             int earliest = times[0];
+            double earliest_hour = Math.Floor(Convert.ToDouble(earliest) / 100);
+            double earliet_minutes = ((Convert.ToDouble(earliest) / 100) % 1) * 100;
             double pixelRatioTo30 = 1.75;
 
-            foreach(var item in returnResult)
+            foreach (var item in returnResult)
             {
                 // Given the current entry, check it's day, and then check to see where the start time occurs
                 // in the start times list (by index). If the index is 0, then this is the first entry for that day
@@ -264,11 +266,12 @@ namespace UCS_Backend.Repositories
                     double height = ((((monEndTimes[timeIndex] / 100) - (monStartTimes[timeIndex] / 100)) * 60) + (monEndTimes[timeIndex] % 100) - (monStartTimes[timeIndex] % 100)) * pixelRatioTo30;
                     if (timeIndex == 0)
                     {
-                        double marginSize = (Math.Floor(Double.Parse(item.StartTime) / 100) - Math.Floor(Convert.ToDouble(earliest) / 100)) * 60;
+                        double marginSize = ((Math.Floor(Double.Parse(item.StartTime) / 100) - earliest_hour) * 60) + ((Convert.ToDouble(item.StartTime) / 100) % 1) * 100 - earliet_minutes;
                         marginSize *= pixelRatioTo30;
                         marginSize += 15;
                         item.PriorCourseInfo.Add("Monday", new Dictionary<string, string> { { "prevStart", "900" }, { "prevEnd", "900" }, { "marginSize", marginSize.ToString() }, { "height", height.ToString() } });
-                    } else
+                    }
+                    else
                     {
                         double marginSize = (Math.Floor(Double.Parse(item.StartTime) / 100) - Math.Floor(Convert.ToDouble(monEndTimes[timeIndex - 1]) / 100)) * 60;
                         marginSize += (((Double.Parse(item.StartTime) / 100) % 1) * 100) - (((Convert.ToDouble(monEndTimes[timeIndex - 1]) / 100) % 1) * 100);
@@ -282,7 +285,7 @@ namespace UCS_Backend.Repositories
                     double height = ((((tueEndTimes[timeIndex] / 100) - (tueStartTimes[timeIndex] / 100)) * 60) + (tueEndTimes[timeIndex] % 100) - (tueStartTimes[timeIndex] % 100)) * pixelRatioTo30;
                     if (timeIndex == 0)
                     {
-                        double marginSize = (Math.Floor(Double.Parse(item.StartTime) / 100) - Math.Floor(Convert.ToDouble(earliest) / 100)) * 60;
+                        double marginSize = ((Math.Floor(Double.Parse(item.StartTime) / 100) - earliest_hour) * 60) + ((Convert.ToDouble(item.StartTime) / 100) % 1) * 100 - earliet_minutes;
                         marginSize *= pixelRatioTo30;
                         marginSize += 15;
                         item.PriorCourseInfo.Add("Tuesday", new Dictionary<string, string> { { "prevStart", "900" }, { "prevEnd", "900" }, { "marginSize", marginSize.ToString() }, { "height", height.ToString() } });
@@ -301,7 +304,7 @@ namespace UCS_Backend.Repositories
                     double height = ((((wedEndTimes[timeIndex] / 100) - (wedStartTimes[timeIndex] / 100)) * 60) + (wedEndTimes[timeIndex] % 100) - (wedStartTimes[timeIndex] % 100)) * pixelRatioTo30;
                     if (timeIndex == 0)
                     {
-                        double marginSize = (Math.Floor(Double.Parse(item.StartTime) / 100) - Math.Floor(Convert.ToDouble(earliest) / 100)) * 60;
+                        double marginSize = ((Math.Floor(Double.Parse(item.StartTime) / 100) - earliest_hour) * 60) + ((Convert.ToDouble(item.StartTime) / 100) % 1) * 100 - earliet_minutes;
                         marginSize *= pixelRatioTo30;
                         marginSize += 15;
                         item.PriorCourseInfo.Add("Wednesday", new Dictionary<string, string> { { "prevStart", "900" }, { "prevEnd", "900" }, { "marginSize", marginSize.ToString() }, { "height", height.ToString() } });
@@ -320,7 +323,7 @@ namespace UCS_Backend.Repositories
                     double height = ((((thuEndTimes[timeIndex] / 100) - (thuStartTimes[timeIndex] / 100)) * 60) + (thuEndTimes[timeIndex] % 100) - (thuStartTimes[timeIndex] % 100)) * pixelRatioTo30;
                     if (timeIndex == 0)
                     {
-                        double marginSize = (Math.Floor(Double.Parse(item.StartTime) / 100) - Math.Floor(Convert.ToDouble(earliest) / 100)) * 60;
+                        double marginSize = ((Math.Floor(Double.Parse(item.StartTime) / 100) - earliest_hour) * 60) + ((Convert.ToDouble(item.StartTime) / 100) % 1) * 100 - earliet_minutes;
                         marginSize *= pixelRatioTo30;
                         marginSize += 15;
                         item.PriorCourseInfo.Add("Thursday", new Dictionary<string, string> { { "prevStart", "900" }, { "prevEnd", "900" }, { "marginSize", marginSize.ToString() }, { "height", height.ToString() } });
@@ -339,7 +342,7 @@ namespace UCS_Backend.Repositories
                     double height = ((((friEndTimes[timeIndex] / 100) - (friStartTimes[timeIndex] / 100)) * 60) + (friEndTimes[timeIndex] % 100) - (friStartTimes[timeIndex] % 100)) * pixelRatioTo30;
                     if (timeIndex == 0)
                     {
-                        double marginSize = (Math.Floor(Double.Parse(item.StartTime) / 100) - Math.Floor(Convert.ToDouble(earliest) / 100)) * 60;
+                        double marginSize = ((Math.Floor(Double.Parse(item.StartTime) / 100) - earliest_hour) * 60) + ((Convert.ToDouble(item.StartTime) / 100) % 1) * 100 - earliet_minutes;
                         marginSize *= pixelRatioTo30;
                         marginSize += 15;
                         item.PriorCourseInfo.Add("Friday", new Dictionary<string, string> { { "prevStart", "900" }, { "prevEnd", "900" }, { "marginSize", marginSize.ToString() }, { "height", height.ToString() } });

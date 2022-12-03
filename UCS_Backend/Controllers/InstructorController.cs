@@ -22,25 +22,29 @@ namespace UCS_Backend.Controllers
         {
             _instructorRepository = instructorRepository;
         }
-        [HttpPost("add")]
+        
         /// <summary>
         /// adds instructor by name
         /// </summary>
         /// <param name="instructor"></param>
         /// <returns></returns>
+        [HttpPost("add")]
         public Instructor Add(Instructor instructor)
         {
             return _instructorRepository.Add(instructor);
         }
-        [HttpGet("getScheduleByInstructor/{employeeNumber}")]
+
         /// <summary>
         /// adds instructor to lst by employee number
         /// </summary>
-        /// <param name="employeeNumber"></param>
+        /// <param name="firstName"></param>
+        /// <param name="lastName"></param>
         /// <returns></returns>
-        public List<ScheduleInfo> GetScheduleByInstructor(int employeeNumber)
+        [HttpGet("getScheduleByInstructor/{firstName}/{lastName}")]
+        public List<ScheduleInfo> GetScheduleByInstructor(string firstName, string lastName)
+
         {
-            var res = _instructorRepository.GetScheduleByInstructor(employeeNumber);
+            var res = _instructorRepository.GetScheduleByInstructor(firstName, lastName);
             return res;
         }
     }

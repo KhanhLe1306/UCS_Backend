@@ -1,5 +1,6 @@
 ﻿using UCS_Backend.Models;
 using UCS_Backend.Models.SubModels;
+using UCS_Backend.Repositories;
 
 namespace UCS_Backend.Interfaces.IRepositories
 {
