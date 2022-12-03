@@ -4,6 +4,10 @@
 
 namespace UCS_Backend.Data.Migrations
 {
+
+    /// <summary>
+    /// Creates a class for InitalCreate
+    /// </summary> 
     public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)

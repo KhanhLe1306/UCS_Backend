@@ -4,6 +4,10 @@ using UCS_Backend.Models;
 
 namespace UCS_Backend.Data
 {
+
+     /// <summary>
+    /// Creates a class for DataContext
+    /// </summary> 
     public class DataContext : DbContext
     {
         public DataContext(DbContextOptions options) : base(options)

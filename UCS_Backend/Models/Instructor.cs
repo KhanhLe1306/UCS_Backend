@@ -1,6 +1,10 @@
 ﻿using System;
 namespace UCS_Backend.Models
 {
+
+     /// <summary>
+    /// Creates a class for Instructor
+    /// </summary> 
     public class Instructor
     {
         public Instructor()

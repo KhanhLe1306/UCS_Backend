@@ -1,5 +1,9 @@
 ﻿namespace UCS_Backend.Models
 {
+
+     /// <summary>
+    /// Creates a class for Room
+    /// </summary> 
     public class Room
     {
         public int RoomId { get; set; }

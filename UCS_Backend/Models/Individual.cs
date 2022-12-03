@@ -1,6 +1,10 @@
 ﻿using System;
 namespace UCS_Backend.Models
 {
+
+     /// <summary>
+    /// Creates a class for Individual
+    /// </summary> 
     public class Individual
     {
         public Individual()

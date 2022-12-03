@@ -3,6 +3,9 @@ using UCS_Backend.Models.SubModels;
 
 namespace UCS_Backend.Interfaces
 { 
+    /// <summary>
+    /// creates class for instructor repo for tasks passed
+    /// </summary>
     public interface IInstructorRepository : IBaseRepository<Instructor>
     {
         Task<List<Instructor>> GetAllInstructors();

@@ -2,6 +2,9 @@
 
 namespace UCS_Backend.Interfaces.IRepositories
 {
+    /// <summary>
+    /// creates class for class repository passing instructorclass task
+    /// </summary>
     public interface IInstructorClassRepository : IBaseRepository<InstructorClass>
     {
         Task<List<InstructorClass>> GetInstructorClasses();

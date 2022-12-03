@@ -5,6 +5,11 @@ using UCS_Backend.Models.SubModels;
 
 namespace UCS_Backend.Repositories
 {
+
+
+    /// <summary>
+    /// Creates a class for ScheduleRepositoty
+    /// </summary> 
     public class ScheduleRepository : IScheduleRepository
     {
         private DataContext _dataContext;
@@ -14,7 +19,11 @@ namespace UCS_Backend.Repositories
         }
 
         public IEnumerable<Schedule> GetAll => throw new NotImplementedException();
-
+    /// <summary>
+    /// add scheduled added
+    /// </summary>
+    /// <param name="s"></param>
+    /// <returns></returns>
         public Schedule Add(Schedule s)
         {
             var temp = _dataContext.Schedules.Where(x => x.ClassId == s.ClassId && x.RoomId == s.RoomId && x.TimeId == s.TimeId && x.WeekdayId == s.WeekdayId).FirstOrDefault();
@@ -29,29 +38,42 @@ namespace UCS_Backend.Repositories
                 return temp;
             }
         }
-
+    /// <summary>
+    /// delete schedule added
+    /// </summary>
+    /// <param name="entity"></param>
         public void Delete(Schedule entity)
         {
             throw new NotImplementedException();
         }
-
+    /// <summary>
+    /// finds schedule by id
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
         public Schedule? FindById(int id)
         {
             throw new NotImplementedException();
         }
-
+    /// <summary>
+    /// puts schedule into a list format
+    /// </summary>
+    /// <returns></returns>
         public List<Schedule> GetAllSchedules()
         { 
             var res = this._dataContext.Schedules.ToList();
 
             return res;
         }
-
+        /// <summary>
+        /// updates schedule sheet
+        /// </summary>
+        /// <param name="entity"></param>
         public void Update(Schedule entity)
         {
             throw new NotImplementedException();
         }
-
+        
         public SuccessInfo ValidateInsert(AddClassModel addClassModel)
         {
             bool roomCheck = true;

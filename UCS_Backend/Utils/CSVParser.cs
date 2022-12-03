@@ -5,6 +5,11 @@ using UCS_Backend.Models;
 
 namespace UCS_Backend.Utils
 {
+
+
+    /// <summary>
+    /// Creates a class for CSVParser
+    /// </summary> 
     public class CSVParser
     {
         private IClassRepository _classRepository;
