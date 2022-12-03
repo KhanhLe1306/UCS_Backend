@@ -56,7 +56,7 @@ namespace UCS_Backend.Repositories
         {
             bool roomCheck = true;
             bool instructorCheck = true;
-            List<string> messages = new List<string>();
+            List<Dictionary<string, string>> messages = new List<Dictionary<string, string>>();
 
             string cls = addClassModel.cls;
             string section = addClassModel.section;
@@ -102,8 +102,7 @@ namespace UCS_Backend.Repositories
                     {
                         if ((time.Item1 >= Int32.Parse(item.StartTime)) & time.Item1 <= Int32.Parse(item.EndTime) | ((time.Item2 >= Int32.Parse(item.StartTime)) & time.Item2 <= Int32.Parse(item.EndTime)))
                         {
-                            Console.WriteLine("TIME CONFLICT:\n\tROOM IS BOOKED ON " + day + "\n\tDURING THE TIME " + item.StartTime + " : " + item.EndTime);
-                            messages.Add("ROOM CONFLICT: ROOM IS BOOKED ON " + day + " DURING THE TIME " + item.StartTime + " - " + item.EndTime);
+                            messages.Add(new Dictionary<string, string> { { "header", "TIME CONFLICT" }, { "message-primary", $"Room {room} is already booked by {item.Instructor} on {day}" }, { "message-secondary", $"Time: {item.StartTime} - {item.EndTime}" } } );
                             roomCheck = false;
                         }
                     }
@@ -139,8 +138,7 @@ namespace UCS_Backend.Repositories
                     {
                         if ((time.Item1 >= Int32.Parse(item.StartTime)) & time.Item1 <= Int32.Parse(item.EndTime) | ((time.Item2 >= Int32.Parse(item.StartTime)) & time.Item2 <= Int32.Parse(item.EndTime)))
                         {
-                            Console.WriteLine("INSTRUCTOR CONFLICT! INSTRUCTOR " + instructor + " IS ALREADY TEACHING " + item.StartTime + " : " + item.EndTime + " IN ROOM " + item.RoomName);
-                            messages.Add("INSTRUCTOR CONFLICT! INSTRUCTOR " + instructor + " IS ALREADY TEACHING " + item.StartTime + " : " + item.EndTime + " IN ROOM " + item.RoomName);
+                            messages.Add(new Dictionary<string, string> { { "header", "INSTRUCTOR CONFLICT" }, { "message-primary", $"Instructor, {instructor}, is already teaching in Room {item.RoomName}" }, { "message-secondary", $"Time: {item.StartTime} - {item.EndTime}" } });
                             roomCheck = false;
                         }
                     }
@@ -151,7 +149,7 @@ namespace UCS_Backend.Repositories
             {
                 if (instructorCheck)
                 {
-                    messages.Add("Course was successfully added!");
+                    messages.Add(new Dictionary<string, string> { { "header", $"{instructor}" }, { "message-primary", $"{roomCode + ' ' + room}" }, { "message-secondary", $"{time.Item1} - {time.Item2},{string.Join(' ', days.Split(','))}" } });
                 }
             }
             return new SuccessInfo { success = roomCheck & instructorCheck, messages = messages };
