@@ -3,6 +3,6 @@
     public class SuccessInfo
     {
         public bool success { get; set; }
-        public List<string> messages { get; set; }
+        public List<Dictionary<string, string>> messages { get; set; }
     }
 }
