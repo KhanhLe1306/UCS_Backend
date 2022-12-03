@@ -21,10 +21,10 @@ namespace UCS_Backend.Controllers
             return _instructorRepository.Add(instructor);
         }
 
-        [HttpGet("getScheduleByInstructor/{employeeNumber}")]
-        public List<ScheduleInfo> GetScheduleByInstructor(int employeeNumber)
+        [HttpGet("getScheduleByInstructor/{firstName}/{lastName}")]
+        public List<ScheduleInfo> GetScheduleByInstructor(string firstName, string lastName)
         {
-            var res = _instructorRepository.GetScheduleByInstructor(employeeNumber);
+            var res = _instructorRepository.GetScheduleByInstructor(firstName, lastName);
             return res;
         }
     }

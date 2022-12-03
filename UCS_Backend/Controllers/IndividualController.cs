@@ -29,6 +29,7 @@ namespace UCS_Backend.Controllers
             return individuals;
         }
 
+   
         [HttpGet("{id}")]
         public async Task<ActionResult<Individual?>> GetIndividualById(int id)
         {

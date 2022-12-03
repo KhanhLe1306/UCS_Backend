@@ -116,7 +116,7 @@ namespace UCS_Backend.Repositories
             throw new NotImplementedException();
         }
 
-        public List<ScheduleInfo> GetScheduleByInstructor(int employeeNumber)
+        public List<ScheduleInfo> GetScheduleByInstructor(string firstName, string lastName)
         {
             var res = (from i in _dataContext.Instructors
                        join ic in _dataContext.InstructorClasses on i.InstructorId equals ic.InstructorId
@@ -125,7 +125,7 @@ namespace UCS_Backend.Repositories
                        join c in _dataContext.Classes on s.ClassId equals c.ClassId
                        join w in _dataContext.Weekdays on s.WeekdayId equals w.WeekdayId
                        join r in _dataContext.Rooms on s.RoomId equals r.RoomId
-                       where i.EmployeeNumber == employeeNumber.ToString()
+                       where i.FirstName == firstName && i.LastName == lastName
                        select new ScheduleInfo
                        {
                            ClssID = c.ClssId.ToString(),
@@ -135,6 +135,7 @@ namespace UCS_Backend.Repositories
                            Course = c.Course,
                            CourseTitle = c.CourseTitle,
                            MeetingDays = w.Description.ToString(),
+                           Instructor = i.FirstName + " " + i.LastName
                        }).ToList();
             return CheckCrossListedClasses(res);
 
