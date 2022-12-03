@@ -24,7 +24,18 @@ namespace UCS_Backend.Controllers
         private IInstructorRepository _instructorRepository;
         private IInstructorClassRepository _instructorClassRepository;
         private CSVParser parser;
-
+        /// <summary>
+         /// Creates method for controller scheduling
+         /// </summary>
+         /// <param name="scheduleRepository">creates schedule repo </param>
+         /// <param name="scheduleManager">creates schedule manager repo </param>
+         /// <param name="classRepository">creates classroom repo </param>
+         /// <param name="roomeRepository">creates room repo </param>
+         /// <param name="timeRepository">creates time space for repo </param>
+         /// <param name="weekdayRepository">creates week days repo </param>
+         /// <param name="crossRepository">creates cross listing repo </param>
+         /// <param name="instructorRepository">creates instructor repo </param>
+         /// <param name="instructorClassRepository">creates instuctors class repo </param>
         public ScheduleController(IScheduleRepository scheduleRepository, IScheduleManager scheduleManager, IClassRepository classRepository, IRoomRepository roomRepository, ITimeRepository timeRepository, IWeekdayRepository weekdayRepository, ICrossRepository crossRepository, IInstructorRepository instructorRepository, IInstructorClassRepository instructorClassRepository)
         {
             this._scheduleRepository = scheduleRepository;
@@ -34,20 +45,29 @@ namespace UCS_Backend.Controllers
             this._instructorClassRepository = instructorClassRepository;
             this.parser = new CSVParser(classRepository, roomRepository, timeRepository, weekdayRepository, crossRepository, scheduleRepository, instructorRepository, instructorClassRepository);
         }
-
         [HttpGet]
+        /// <summary>
+        /// get all schedules
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<Schedule> GetAllSchedules()
         {
             return _scheduleRepository.GetAllSchedules();
         }
-
         [HttpPost("add")]
+        /// <summary>
+        /// adds schedule from body
+        /// </summary>
+        /// <param name="body"></param>
+        /// <returns></returns>
         public Schedule AddSchedule([FromBody] ScheduleFormBody body)
         {
             return this._scheduleManager.AddSchedule(body);
         }
-
         [HttpGet("parseCSV")]
+        /// <summary>
+        /// creates list for csv file
+        /// </summary>
         public void ParseCSV()
         {
             List<string> csvfiles = new List<string> { "CSCI1191.csv" };

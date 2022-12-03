@@ -16,20 +16,21 @@ namespace UCS_Backend.BLL
         private IRoomRepository _roomRepository;
 
         /// <summary>
-        /// Updates the ScheduleRepository and RoomRepository to be passed
+        /// schedule manager intakes schedule repository and room repository
         /// </summary>
-        /// <param name="roomRepository">Room to be passed in</param>
+        /// <param name="scheduleRepository"></param>
+        /// <param name="roomRepository"></param>
         public ScheduleManager(IScheduleRepository scheduleRepository, IRoomRepository roomRepository)
         {
             _scheduleRepository = scheduleRepository;
             _roomRepository = roomRepository;
         }
+       /// <summary>
+       /// add schedule
+       /// </summary>
+       /// <param name="body"></param>
+       /// <returns></returns>
         public Schedule AddSchedule(ScheduleFormBody body)
-
-         /// <summary>
-         /// Adds schedule to the schedule form body
-         /// </summary>
-         /// <param name="ScheduleFormBody">Schedule to be passed to ID</param>
         {
             int RoomID = _roomRepository.FindRoomIdByName(body.RoomName);
             return null;

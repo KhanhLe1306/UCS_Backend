@@ -19,7 +19,11 @@ namespace UCS_Backend.Repositories
         }
 
         public IEnumerable<Schedule> GetAll => throw new NotImplementedException();
-
+    /// <summary>
+    /// add scheduled added
+    /// </summary>
+    /// <param name="s"></param>
+    /// <returns></returns>
         public Schedule Add(Schedule s)
         {
             var temp = _dataContext.Schedules.Where(x => x.ClassId == s.ClassId && x.RoomId == s.RoomId && x.TimeId == s.TimeId && x.WeekdayId == s.WeekdayId).FirstOrDefault();
@@ -34,29 +38,53 @@ namespace UCS_Backend.Repositories
                 return temp;
             }
         }
-
+    /// <summary>
+    /// delete schedule added
+    /// </summary>
+    /// <param name="entity"></param>
         public void Delete(Schedule entity)
         {
             throw new NotImplementedException();
         }
-
+    /// <summary>
+    /// finds schedule by id
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
         public Schedule? FindById(int id)
         {
             throw new NotImplementedException();
         }
-
+    /// <summary>
+    /// puts schedule into a list format
+    /// </summary>
+    /// <returns></returns>
         public List<Schedule> GetAllSchedules()
         { 
             var res = this._dataContext.Schedules.ToList();
 
             return res;
         }
-
+        /// <summary>
+        /// updates schedule sheet
+        /// </summary>
+        /// <param name="entity"></param>
         public void Update(Schedule entity)
         {
             throw new NotImplementedException();
         }
-
+        /// <summary>
+        /// creates insert sheet for data 
+        /// </summary>
+        /// <param name="cls"></param>
+        /// <param name="section"></param>
+        /// <param name="instructor"></param>
+        /// <param name="classSize"></param>
+        /// <param name="classTime"></param>
+        /// <param name="roomCode"></param>
+        /// <param name="room"></param>
+        /// <param name="days"></param>
+        /// <returns></returns>
         public bool ValidateInsert(string cls, string section, string instructor, string classSize, string classTime, string roomCode, string room, string days)
         {
             Tuple<int, int> time = Tuple.Create(Int32.Parse(classTime.Split('-')[0]), Int32.Parse(classTime.Split('-')[1]));

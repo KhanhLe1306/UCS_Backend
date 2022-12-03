@@ -14,18 +14,30 @@ namespace UCS_Backend.Controllers
     /// </summary> 
     public class InstructorController : Controller
     {
+       /// <summary>
+       /// creates instrcutor repo
+       /// </summary>
         private IInstructorRepository _instructorRepository;
         public InstructorController(IInstructorRepository instructorRepository)
         {
             _instructorRepository = instructorRepository;
         }
         [HttpPost("add")]
+        /// <summary>
+        /// adds instructor by name
+        /// </summary>
+        /// <param name="instructor"></param>
+        /// <returns></returns>
         public Instructor Add(Instructor instructor)
         {
             return _instructorRepository.Add(instructor);
         }
-
         [HttpGet("getScheduleByInstructor/{employeeNumber}")]
+        /// <summary>
+        /// adds instructor to lst by employee number
+        /// </summary>
+        /// <param name="employeeNumber"></param>
+        /// <returns></returns>
         public List<ScheduleInfo> GetScheduleByInstructor(int employeeNumber)
         {
             var res = _instructorRepository.GetScheduleByInstructor(employeeNumber);

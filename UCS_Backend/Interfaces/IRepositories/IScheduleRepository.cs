@@ -2,6 +2,9 @@
 
 namespace UCS_Backend.Interfaces
 {
+/// <summary>
+/// Creates class for scheduleRepo
+/// </summary>
     public interface IScheduleRepository : IBaseRepository<Schedule>
     {
         List<Schedule> GetAllSchedules();
