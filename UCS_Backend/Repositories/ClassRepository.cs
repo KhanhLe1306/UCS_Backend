@@ -5,9 +5,9 @@ using UCS_Backend.Models;
 namespace UCS_Backend.Repositories
 {
 
-     /// <summary>
-    /// Creates a class for ClassRepositoty
-    /// </summary> 
+          /// <summary>
+         /// Creates a class for ClassRepositoty
+         /// </summary> 
     public class ClassRepository : IClassRepository
     {
         private DataContext _context;
@@ -45,12 +45,12 @@ namespace UCS_Backend.Repositories
                 return res.Entity.ClassId;
             }              
         }
-/// <summary>
-/// Find class by ID where catalogNumber and section are used
-/// </summary>
-/// <param name="catalogNumber"></param>
-/// <param name="section"></param>
-/// <returns></returns>
+        /// <summary>
+        /// Find class by ID where catalogNumber and section are used
+        /// </summary>
+        /// <param name="catalogNumber"></param>
+        /// <param name="section"></param>
+        /// <returns></returns>
         public int FindClssID(string catalogNumber, string section)
         {
             var res = _context.Classes.Where(x => x.CatalogNumber == catalogNumber && x.Section == section).FirstOrDefault();

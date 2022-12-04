@@ -4,7 +4,7 @@ namespace UCS_Backend.Models
 {
 
      /// <summary>
-    /// Creates a class for ClassModel
+     /// Creates a class for ClassModel
     /// </summary> 
     public class ClassModel
     {

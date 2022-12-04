@@ -6,7 +6,7 @@ namespace UCS_Backend.Controllers;
 [Route("[controller]")]
 
 
-/// <summary>
+    /// <summary>
     /// Creates a class for WeatherForecastController
     /// </summary> 
 public class WeatherForecastController : ControllerBase
