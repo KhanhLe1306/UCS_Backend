@@ -2,6 +2,10 @@
 
 namespace UCS_Backend.Models
 {
+
+     /// <summary>
+    /// Creates a class for Cross
+    /// </summary> 
     public class Cross
     {
         [Key]

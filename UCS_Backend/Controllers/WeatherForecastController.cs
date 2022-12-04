@@ -4,6 +4,11 @@ namespace UCS_Backend.Controllers;
 
 [ApiController]
 [Route("[controller]")]
+
+
+    /// <summary>
+    /// Creates a class for WeatherForecastController
+    /// </summary> 
 public class WeatherForecastController : ControllerBase
 {
     private static readonly string[] Summaries = new[]

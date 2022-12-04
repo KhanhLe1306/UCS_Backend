@@ -1,5 +1,9 @@
 ﻿namespace UCS_Backend.Interfaces
 {
+/// <summary>
+/// creates class for base repo to pass Updates / Delete /  FindById
+/// </summary>
+/// <typeparam name="T"></typeparam>
     public interface IBaseRepository<T> where T : class
     {
         IEnumerable<T> GetAll { get;}

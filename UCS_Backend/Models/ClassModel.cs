@@ -2,6 +2,10 @@
 
 namespace UCS_Backend.Models
 {
+
+     /// <summary>
+     /// Creates a class for ClassModel
+    /// </summary> 
     public class ClassModel
     {
         [Key]
@@ -13,5 +17,21 @@ namespace UCS_Backend.Models
         public string Section { get; set; }
         public string CatalogNumber { get; set; }
 
+    }
+    /// <summary>
+    /// creates class to add class model
+    /// </summary>
+
+    public class AddClassModel
+    {
+        public string cls { get; set; }
+        public string section { get; set; }
+        public string instructor { get; set; }
+        public string classSize { get; set; }
+        public string classStart { get; set; }
+        public string classEnd { get; set; }
+        public string roomCode { get; set; }
+        public string room { get; set; }
+        public string days { get; set; }
     }
 }

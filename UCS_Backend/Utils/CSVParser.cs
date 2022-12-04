@@ -5,6 +5,11 @@ using UCS_Backend.Models;
 
 namespace UCS_Backend.Utils
 {
+
+
+    /// <summary>
+    /// Creates a class for CSVParser
+    /// </summary> 
     public class CSVParser
     {
         private IClassRepository _classRepository;
@@ -114,8 +119,8 @@ namespace UCS_Backend.Utils
                             string[] isplit = instructors[i].Split(", ");
                             var instructorReturn = _instructorRepository.Add(new Instructor
                             {
-                                FirstName = isplit[0],
-                                LastName = isplit[1].Split(" ")[0],
+                                FirstName = isplit[1].Split(" ")[0],
+                                LastName = isplit[0],
                                 EmployeeNumber = isplit[1].Split(" ")[1].Replace("(", String.Empty).Replace(")", String.Empty)
                             });
                             if (i == 0)
@@ -141,8 +146,8 @@ namespace UCS_Backend.Utils
                         // Add the instructor
                         var instructorReturn = _instructorRepository.Add(new Instructor
                         {
-                            FirstName = isplit[0],
-                            LastName = isplit[1].Split(" ")[0],
+                            FirstName = isplit[1].Split(" ")[0],
+                            LastName = isplit[0],
                             EmployeeNumber = isplit[1].Split(" ")[1].Replace("(", String.Empty).Replace(")", String.Empty)
                         });
 

@@ -4,6 +4,10 @@ using UCS_Backend.Models;
 
 namespace UCS_Backend.Managers
 {
+
+        /// <summary>
+        /// Creates a class for ScheduleManager
+        /// </summary> 
     public class ScheduleManager : IScheduleManager
     {
         private IScheduleRepository _scheduleRepository;
@@ -11,6 +15,11 @@ namespace UCS_Backend.Managers
         {
 
         }
+        /// <summary>
+        /// Adds schedule
+        /// </summary>
+        /// <param name="body"></param>
+        /// <returns></returns>
         public Schedule AddSchedule(ScheduleFormBody body)
         {
             throw new NotImplementedException();

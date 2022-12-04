@@ -8,19 +8,34 @@ using Microsoft.EntityFrameworkCore;
 
 namespace UCS_Backend.Repositories
 {
+    /// <summary>
+    /// Creates a class for InstructorRepositoty
+    /// </summary> 
     public class InstructorRepository: IInstructorRepository, IBaseRepository<Instructor>
     {
         private DataContext _dataContext;
+    /// <summary>
+    /// Instrcutor repo created
+    /// </summary>
+    /// <param name="dataContext"></param>
         public InstructorRepository(DataContext dataContext)
         {
             this._dataContext = dataContext;
         }
         public IEnumerable<Instructor> GetAll => this._dataContext.Instructors.AsEnumerable();
-
+    /// <summary>
+    /// get all instructors by list
+    /// </summary>
+    /// <returns></returns>
         public async Task<List<Instructor>> GetAllInstructors()
         {
             return await this._dataContext.Instructors.ToListAsync();
         }
+    /// <summary>
+    /// get instructor ID
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
         public async Task<Instructor?> GetInstructorById(int id)
         {
             var res = from i in this._dataContext.Instructors
@@ -34,14 +49,22 @@ namespace UCS_Backend.Repositories
 
             return await res.FirstAsync();
         }
-
+    /// <summary>
+    /// Add instructor  
+    /// </summary>
+    /// <param name="instructor"></param>
+    /// <returns></returns>
         public async Task<Instructor> AddInstructor(Instructor instructor)
         {
             var res = (await _dataContext.Instructors.AddAsync(instructor)).Entity;
             await _dataContext.SaveChangesAsync();
             return res;
         }
-
+    /// <summary>
+    /// Add instructor to data context but find the instructor by name
+    /// </summary>
+    /// <param name="instructor"></param>
+    /// <returns></returns>
         public Instructor Add(Instructor instructor)
         {
             int instructorId = FindInstructorByName(instructor.FirstName, instructor.LastName);
@@ -58,7 +81,11 @@ namespace UCS_Backend.Repositories
             }
             return null;
         }
-
+    /// <summary>
+    /// Update instructor with firstname and lastname
+    /// </summary>
+    /// <param name="instructor"></param>
+    /// <returns></returns>
         public async Task<(bool, Instructor)> UpdateInstructor(Instructor instructor)
         {
             var temp = await this._dataContext.Instructors.Where(i => i.InstructorId == instructor.InstructorId).FirstAsync();
@@ -74,6 +101,11 @@ namespace UCS_Backend.Repositories
                 return (false, instructor);
             }
         }
+    /// <summary>
+    /// remove instructor for task
+    /// </summary>
+    /// <param name="instructor"></param>
+    /// <returns></returns>
         public async Task<bool> DeleteInstructor(Instructor instructor)
         {
             var res = this._dataContext.Instructors.Remove(instructor).Entity;
@@ -86,12 +118,21 @@ namespace UCS_Backend.Repositories
                 return false;
             }
         }
-        
+    /// <summary>
+    /// be able to find instructor by ID
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
         public Instructor? FindById(int id)
         {
             return _dataContext.Instructors.Find(id);
         }
-
+    /// <summary>
+    /// be able to find instructor by firstname and lastname
+    /// </summary>
+    /// <param name="firstName"></param>
+    /// <param name="lastName"></param>
+    /// <returns></returns>
         public int FindInstructorByName(string firstName, string lastName)
         {
             var res = from r in _dataContext.Instructors
@@ -99,24 +140,39 @@ namespace UCS_Backend.Repositories
                       select r.InstructorId;
             return res.FirstOrDefault();
         }
-
+    /// <summary>
+    /// deletes instructor
+    /// </summary>
+    /// <param name="instructor"></param>
         public void Delete(Instructor instructor)
         {
             this._dataContext.Instructors.Remove(instructor);
             this._dataContext.SaveChanges();
         }
-
+    /// <summary>
+    /// instructor
+    /// </summary>
+    /// <param name="instructor"></param>
         public void Update(Instructor instructor)
         {
 
         }
-
+    /// <summary>
+    /// Updates instructor
+    /// </summary>
+    /// <param name="instructor"></param>
+    /// <returns></returns>
         public Task<(bool, Instructor)> UpdateInstrutor(Instructor instructor)
         {
             throw new NotImplementedException();
         }
-
-        public List<ScheduleInfo> GetScheduleByInstructor(int employeeNumber)
+    /// <summary>
+    /// method to have employee number in data schedule
+    /// </summary>
+    /// <param name="firstName"></param>
+    /// <param name="lastName"></param>
+    /// <returns></returns>
+        public List<ScheduleInfo> GetScheduleByInstructor(string firstName, string lastName)
         {
             var res = (from i in _dataContext.Instructors
                        join ic in _dataContext.InstructorClasses on i.InstructorId equals ic.InstructorId
@@ -125,7 +181,7 @@ namespace UCS_Backend.Repositories
                        join c in _dataContext.Classes on s.ClassId equals c.ClassId
                        join w in _dataContext.Weekdays on s.WeekdayId equals w.WeekdayId
                        join r in _dataContext.Rooms on s.RoomId equals r.RoomId
-                       where i.EmployeeNumber == employeeNumber.ToString()
+                       where i.FirstName == firstName && i.LastName == lastName
                        select new ScheduleInfo
                        {
                            ClssID = c.ClssId.ToString(),
@@ -135,11 +191,21 @@ namespace UCS_Backend.Repositories
                            Course = c.Course,
                            CourseTitle = c.CourseTitle,
                            MeetingDays = w.Description.ToString(),
+                           Instructor = i.FirstName + " " + i.LastName
                        }).ToList();
+
+            if (res.Count == 0)
+            {
+                return new List<ScheduleInfo> { new ScheduleInfo { } };
+            }
             return CheckCrossListedClasses(res);
 
         }
-
+    /// <summary>
+    /// Creates method for cross listed classesto have a list of schedule info
+    /// </summary>
+    /// <param name="scheduleInfos"></param>
+    /// <returns></returns>
         public List<ScheduleInfo> CheckCrossListedClasses(List<ScheduleInfo> scheduleInfos)
         {
             var clssIDs = scheduleInfos.Select(r => r.ClssID).ToList();
@@ -209,167 +275,170 @@ namespace UCS_Backend.Repositories
                 }
             }
 
-            List<int> monStartTimes = new List<int>();
-            List<int> tueStartTimes = new List<int>();
-            List<int> wedStartTimes = new List<int>();
-            List<int> thuStartTimes = new List<int>();
-            List<int> friStartTimes = new List<int>();
+                List<int> monStartTimes = new List<int>();
+                List<int> tueStartTimes = new List<int>();
+                List<int> wedStartTimes = new List<int>();
+                List<int> thuStartTimes = new List<int>();
+                List<int> friStartTimes = new List<int>();
 
-            List<int> monEndTimes = new List<int>();
-            List<int> tueEndTimes = new List<int>();
-            List<int> wedEndTimes = new List<int>();
-            List<int> thuEndTimes = new List<int>();
-            List<int> friEndTimes = new List<int>();
-            foreach (var item in returnResult)
-            {
-                item.PriorCourseInfo = new Dictionary<string, Dictionary<string, string>>();
-                if (item.MeetingDays.Contains("Monday"))
+                List<int> monEndTimes = new List<int>();
+                List<int> tueEndTimes = new List<int>();
+                List<int> wedEndTimes = new List<int>();
+                List<int> thuEndTimes = new List<int>();
+                List<int> friEndTimes = new List<int>();
+                foreach (var item in returnResult)
                 {
-                    monStartTimes.Add(Int32.Parse(item.StartTime));
-                    monEndTimes.Add(Int32.Parse(item.EndTime));
+                    item.PriorCourseInfo = new Dictionary<string, Dictionary<string, string>>();
+                    if (item.MeetingDays.Contains("Monday"))
+                    {
+                        monStartTimes.Add(Int32.Parse(item.StartTime));
+                        monEndTimes.Add(Int32.Parse(item.EndTime));
+                    }
+                    if (item.MeetingDays.Contains("Tuesday"))
+                    {
+                        tueStartTimes.Add(Int32.Parse(item.StartTime));
+                        tueEndTimes.Add(Int32.Parse(item.EndTime));
+                    }
+                    if (item.MeetingDays.Contains("Wednesday"))
+                    {
+                        wedStartTimes.Add(Int32.Parse(item.StartTime));
+                        wedEndTimes.Add(Int32.Parse(item.EndTime));
+                    }
+                    if (item.MeetingDays.Contains("Thursday"))
+                    {
+                        thuStartTimes.Add(Int32.Parse(item.StartTime));
+                        thuEndTimes.Add(Int32.Parse(item.EndTime));
+                    }
+                    if (item.MeetingDays.Contains("Friday"))
+                    {
+                        friStartTimes.Add(Int32.Parse(item.StartTime));
+                        friEndTimes.Add(Int32.Parse(item.EndTime));
+                    }
                 }
-                if (item.MeetingDays.Contains("Tuesday"))
-                {
-                    tueStartTimes.Add(Int32.Parse(item.StartTime));
-                    tueEndTimes.Add(Int32.Parse(item.EndTime));
-                }
-                if (item.MeetingDays.Contains("Wednesday"))
-                {
-                    wedStartTimes.Add(Int32.Parse(item.StartTime));
-                    wedEndTimes.Add(Int32.Parse(item.EndTime));
-                }
-                if (item.MeetingDays.Contains("Thursday"))
-                {
-                    thuStartTimes.Add(Int32.Parse(item.StartTime));
-                    thuEndTimes.Add(Int32.Parse(item.EndTime));
-                }
-                if (item.MeetingDays.Contains("Friday"))
-                {
-                    friStartTimes.Add(Int32.Parse(item.StartTime));
-                    friEndTimes.Add(Int32.Parse(item.EndTime));
-                }
-            }
 
-            // Day Start Times
-            monStartTimes.Sort();
-            tueStartTimes.Sort();
-            wedStartTimes.Sort();
-            thuStartTimes.Sort();
-            friStartTimes.Sort();
+                // Day Start Times
+                monStartTimes.Sort();
+                tueStartTimes.Sort();
+                wedStartTimes.Sort();
+                thuStartTimes.Sort();
+                friStartTimes.Sort();
 
-            // Day End Times
-            monEndTimes.Sort();
-            tueEndTimes.Sort();
-            wedEndTimes.Sort();
-            thuEndTimes.Sort();
-            friEndTimes.Sort();
+                // Day End Times
+                monEndTimes.Sort();
+                tueEndTimes.Sort();
+                wedEndTimes.Sort();
+                thuEndTimes.Sort();
+                friEndTimes.Sort();
 
-            double pixelRatioTo30 = 1.5;
+                List<int> times = monStartTimes.Concat(tueStartTimes).Concat(wedStartTimes).Concat(thuStartTimes).Concat(friStartTimes).ToList();
+                times.Sort();
+                int earliest = times[0];
+                double earliest_hour = Math.Floor(Convert.ToDouble(earliest) / 100);
+                double earliet_minutes = ((Convert.ToDouble(earliest) / 100) % 1) * 100;
+                double pixelRatioTo30 = 1.75;
 
-            foreach (var item in returnResult)
-            {
-                // Given the current entry, check it's day, and then check to see where the start time occurs
-                // in the start times list (by index). If the index is 0, then this is the first entry for that day
-                // other wise we need to set the current entrys prev values to be startTime at index - 1, same for end
-                // times. 
-                if (item.MeetingDays.Contains("Monday"))
+                foreach (var item in returnResult)
                 {
-                    int timeIndex = monStartTimes.IndexOf(Int32.Parse(item.StartTime));
-                    double height = ((((monEndTimes[timeIndex] / 100) - (monStartTimes[timeIndex] / 100)) * 60) + (monEndTimes[timeIndex] % 100) - (monStartTimes[timeIndex] % 100)) * pixelRatioTo30;
-                    if (timeIndex == 0)
+                    // Given the current entry, check it's day, and then check to see where the start time occurs
+                    // in the start times list (by index). If the index is 0, then this is the first entry for that day
+                    // other wise we need to set the current entrys prev values to be startTime at index - 1, same for end
+                    // times. 
+                    if (item.MeetingDays.Contains("Monday"))
                     {
-                        double marginSize = (Math.Floor(Double.Parse(item.StartTime) / 100) - 9) * 60;
-                        marginSize += ((Double.Parse(item.StartTime) / 100) % 1) * 100;
-                        marginSize = marginSize * 1.5;
-                        item.PriorCourseInfo.Add("Monday", new Dictionary<string, string> { { "prevStart", "900" }, { "prevEnd", "900" }, { "marginSize", marginSize.ToString() }, { "height", height.ToString() } });
+                        int timeIndex = monStartTimes.IndexOf(Int32.Parse(item.StartTime));
+                        double height = ((((monEndTimes[timeIndex] / 100) - (monStartTimes[timeIndex] / 100)) * 60) + (monEndTimes[timeIndex] % 100) - (monStartTimes[timeIndex] % 100)) * pixelRatioTo30;
+                        if (timeIndex == 0)
+                        {
+                            double marginSize = ((Math.Floor(Double.Parse(item.StartTime) / 100) - earliest_hour) * 60) + ((Convert.ToDouble(item.StartTime) / 100) % 1) * 100 - earliet_minutes;
+                            marginSize *= pixelRatioTo30;
+                            marginSize += 15;
+                            item.PriorCourseInfo.Add("Monday", new Dictionary<string, string> { { "prevStart", "900" }, { "prevEnd", "900" }, { "marginSize", marginSize.ToString() }, { "height", height.ToString() } });
+                        }
+                        else
+                        {
+                            double marginSize = (Math.Floor(Double.Parse(item.StartTime) / 100) - Math.Floor(Convert.ToDouble(monEndTimes[timeIndex - 1]) / 100)) * 60;
+                            marginSize += (((Double.Parse(item.StartTime) / 100) % 1) * 100) - (((Convert.ToDouble(monEndTimes[timeIndex - 1]) / 100) % 1) * 100);
+                            marginSize *= pixelRatioTo30;
+                            item.PriorCourseInfo.Add("Monday", new Dictionary<string, string> { { "prevStart", monStartTimes[timeIndex - 1].ToString() }, { "prevEnd", monEndTimes[timeIndex - 1].ToString() }, { "marginSize", marginSize.ToString() }, { "height", height.ToString() } });
+                        }
                     }
-                    else
+                    if (item.MeetingDays.Contains("Tuesday"))
                     {
-                        double marginSize = (Math.Floor(Double.Parse(item.StartTime) / 100) - Math.Floor(Convert.ToDouble(monEndTimes[timeIndex - 1]) / 100)) * 60;
-                        marginSize += (((Double.Parse(item.StartTime) / 100) % 1) * 100) - (((Convert.ToDouble(monEndTimes[timeIndex - 1]) / 100) % 1) * 100);
-                        marginSize = marginSize * 1.5;
-                        item.PriorCourseInfo.Add("Monday", new Dictionary<string, string> { { "prevStart", monStartTimes[timeIndex - 1].ToString() }, { "prevEnd", monEndTimes[timeIndex - 1].ToString() }, { "marginSize", marginSize.ToString() }, { "height", height.ToString() } });
+                        int timeIndex = tueStartTimes.IndexOf(Int32.Parse(item.StartTime));
+                        double height = ((((tueEndTimes[timeIndex] / 100) - (tueStartTimes[timeIndex] / 100)) * 60) + (tueEndTimes[timeIndex] % 100) - (tueStartTimes[timeIndex] % 100)) * pixelRatioTo30;
+                        if (timeIndex == 0)
+                        {
+                            double marginSize = ((Math.Floor(Double.Parse(item.StartTime) / 100) - earliest_hour) * 60) + ((Convert.ToDouble(item.StartTime) / 100) % 1) * 100 - earliet_minutes;
+                            marginSize *= pixelRatioTo30;
+                            marginSize += 15;
+                            item.PriorCourseInfo.Add("Tuesday", new Dictionary<string, string> { { "prevStart", "900" }, { "prevEnd", "900" }, { "marginSize", marginSize.ToString() }, { "height", height.ToString() } });
+                        }
+                        else
+                        {
+                            double marginSize = (Math.Floor(Double.Parse(item.StartTime) / 100) - Math.Floor(Convert.ToDouble(tueEndTimes[timeIndex - 1]) / 100)) * 60;
+                            marginSize += (((Double.Parse(item.StartTime) / 100) % 1) * 100) - (((Convert.ToDouble(tueEndTimes[timeIndex - 1]) / 100) % 1) * 100);
+                            marginSize *= pixelRatioTo30;
+                            item.PriorCourseInfo.Add("Tuesday", new Dictionary<string, string> { { "prevStart", tueStartTimes[timeIndex - 1].ToString() }, { "prevEnd", tueEndTimes[timeIndex - 1].ToString() }, { "marginSize", marginSize.ToString() }, { "height", height.ToString() } });
+                        }
+                    }
+                    if (item.MeetingDays.Contains("Wednesday"))
+                    {
+                        int timeIndex = wedStartTimes.IndexOf(Int32.Parse(item.StartTime));
+                        double height = ((((wedEndTimes[timeIndex] / 100) - (wedStartTimes[timeIndex] / 100)) * 60) + (wedEndTimes[timeIndex] % 100) - (wedStartTimes[timeIndex] % 100)) * pixelRatioTo30;
+                        if (timeIndex == 0)
+                        {
+                            double marginSize = ((Math.Floor(Double.Parse(item.StartTime) / 100) - earliest_hour) * 60) + ((Convert.ToDouble(item.StartTime) / 100) % 1) * 100 - earliet_minutes;
+                            marginSize *= pixelRatioTo30;
+                            marginSize += 15;
+                            item.PriorCourseInfo.Add("Wednesday", new Dictionary<string, string> { { "prevStart", "900" }, { "prevEnd", "900" }, { "marginSize", marginSize.ToString() }, { "height", height.ToString() } });
+                        }
+                        else
+                        {
+                            double marginSize = (Math.Floor(Double.Parse(item.StartTime) / 100) - Math.Floor(Convert.ToDouble(wedEndTimes[timeIndex - 1]) / 100)) * 60;
+                            marginSize += (((Double.Parse(item.StartTime) / 100) % 1) * 100) - (((Convert.ToDouble(wedEndTimes[timeIndex - 1]) / 100) % 1) * 100);
+                            marginSize *= pixelRatioTo30;
+                            item.PriorCourseInfo.Add("Wednesday", new Dictionary<string, string> { { "prevStart", wedStartTimes[timeIndex - 1].ToString() }, { "prevEnd", wedEndTimes[timeIndex - 1].ToString() }, { "marginSize", marginSize.ToString() }, { "height", height.ToString() } });
+                        }
+                    }
+                    if (item.MeetingDays.Contains("Thursday"))
+                    {
+                        int timeIndex = thuStartTimes.IndexOf(Int32.Parse(item.StartTime));
+                        double height = ((((thuEndTimes[timeIndex] / 100) - (thuStartTimes[timeIndex] / 100)) * 60) + (thuEndTimes[timeIndex] % 100) - (thuStartTimes[timeIndex] % 100)) * pixelRatioTo30;
+                        if (timeIndex == 0)
+                        {
+                            double marginSize = ((Math.Floor(Double.Parse(item.StartTime) / 100) - earliest_hour) * 60) + ((Convert.ToDouble(item.StartTime) / 100) % 1) * 100 - earliet_minutes;
+                            marginSize *= pixelRatioTo30;
+                            marginSize += 15;
+                            item.PriorCourseInfo.Add("Thursday", new Dictionary<string, string> { { "prevStart", "900" }, { "prevEnd", "900" }, { "marginSize", marginSize.ToString() }, { "height", height.ToString() } });
+                        }
+                        else
+                        {
+                            double marginSize = (Math.Floor(Double.Parse(item.StartTime) / 100) - Math.Floor(Convert.ToDouble(thuEndTimes[timeIndex - 1]) / 100)) * 60;
+                            marginSize += (((Double.Parse(item.StartTime) / 100) % 1) * 100) - (((Convert.ToDouble(thuEndTimes[timeIndex - 1]) / 100) % 1) * 100);
+                            marginSize *= pixelRatioTo30;
+                            item.PriorCourseInfo.Add("Thursday", new Dictionary<string, string> { { "prevStart", thuStartTimes[timeIndex - 1].ToString() }, { "prevEnd", thuEndTimes[timeIndex - 1].ToString() }, { "marginSize", marginSize.ToString() }, { "height", height.ToString() } });
+                        }
+                    }
+                    if (item.MeetingDays.Contains("Friday"))
+                    {
+                        int timeIndex = friStartTimes.IndexOf(Int32.Parse(item.StartTime));
+                        double height = ((((friEndTimes[timeIndex] / 100) - (friStartTimes[timeIndex] / 100)) * 60) + (friEndTimes[timeIndex] % 100) - (friStartTimes[timeIndex] % 100)) * pixelRatioTo30;
+                        if (timeIndex == 0)
+                        {
+                            double marginSize = ((Math.Floor(Double.Parse(item.StartTime) / 100) - earliest_hour) * 60) + ((Convert.ToDouble(item.StartTime) / 100) % 1) * 100 - earliet_minutes;
+                            marginSize *= pixelRatioTo30;
+                            marginSize += 15;
+                            item.PriorCourseInfo.Add("Friday", new Dictionary<string, string> { { "prevStart", "900" }, { "prevEnd", "900" }, { "marginSize", marginSize.ToString() }, { "height", height.ToString() } });
+                        }
+                        else
+                        {
+                            double marginSize = (Math.Floor(Double.Parse(item.StartTime) / 100) - Math.Floor(Convert.ToDouble(friEndTimes[timeIndex - 1]) / 100)) * 60;
+                            marginSize += (((Double.Parse(item.StartTime) / 100) % 1) * 100) - (((Convert.ToDouble(friEndTimes[timeIndex - 1]) / 100) % 1) * 100);
+                            marginSize *= pixelRatioTo30;
+                            item.PriorCourseInfo.Add("Friday", new Dictionary<string, string> { { "prevStart", friStartTimes[timeIndex - 1].ToString() }, { "prevEnd", friEndTimes[timeIndex - 1].ToString() }, { "marginSize", marginSize.ToString() }, { "height", height.ToString() } });
+                        }
                     }
                 }
-                if (item.MeetingDays.Contains("Tuesday"))
-                {
-                    int timeIndex = tueStartTimes.IndexOf(Int32.Parse(item.StartTime));
-                    double height = ((((tueEndTimes[timeIndex] / 100) - (tueStartTimes[timeIndex] / 100)) * 60) + (tueEndTimes[timeIndex] % 100) - (tueStartTimes[timeIndex] % 100)) * pixelRatioTo30;
-                    if (timeIndex == 0)
-                    {
-                        double marginSize = (Math.Floor(Double.Parse(item.StartTime) / 100) - 9) * 60;
-                        marginSize += ((Double.Parse(item.StartTime) / 100) % 1) * 100;
-                        marginSize = marginSize * 1.5;
-                        item.PriorCourseInfo.Add("Tuesday", new Dictionary<string, string> { { "prevStart", "900" }, { "prevEnd", "900" }, { "marginSize", marginSize.ToString() }, { "height", height.ToString() } });
-                    }
-                    else
-                    {
-                        double marginSize = (Math.Floor(Double.Parse(item.StartTime) / 100) - Math.Floor(Convert.ToDouble(tueEndTimes[timeIndex - 1]) / 100)) * 60;
-                        marginSize += (((Double.Parse(item.StartTime) / 100) % 1) * 100) - (((Convert.ToDouble(tueEndTimes[timeIndex - 1]) / 100) % 1) * 100);
-                        marginSize = marginSize * 1.5;
-                        item.PriorCourseInfo.Add("Tuesday", new Dictionary<string, string> { { "prevStart", tueStartTimes[timeIndex - 1].ToString() }, { "prevEnd", tueEndTimes[timeIndex - 1].ToString() }, { "marginSize", marginSize.ToString() }, { "height", height.ToString() } });
-                    }
-                }
-                if (item.MeetingDays.Contains("Wednesday"))
-                {
-                    int timeIndex = wedStartTimes.IndexOf(Int32.Parse(item.StartTime));
-                    double height = ((((wedEndTimes[timeIndex] / 100) - (wedStartTimes[timeIndex] / 100)) * 60) + (wedEndTimes[timeIndex] % 100) - (wedStartTimes[timeIndex] % 100)) * pixelRatioTo30;
-                    if (timeIndex == 0)
-                    {
-                        double marginSize = (Math.Floor(Double.Parse(item.StartTime) / 100) - 9) * 60;
-                        marginSize += ((Double.Parse(item.StartTime) / 100) % 1) * 100;
-                        marginSize = marginSize * 1.5;
-                        item.PriorCourseInfo.Add("Wednesday", new Dictionary<string, string> { { "prevStart", "900" }, { "prevEnd", "900" }, { "marginSize", marginSize.ToString() }, { "height", height.ToString() } });
-                    }
-                    else
-                    {
-                        double marginSize = (Math.Floor(Double.Parse(item.StartTime) / 100) - Math.Floor(Convert.ToDouble(wedEndTimes[timeIndex - 1]) / 100)) * 60;
-                        marginSize += (((Double.Parse(item.StartTime) / 100) % 1) * 100) - (((Convert.ToDouble(wedEndTimes[timeIndex - 1]) / 100) % 1) * 100);
-                        marginSize = marginSize * 1.5;
-                        item.PriorCourseInfo.Add("Wednesday", new Dictionary<string, string> { { "prevStart", wedStartTimes[timeIndex - 1].ToString() }, { "prevEnd", wedEndTimes[timeIndex - 1].ToString() }, { "marginSize", marginSize.ToString() }, { "height", height.ToString() } });
-                    }
-                }
-                if (item.MeetingDays.Contains("Thursday"))
-                {
-                    int timeIndex = thuStartTimes.IndexOf(Int32.Parse(item.StartTime));
-                    double height = ((((thuEndTimes[timeIndex] / 100) - (thuStartTimes[timeIndex] / 100)) * 60) + (thuEndTimes[timeIndex] % 100) - (thuStartTimes[timeIndex] % 100)) * pixelRatioTo30;
-                    if (timeIndex == 0)
-                    {
-                        double marginSize = (Math.Floor(Double.Parse(item.StartTime) / 100) - 9) * 60;
-                        marginSize += ((Double.Parse(item.StartTime) / 100) % 1) * 100;
-                        marginSize = marginSize * 1.5;
-                        item.PriorCourseInfo.Add("Thursday", new Dictionary<string, string> { { "prevStart", "900" }, { "prevEnd", "900" }, { "marginSize", marginSize.ToString() }, { "height", height.ToString() } });
-                    }
-                    else
-                    {
-                        double marginSize = (Math.Floor(Double.Parse(item.StartTime) / 100) - Math.Floor(Convert.ToDouble(thuEndTimes[timeIndex - 1]) / 100)) * 60;
-                        marginSize += (((Double.Parse(item.StartTime) / 100) % 1) * 100) - (((Convert.ToDouble(thuEndTimes[timeIndex - 1]) / 100) % 1) * 100);
-                        marginSize = marginSize * 1.5;
-                        item.PriorCourseInfo.Add("Thursday", new Dictionary<string, string> { { "prevStart", thuStartTimes[timeIndex - 1].ToString() }, { "prevEnd", thuEndTimes[timeIndex - 1].ToString() }, { "marginSize", marginSize.ToString() }, { "height", height.ToString() } });
-                    }
-                }
-                if (item.MeetingDays.Contains("Friday"))
-                {
-                    int timeIndex = friStartTimes.IndexOf(Int32.Parse(item.StartTime));
-                    double height = ((((friEndTimes[timeIndex] / 100) - (friStartTimes[timeIndex] / 100)) * 60) + (friEndTimes[timeIndex] % 100) - (friStartTimes[timeIndex] % 100)) * pixelRatioTo30;
-                    if (timeIndex == 0)
-                    {
-                        double marginSize = (Math.Floor(Double.Parse(item.StartTime) / 100) - 9) * 60;
-                        marginSize += ((Double.Parse(item.StartTime) / 100) % 1) * 100;
-                        marginSize = marginSize * 1.5;
-                        item.PriorCourseInfo.Add("Friday", new Dictionary<string, string> { { "prevStart", "900" }, { "prevEnd", "900" }, { "marginSize", marginSize.ToString() }, { "height", height.ToString() } });
-                    }
-                    else
-                    {
-                        double marginSize = (Math.Floor(Double.Parse(item.StartTime) / 100) - Math.Floor(Convert.ToDouble(friEndTimes[timeIndex - 1]) / 100)) * 60;
-                        marginSize += (((Double.Parse(item.StartTime) / 100) % 1) * 100) - (((Convert.ToDouble(friEndTimes[timeIndex - 1]) / 100) % 1) * 100);
-                        marginSize = marginSize * 1.5;
-                        item.PriorCourseInfo.Add("Friday", new Dictionary<string, string> { { "prevStart", friStartTimes[timeIndex - 1].ToString() }, { "prevEnd", friEndTimes[timeIndex - 1].ToString() }, { "marginSize", marginSize.ToString() }, { "height", height.ToString() } });
-                    }
-                }
-            }
-
-
             return returnResult;
         }
     }

@@ -1,15 +1,21 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.OpenApi.Any;
 using System.Linq.Expressions;
 using UCS_Backend.Interfaces;
 using UCS_Backend.Interfaces.IManagers;
 using UCS_Backend.Interfaces.IRepositories;
 using UCS_Backend.Models;
+using UCS_Backend.Models.SubModels;
 using UCS_Backend.Utils;
 
 namespace UCS_Backend.Controllers
 {
     [ApiController]
     [Route("api/{controller}/")]
+
+/// <summary>
+/// creates class for class controller
+/// </summary>
     public class ClassController : Controller
     {
         private IScheduleRepository _scheduleRepository;
@@ -21,7 +27,18 @@ namespace UCS_Backend.Controllers
         private IInstructorRepository _instructorRepository;
         private IInstructorClassRepository _instructorClassRepository;
         private IWeekdayRepository _weekdayRepository;
-
+/// <summary>
+/// Creates class controller intakes
+/// </summary>
+/// <param name="scheduleRepository"></param>
+/// <param name="scheduleManager"></param>
+/// <param name="classRepository"></param>
+/// <param name="roomRepository"></param>
+/// <param name="timeRepository"></param>
+/// <param name="weekdayRepository"></param>
+/// <param name="crossRepository"></param>
+/// <param name="instructorRepository"></param>
+/// <param name="instructorClassRepository"></param>
         public ClassController(IScheduleRepository scheduleRepository, IScheduleManager scheduleManager, IClassRepository classRepository, IRoomRepository roomRepository, ITimeRepository timeRepository, IWeekdayRepository weekdayRepository, ICrossRepository crossRepository, IInstructorRepository instructorRepository, IInstructorClassRepository instructorClassRepository)
         {
             this._scheduleRepository = scheduleRepository;
@@ -32,12 +49,21 @@ namespace UCS_Backend.Controllers
             this._timeRepository = timeRepository;
             this._weekdayRepository = weekdayRepository;
         }
-
-        [HttpPost("addClass/{cls}&{section}&{instructor}&{classSize}&{classTime}&{room}&{days}")]
-        public bool addClass(string cls, string section, string instructor, string classSize, string classTime, string room, string days)
+/// <summary>
+/// add class model to class test
+/// </summary>
+/// <param name="addClassModel"></param>
+/// <returns></returns>
+      
+        [HttpPost("addClass")]
+        public SuccessInfo addClass(AddClassModel addClassModel)
         {
-            var valid = this._scheduleRepository.ValidateInsert(cls, section, instructor, classSize, classTime, room, days);
-            return true;
+            return this._scheduleRepository.ValidateInsert(addClassModel);
         }
+
+/// <summary>
+/// Use AddClassTest method to add class model
+/// </summary>
+/// <param name="AddClassModel">Classes added to model</param>
     }
 }

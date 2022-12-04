@@ -1,5 +1,9 @@
 ﻿namespace UCS_Backend.Models
 {
+
+     /// <summary>
+    /// Creates a class for ScheduleFormBody
+    /// </summary> 
     public class ScheduleFormBody
     {
         public string RoomName { get; set; }

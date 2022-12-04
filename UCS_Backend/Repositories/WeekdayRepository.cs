@@ -4,16 +4,28 @@ using UCS_Backend.Models;
 
 namespace UCS_Backend.Repositories
 {
+
+
+    /// <summary>
+    /// Creates a class for WeekdayRepositoty
+    /// </summary> 
     public class WeekdayRepository : IWeekdayRepository
     {
         private DataContext _dataContext;
-
+    /// <summary>
+    /// creats data context for repo
+    /// </summary>
+    /// <param name="context"></param>
         public WeekdayRepository(DataContext context)
         {
             this._dataContext = context;
         }
         public IEnumerable<Weekday> GetAll => throw new NotImplementedException();
-
+    /// <summary>
+    /// creates a weekday id for the entity to be created inside of data context
+    /// </summary>
+    /// <param name="entity"></param>
+    /// <returns></returns>
         public Weekday Add(Weekday entity)
         {
             int weekdayId = (from t in _dataContext.Weekdays where t.Description == entity.Description select t.WeekdayId).FirstOrDefault();
@@ -32,17 +44,27 @@ namespace UCS_Backend.Repositories
                 };
             }
         }
-
+    /// <summary>
+     /// deletes weekday
+    /// </summary>
+    /// <param name="entity"></param>
         public void Delete(Weekday entity)
         {
             throw new NotImplementedException();
         }
-
+    /// <summary>
+    /// finds the weekday by int
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
         public Weekday? FindById(int id)
         {
             throw new NotImplementedException();
         }
-
+    /// <summary>
+    /// updates the week day
+    /// </summary>
+    /// <param name="entity"></param>
         public void Update(Weekday entity)
         {
             throw new NotImplementedException();
