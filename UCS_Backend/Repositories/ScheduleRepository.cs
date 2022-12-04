@@ -1,5 +1,6 @@
 ﻿using UCS_Backend.Data;
 using UCS_Backend.Interfaces;
+using UCS_Backend.Interfaces.IRepositories;
 using UCS_Backend.Models;
 using UCS_Backend.Models.SubModels;
 
@@ -13,9 +14,11 @@ namespace UCS_Backend.Repositories
     public class ScheduleRepository : IScheduleRepository
     {
         private DataContext _dataContext;
-        public ScheduleRepository(DataContext dataContext)
+        private IRoomRepository _roomRepository;
+        public ScheduleRepository(DataContext dataContext, IRoomRepository roomRepository)
         {
             this._dataContext = dataContext;
+            this._roomRepository = roomRepository;
         }
 
         public IEnumerable<Schedule> GetAll => throw new NotImplementedException();
@@ -38,6 +41,7 @@ namespace UCS_Backend.Repositories
                 return temp;
             }
         }
+
         /// <summary>
         /// delete schedule added
         /// </summary>
@@ -176,5 +180,19 @@ namespace UCS_Backend.Repositories
             }
             return new SuccessInfo { success = roomCheck & instructorCheck, messages = messages };
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="addClassModel"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public bool AddClass(AddClassModel addClassModel)
+        {
+            int roomId = this._roomRepository.GetRoomIdByRoomName(addClassModel.roomCode, addClassModel.room);
+
+            return true;
+        }
+
     }
 }

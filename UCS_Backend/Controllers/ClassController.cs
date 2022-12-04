@@ -58,7 +58,16 @@ namespace UCS_Backend.Controllers
         [HttpPost("addClass")]
         public SuccessInfo addClass(AddClassModel addClassModel)
         {
-            return this._scheduleRepository.ValidateInsert(addClassModel);
+            var res = this._scheduleRepository.ValidateInsert(addClassModel);
+            if (res.success) // add class to DB
+            {
+                this._scheduleRepository.AddClass(addClassModel);
+                return res;
+            }
+            else
+            {
+                return res;
+            }
         }
 
 /// <summary>

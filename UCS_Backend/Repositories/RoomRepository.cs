@@ -368,5 +368,19 @@ namespace UCS_Backend.Repositories
         {
             throw new NotImplementedException();
         }
+
+        public int GetRoomIdByRoomName(string buildingCode, string roomNumber)
+        {
+            string roomName = @$"{buildingCode} {roomNumber}";
+            var room = this._dataContext.Rooms.Where(x => x.Name == roomName).FirstOrDefault();
+            if (room != null)
+            {
+                return room.RoomId;
+            }
+            else
+            {
+                return 0;
+            }
+        }
     }
 }

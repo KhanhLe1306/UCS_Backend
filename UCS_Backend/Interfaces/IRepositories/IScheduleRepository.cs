@@ -11,5 +11,7 @@ namespace UCS_Backend.Interfaces
     {
         List<Schedule> GetAllSchedules();
         SuccessInfo ValidateInsert(AddClassModel addClassModel);
+
+        bool AddClass(AddClassModel addClassModel);
     }
 }
