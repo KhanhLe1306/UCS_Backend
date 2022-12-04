@@ -12,9 +12,9 @@ namespace UCS_Backend.Controllers
 {
     [ApiController]
     [Route("api/{controller}/")]
-    /// <summary>
-    /// Creates a class for IndividualController
-    /// </summary> 
+        /// <summary>
+        /// Creates a class for IndividualController
+        /// </summary> 
     public class IndividualController : ControllerBase
     {
         private IIndividualRepository _individualRepository;

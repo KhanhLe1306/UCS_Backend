@@ -61,9 +61,9 @@ namespace UCS_Backend.Controllers
             return this._scheduleRepository.ValidateInsert(addClassModel);
         }
 
-           /// <summary>
-             /// Use AddClassTest method to add class model
-            /// </summary>
-         /// <param name="AddClassModel">Classes added to model</param>
+/// <summary>
+/// Use AddClassTest method to add class model
+/// </summary>
+/// <param name="AddClassModel">Classes added to model</param>
     }
 }

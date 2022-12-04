@@ -25,19 +25,19 @@ namespace UCS_Backend.Repositories
         }
 
         public IEnumerable<Individual> GetAll => this.dataContext.Individuals.AsEnumerable();
-/// <summary>
-/// creates task to get all individuals
-/// </summary>
-/// <returns></returns>
+    /// <summary>
+    /// creates task to get all individuals
+    /// </summary>
+    /// <returns></returns>
         public async Task<List<Individual>> GetAllIndividuals()
         {
             return await this.dataContext.Individuals.ToListAsync();
         }
-/// <summary>
-/// updates task to get individualbyId
-/// </summary>
-/// <param name="id"></param>
-/// <returns></returns>
+    /// <summary>
+    /// updates task to get individualbyId
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
         public async Task<Individual?> GetIndividualById(int id)
         {
             var res = from i in this.dataContext.Individuals
@@ -62,22 +62,22 @@ namespace UCS_Backend.Repositories
             await dataContext.SaveChangesAsync();
             return res;
         }
-/// <summary>
-/// add individual to data context
-/// </summary>
-/// <param name="individual"></param>
-/// <returns></returns>
+    /// <summary>
+    /// add individual to data context
+    /// </summary>
+    /// <param name="individual"></param>
+    /// <returns></returns>
         public Individual Add(Individual individual)
         {
             var res = dataContext.Individuals.Add(individual).Entity;
             dataContext.SaveChanges();
             return res;
         }
-/// <summary>
-/// Updates individual by first name and lastname
-/// </summary>
-/// <param name="individual"></param>
-/// <returns></returns>
+    /// <summary>
+    /// Updates individual by first name and lastname
+    /// </summary>
+    /// <param name="individual"></param>
+    /// <returns></returns>
         public async Task<(bool, Individual)> UpdateIndividual(Individual individual)
         {
             var temp = await this.dataContext.Individuals.Where(i => i.IndividualId == individual.IndividualId).FirstAsync(); 
@@ -93,11 +93,11 @@ namespace UCS_Backend.Repositories
                 return (false, individual);
             }
         }
-/// <summary>
-/// Remove individuals 
-/// </summary>
-/// <param name="individual"></param>
-/// <returns></returns>
+    /// <summary>
+    /// Remove individuals 
+    /// </summary>
+    /// <param name="individual"></param>
+    /// <returns></returns>
         public async Task<bool> DeleteIndividual(Individual individual)
         {
             var res = this.dataContext.Individuals.Remove(individual).Entity;
@@ -109,11 +109,11 @@ namespace UCS_Backend.Repositories
                 return false;
             }
         }
-/// <summary>
-/// find individual by id
-/// </summary>
-/// <param name="id"></param>
-/// <returns></returns>
+    /// <summary>
+    /// find individual by id
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
         public Individual? FindById(int id)
         {
             /*var res = from i in this.dataContext.Individuals
@@ -128,19 +128,19 @@ namespace UCS_Backend.Repositories
 
             return dataContext.Individuals.Find(id);
         }
-/// <summary>
-/// method to delete individual
-/// </summary>
-/// <param name="individual"></param>
+    /// <summary>
+    /// method to delete individual
+    /// </summary>
+    /// <param name="individual"></param>
         public void Delete(Individual individual)
         {
             this.dataContext.Individuals.Remove(individual);
             this.dataContext.SaveChanges();
         }
-/// <summary>
-/// updates individual
-/// </summary>
-/// <param name="idnividual"></param>
+    /// <summary>
+    /// updates individual  
+    /// </summary>
+    /// <param name="idnividual"></param>
         public void Update(Individual idnividual)
         {
             

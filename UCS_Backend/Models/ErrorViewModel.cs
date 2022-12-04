@@ -2,7 +2,7 @@
 
 public class ErrorViewModel
 
- /// <summary>
+    /// <summary>
     /// Creates a class for ErroViewModel
     /// </summary> 
 {
