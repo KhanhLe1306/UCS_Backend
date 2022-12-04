@@ -6,8 +6,6 @@ using UCS_Backend.Models.SubModels;
 
 namespace UCS_Backend.Repositories
 {
-
-
         /// <summary>
         /// Creates a class for ScheduleRepositoty
         /// </summary> 
@@ -15,10 +13,12 @@ namespace UCS_Backend.Repositories
     {
         private DataContext _dataContext;
         private IRoomRepository _roomRepository;
-        public ScheduleRepository(DataContext dataContext, IRoomRepository roomRepository)
+        private ITimeRepository _timeRepository;
+        public ScheduleRepository(DataContext dataContext, IRoomRepository roomRepository, ITimeRepository timeRepository)
         {
             this._dataContext = dataContext;
             this._roomRepository = roomRepository;
+            this._timeRepository = timeRepository;
         }
 
         public IEnumerable<Schedule> GetAll => throw new NotImplementedException();
@@ -190,6 +190,7 @@ namespace UCS_Backend.Repositories
         public bool AddClass(AddClassModel addClassModel)
         {
             int roomId = this._roomRepository.GetRoomIdByRoomName(addClassModel.roomCode, addClassModel.room);
+            int timeId = this._timeRepository.GetTimeId(addClassModel.classStart, addClassModel.classEnd);
 
             return true;
         }

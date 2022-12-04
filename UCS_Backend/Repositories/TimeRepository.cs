@@ -62,6 +62,28 @@ namespace UCS_Backend.Repositories
         {
             throw new NotImplementedException();
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="startTime"></param>
+        /// <param name="endTime"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public int GetTimeId(string startTime, string endTime)
+        {
+            var time = this._dataContext.Time.Where(x => x.StartTime == Int32.Parse(startTime) && x.EndTime == Int32.Parse(endTime)).FirstOrDefault();
+            if (time != null) { 
+                return time.TimeId; 
+            }else {
+                return this._dataContext.Time.Add(new Time
+                {
+                    StartTime = Int32.Parse(startTime),
+                    EndTime = Int32.Parse(endTime)
+                }).Entity.TimeId;
+            }
+        }
+
         /// <summary>
         /// updates time entity
         /// </summary>
