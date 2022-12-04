@@ -22,7 +22,6 @@ namespace UCS_Backend.Controllers
         {
             _instructorRepository = instructorRepository;
         }
-        
         /// <summary>
         /// adds instructor by name
         /// </summary>
@@ -33,7 +32,6 @@ namespace UCS_Backend.Controllers
         {
             return _instructorRepository.Add(instructor);
         }
-
         /// <summary>
         /// adds instructor to lst by employee number
         /// </summary>
