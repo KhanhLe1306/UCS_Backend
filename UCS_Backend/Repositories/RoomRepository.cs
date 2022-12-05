@@ -6,28 +6,26 @@ using UCS_Backend.Models.SubModels;
 
 namespace UCS_Backend.Repositories
 {
-
-
     /// <summary>
     /// Creates a class for RoomRepositoty
     /// </summary> 
     public class RoomRepository : IRoomRepository
     {
         private DataContext _dataContext;
-    /// <summary>
-    /// room repo added
-    /// </summary>
-    /// <param name="dataContext"></param>
+        /// <summary>
+        /// room repo added
+        /// </summary>
+        /// <param name="dataContext"></param>
         public RoomRepository(DataContext dataContext)
         {
             _dataContext = dataContext;
         }
         public IEnumerable<Room> GetAll => throw new NotImplementedException();
-    /// <summary>
-    /// add room  and find room by ID
-    /// </summary>
-    /// <param name="room"></param>
-    /// <returns></returns>
+        /// <summary>
+        /// add room  and find room by ID
+        /// </summary>
+        /// <param name="room"></param>
+        /// <returns></returns>
         public Room Add(Room room)
         {
             int roomId = FindRoomIdByName(room.Name);
@@ -47,19 +45,19 @@ namespace UCS_Backend.Repositories
                 };
             }         
         }
-    /// <summary>
-    /// be able to delete room
-    /// </summary>
-    /// <param name="entity"></param>
+        /// <summary>
+        /// be able to delete room
+        /// </summary>
+        /// <param name="entity"></param>
         public void Delete(Room entity)
         {
             throw new NotImplementedException();
         }
-    /// <summary>
-    /// be able to find room by ID passed
-    /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
+        /// <summary>
+        /// be able to find room by ID passed
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public Room? FindById(int id)
         {
             var res = from r in _dataContext.Rooms
@@ -67,11 +65,11 @@ namespace UCS_Backend.Repositories
                       select r;
             return res.FirstOrDefault();
         }
-    /// <summary>
-    /// be able to find room by name
-    /// </summary>
-    /// <param name="name"></param>
-    /// <returns></returns>
+        /// <summary>
+        /// be able to find room by name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public int FindRoomIdByName(string name)
         {
             var res = from r in _dataContext.Rooms
@@ -79,11 +77,11 @@ namespace UCS_Backend.Repositories
                       select r.RoomId;
             return res.FirstOrDefault();
         }
-    /// <summary>
-    /// method to get schedule by room number in data context
-    /// </summary>
-    /// <param name="roomNumber"></param>
-    /// <returns></returns>
+        /// <summary>
+        /// method to get schedule by room number in data context
+        /// </summary>
+        /// <param name="roomNumber"></param>
+        /// <returns></returns>
         public List<ScheduleInfo> GetScheduleByRoomNumber(int roomNumber)
         {
             var res = (from r in _dataContext.Rooms
@@ -119,11 +117,11 @@ namespace UCS_Backend.Repositories
                 return CheckCrossListedClasses(res);
             }
         }
-    /// <summary>
-    /// Creates schedule info
-    /// </summary>
-    /// <param name="scheduleInfos"></param>
-    /// <returns></returns>
+        /// <summary>
+        /// Creates schedule info
+        /// </summary>
+        /// <param name="scheduleInfos"></param>
+        /// <returns></returns>
         public List<ScheduleInfo> CheckCrossListedClasses(List<ScheduleInfo> scheduleInfos)
         {
             var clssIDs = scheduleInfos.Select(r => r.ClssID).ToList();
@@ -360,15 +358,20 @@ namespace UCS_Backend.Repositories
 
             return returnResult;
         }
-/// <summary>
-/// updates room
-/// </summary>
-/// <param name="entity"></param>
+        /// <summary>
+        /// updates room
+        /// </summary>
+        /// <param name="entity"></param>
         public void Update(Room entity)
         {
             throw new NotImplementedException();
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="buildingCode"></param>
+        /// <param name="roomNumber"></param>
+        /// <returns></returns>
         public int GetRoomIdByRoomName(string buildingCode, string roomNumber)
         {
             string roomName = @$"{buildingCode} {roomNumber}";

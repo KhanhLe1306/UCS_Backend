@@ -7,5 +7,6 @@ namespace UCS_Backend.Interfaces.IRepositories
     /// </summary>
     public interface IWeekdayRepository : IBaseRepository<Weekday>
     {
+        int GetWeekDaysIdByDescription(string description);
     }
 }

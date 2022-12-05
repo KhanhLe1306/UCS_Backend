@@ -16,13 +16,17 @@ namespace UCS_Backend.Repositories
         private ITimeRepository _timeRepository;
         private IInstructorRepository _instructorRepository;
         private IClassRepository _classRepository;
-        public ScheduleRepository(DataContext dataContext, IRoomRepository roomRepository, ITimeRepository timeRepository, IInstructorRepository instructorRepository, IClassRepository classRepository)
+        private IWeekdayRepository _weekdayRepository;
+        private IInstructorClassRepository _instructorClassRepository;
+        public ScheduleRepository(DataContext dataContext, IRoomRepository roomRepository, ITimeRepository timeRepository, IInstructorRepository instructorRepository, IClassRepository classRepository, IWeekdayRepository weekdayRepository, IInstructorClassRepository instructorClassRepository)
         {
             this._dataContext = dataContext;
             this._roomRepository = roomRepository;
             this._timeRepository = timeRepository;
             this._instructorRepository = instructorRepository;
             this._classRepository = classRepository;    
+            this._weekdayRepository = weekdayRepository;
+            this._instructorClassRepository = instructorClassRepository;
         }
 
         public IEnumerable<Schedule> GetAll => throw new NotImplementedException();
@@ -189,15 +193,13 @@ namespace UCS_Backend.Repositories
                 messages.Add(new Dictionary<string, string> { { "header", "CLASS SIZE CONFLICT" }, { "message-primary", $"Room {roomCode} {room} has capacity of {temp.Capacity}" }, { "message-secondary", $"Inserted {classSize}" } });
             }
 
-
-
-            if (roomCheck)
+            if (roomCheck & instructorCheck & classSizeCheck & doesRoomExist)
             {
-                if (instructorCheck & classSizeCheck & doesRoomExist)
-                {
-                    messages.Add(new Dictionary<string, string> { { "header", $"{instructor}" }, { "message-primary", $"{roomCode + ' ' + room}" }, { "message-secondary", $"{time.Item1} - {time.Item2},{string.Join(' ', days.Split(','))}" } });
-                }
+                // Call add class when all checks are passed
+                AddClass(addClassModel);
+                messages.Add(new Dictionary<string, string> { { "header", $"{instructor}" }, { "message-primary", $"{roomCode + ' ' + room}" }, { "message-secondary", $"{time.Item1} - {time.Item2},{string.Join(' ', days.Split(','))}" } });
             }
+
             return new SuccessInfo { success = roomCheck & instructorCheck & classSizeCheck & doesRoomExist, messages = messages };
         }
 
@@ -207,15 +209,47 @@ namespace UCS_Backend.Repositories
         /// <param name="addClassModel"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public bool AddClass(AddClassModel addClassModel)
+        public void AddClass(AddClassModel addClassModel)
         {
             int roomId = this._roomRepository.GetRoomIdByRoomName(addClassModel.RoomCode, addClassModel.RoomNumber);
             int timeId = this._timeRepository.GetTimeId(addClassModel.ClassStart, addClassModel.ClassEnd);
             int instructorId = this._instructorRepository.GetInstuctorId(addClassModel.InstructorName);
             int classId = this._classRepository.GetClassIdByCourseAndSection(addClassModel.CourseNumber, addClassModel.SectionNumber, addClassModel.Enrollment);
+            int weekdayId = this._weekdayRepository.GetWeekDaysIdByDescription(addClassModel.Days);
 
-            return true;
+            // Insert into InstructorClass table
+            var temp1 = this._instructorClassRepository.AddUpdateInstructorClass(new InstructorClass { 
+                ClassId = classId,
+                InstructorId = instructorId
+            }); 
+
+            // Insert into Schedule table
+            var temp2 = AddUpdateSchedule(new Schedule { 
+                ClassId = classId,
+                RoomId = roomId,
+                TimeId = timeId,
+                WeekdayId = weekdayId
+            });
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="schedule"></param>
+        /// <returns></returns>
+        public Schedule AddUpdateSchedule(Schedule schedule)
+        {
+            var temp = this._dataContext.Schedules.Where(x => x.ClassId == schedule.ClassId && x.RoomId == schedule.RoomId && x.TimeId == schedule.TimeId && x.WeekdayId == schedule.WeekdayId).FirstOrDefault();
+            if (temp != null)
+            {
+                return temp;
+            }
+            else
+            {
+                var res = this._dataContext.Schedules.Add(schedule).Entity;
+                this._dataContext.SaveChanges();
+                return res;
+            }
+        }
     }
 }
