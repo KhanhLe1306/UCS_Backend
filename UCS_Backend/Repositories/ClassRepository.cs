@@ -4,10 +4,9 @@ using UCS_Backend.Models;
 
 namespace UCS_Backend.Repositories
 {
-
-          /// <summary>
-         /// Creates a class for ClassRepositoty
-         /// </summary> 
+    /// <summary>
+    /// Creates a class for ClassRepositoty
+    /// </summary> 
     public class ClassRepository : IClassRepository
     {
         private DataContext _context;
@@ -54,7 +53,39 @@ namespace UCS_Backend.Repositories
         public int FindClssID(string catalogNumber, string section)
         {
             var res = _context.Classes.Where(x => x.CatalogNumber == catalogNumber && x.Section == section).FirstOrDefault();
-            return res != null ? res.ClssId : 0;
+            if (res != null && res.ClssId != null)
+            {
+                return (int)res.ClssId;
+            }else
+            {
+                return 0;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="courseNumber"></param>
+        /// <param name="sectionNumber"></param>
+        /// <returns></returns>
+        public int GetClassIdByCourseAndSection(string courseNumber, string sectionNumber, string enrollment)
+        {
+            var classResult = this._context.Classes.Where(c => c.CatalogNumber == courseNumber && c.Section == sectionNumber).FirstOrDefault();  
+            if (classResult == null) // Add
+            {
+                var classId = this._context.Classes.Add(new ClassModel
+                {
+                    CatalogNumber = courseNumber,
+                    Section = sectionNumber,
+                    Enrollments = Int32.Parse(enrollment)
+                }).Entity.ClassId;
+                this._context.SaveChanges();
+                return classId;
+            }
+            else
+            {
+                return classResult.ClassId;
+            }
         }
     }
 }

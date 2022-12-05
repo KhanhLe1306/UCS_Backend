@@ -8,6 +8,6 @@ namespace UCS_Backend.Interfaces.IRepositories
     /// </summary>
     public interface ITimeRepository : IBaseRepository<Time>
     {
-    
+        int GetTimeId(string startTime, string endTime);
     }
 }

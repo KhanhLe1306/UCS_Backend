@@ -7,6 +7,6 @@
     public class Weekday
     {
         public int WeekdayId { get; set; }
-        public string Description { get; set; }
+        public string? Description { get; set; }
     }
 }

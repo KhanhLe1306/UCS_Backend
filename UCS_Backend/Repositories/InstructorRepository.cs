@@ -14,28 +14,28 @@ namespace UCS_Backend.Repositories
     public class InstructorRepository: IInstructorRepository, IBaseRepository<Instructor>
     {
         private DataContext _dataContext;
-    /// <summary>
-    /// Instrcutor repo created
-    /// </summary>
-    /// <param name="dataContext"></param>
+        /// <summary>
+        /// Instrcutor repo created
+        /// </summary>
+        /// <param name="dataContext"></param>
         public InstructorRepository(DataContext dataContext)
         {
             this._dataContext = dataContext;
         }
         public IEnumerable<Instructor> GetAll => this._dataContext.Instructors.AsEnumerable();
-    /// <summary>
-    /// get all instructors by list
-    /// </summary>
-    /// <returns></returns>
+        /// <summary>
+        /// get all instructors by list
+        /// </summary>
+        /// <returns></returns>
         public async Task<List<Instructor>> GetAllInstructors()
         {
             return await this._dataContext.Instructors.ToListAsync();
         }
-    /// <summary>
-    /// get instructor ID
-    /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
+        /// <summary>
+        /// get instructor ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<Instructor?> GetInstructorById(int id)
         {
             var res = from i in this._dataContext.Instructors
@@ -49,22 +49,22 @@ namespace UCS_Backend.Repositories
 
             return await res.FirstAsync();
         }
-    /// <summary>
-    /// Add instructor  
-    /// </summary>
-    /// <param name="instructor"></param>
-    /// <returns></returns>
+        /// <summary>
+        /// Add instructor  
+        /// </summary>
+        /// <param name="instructor"></param>
+        /// <returns></returns>
         public async Task<Instructor> AddInstructor(Instructor instructor)
         {
             var res = (await _dataContext.Instructors.AddAsync(instructor)).Entity;
             await _dataContext.SaveChangesAsync();
             return res;
         }
-    /// <summary>
-    /// Add instructor to data context but find the instructor by name
-    /// </summary>
-    /// <param name="instructor"></param>
-    /// <returns></returns>
+        /// <summary>
+        /// Add instructor to data context but find the instructor by name
+        /// </summary>
+        /// <param name="instructor"></param>
+        /// <returns></returns>
         public Instructor Add(Instructor instructor)
         {
             int instructorId = FindInstructorByName(instructor.FirstName, instructor.LastName);
@@ -81,11 +81,11 @@ namespace UCS_Backend.Repositories
             }
             return null;
         }
-    /// <summary>
-    /// Update instructor with firstname and lastname
-    /// </summary>
-    /// <param name="instructor"></param>
-    /// <returns></returns>
+        /// <summary>
+        /// Update instructor with firstname and lastname
+        /// </summary>
+        /// <param name="instructor"></param>
+        /// <returns></returns>
         public async Task<(bool, Instructor)> UpdateInstructor(Instructor instructor)
         {
             var temp = await this._dataContext.Instructors.Where(i => i.InstructorId == instructor.InstructorId).FirstAsync();
@@ -101,11 +101,11 @@ namespace UCS_Backend.Repositories
                 return (false, instructor);
             }
         }
-    /// <summary>
-    /// remove instructor for task
-    /// </summary>
-    /// <param name="instructor"></param>
-    /// <returns></returns>
+        /// <summary>
+        /// remove instructor for task
+        /// </summary>
+        /// <param name="instructor"></param>
+        /// <returns></returns>
         public async Task<bool> DeleteInstructor(Instructor instructor)
         {
             var res = this._dataContext.Instructors.Remove(instructor).Entity;
@@ -118,21 +118,21 @@ namespace UCS_Backend.Repositories
                 return false;
             }
         }
-    /// <summary>
-    /// be able to find instructor by ID
-    /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
+        /// <summary>
+        /// be able to find instructor by ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public Instructor? FindById(int id)
         {
             return _dataContext.Instructors.Find(id);
         }
-    /// <summary>
-    /// be able to find instructor by firstname and lastname
-    /// </summary>
-    /// <param name="firstName"></param>
-    /// <param name="lastName"></param>
-    /// <returns></returns>
+        /// <summary>
+        /// be able to find instructor by firstname and lastname
+        /// </summary>
+        /// <param name="firstName"></param>
+        /// <param name="lastName"></param>
+        /// <returns></returns>
         public int FindInstructorByName(string firstName, string lastName)
         {
             var res = from r in _dataContext.Instructors
@@ -140,38 +140,38 @@ namespace UCS_Backend.Repositories
                       select r.InstructorId;
             return res.FirstOrDefault();
         }
-    /// <summary>
-    /// deletes instructor
-    /// </summary>
-    /// <param name="instructor"></param>
+        /// <summary>
+        /// deletes instructor
+        /// </summary>
+        /// <param name="instructor"></param>
         public void Delete(Instructor instructor)
         {
             this._dataContext.Instructors.Remove(instructor);
             this._dataContext.SaveChanges();
         }
-    /// <summary>
-    /// instructor
-    /// </summary>
-    /// <param name="instructor"></param>
+        /// <summary>
+        /// instructor
+        /// </summary>
+        /// <param name="instructor"></param>
         public void Update(Instructor instructor)
         {
 
         }
-    /// <summary>
-    /// Updates instructor
-    /// </summary>
-    /// <param name="instructor"></param>
-    /// <returns></returns>
+        /// <summary>
+        /// Updates instructor
+        /// </summary>
+        /// <param name="instructor"></param>
+        /// <returns></returns>
         public Task<(bool, Instructor)> UpdateInstrutor(Instructor instructor)
         {
             throw new NotImplementedException();
         }
-    /// <summary>
-    /// method to have employee number in data schedule
-    /// </summary>
-    /// <param name="firstName"></param>
-    /// <param name="lastName"></param>
-    /// <returns></returns>
+        /// <summary>
+        /// method to have employee number in data schedule
+        /// </summary>
+        /// <param name="firstName"></param>
+        /// <param name="lastName"></param>
+        /// <returns></returns>
         public List<ScheduleInfo> GetScheduleByInstructor(string firstName, string lastName)
         {
             var res = (from i in _dataContext.Instructors
@@ -201,11 +201,11 @@ namespace UCS_Backend.Repositories
             return CheckCrossListedClasses(res);
 
         }
-    /// <summary>
-    /// Creates method for cross listed classesto have a list of schedule info
-    /// </summary>
-    /// <param name="scheduleInfos"></param>
-    /// <returns></returns>
+        /// <summary>
+        /// Creates method for cross listed classesto have a list of schedule info
+        /// </summary>
+        /// <param name="scheduleInfos"></param>
+        /// <returns></returns>
         public List<ScheduleInfo> CheckCrossListedClasses(List<ScheduleInfo> scheduleInfos)
         {
             var clssIDs = scheduleInfos.Select(r => r.ClssID).ToList();
@@ -440,6 +440,32 @@ namespace UCS_Backend.Repositories
                     }
                 }
             return returnResult;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="instructorName"></param>
+        /// <returns></returns>
+        public int GetInstuctorId(string instructorName)
+        {
+            string[] subs = instructorName.Split(' ');
+            string firstName = subs[0];
+            string lastName = subs[1];
+            var instructor = this._dataContext.Instructors.Where(i => i.FirstName == firstName && i.LastName == lastName).FirstOrDefault();
+            if (instructor == null)
+            {
+                var instructorId = this._dataContext.Instructors.Add(new Instructor
+                {
+                    FirstName = firstName,
+                    LastName = lastName,
+                }).Entity.InstructorId;
+                this._dataContext.SaveChanges();
+                return instructorId;
+            }
+            else
+            {
+                return instructor.InstructorId;
+            }
         }
     }
 }

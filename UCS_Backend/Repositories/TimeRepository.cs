@@ -4,11 +4,9 @@ using UCS_Backend.Models;
 
 namespace UCS_Backend.Repositories
 {
-
-
-         /// <summary>
-        /// Creates a class for TimeRepositoty
-        /// </summary> 
+    /// <summary>
+    /// Creates a class for TimeRepositoty
+    /// </summary> 
     public class TimeRepository : ITimeRepository
     {
         private DataContext _dataContext;
@@ -62,6 +60,30 @@ namespace UCS_Backend.Repositories
         {
             throw new NotImplementedException();
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="startTime"></param>
+        /// <param name="endTime"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public int GetTimeId(string startTime, string endTime)
+        {
+            var time = this._dataContext.Time.Where(x => x.StartTime == Int32.Parse(startTime) && x.EndTime == Int32.Parse(endTime)).FirstOrDefault();
+            if (time != null) { 
+                return time.TimeId; 
+            }else {
+                var timeId = this._dataContext.Time.Add(new Time
+                {
+                    StartTime = Int32.Parse(startTime),
+                    EndTime = Int32.Parse(endTime)
+                }).Entity.TimeId;
+                this._dataContext.SaveChanges();    
+                return timeId;
+            }
+        }
+
         /// <summary>
         /// updates time entity
         /// </summary>

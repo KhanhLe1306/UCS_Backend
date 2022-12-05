@@ -1,21 +1,32 @@
 ﻿using UCS_Backend.Data;
 using UCS_Backend.Interfaces;
+using UCS_Backend.Interfaces.IRepositories;
 using UCS_Backend.Models;
 using UCS_Backend.Models.SubModels;
 
 namespace UCS_Backend.Repositories
 {
-
-
         /// <summary>
         /// Creates a class for ScheduleRepositoty
         /// </summary> 
     public class ScheduleRepository : IScheduleRepository
     {
         private DataContext _dataContext;
-        public ScheduleRepository(DataContext dataContext)
+        private IRoomRepository _roomRepository;
+        private ITimeRepository _timeRepository;
+        private IInstructorRepository _instructorRepository;
+        private IClassRepository _classRepository;
+        private IWeekdayRepository _weekdayRepository;
+        private IInstructorClassRepository _instructorClassRepository;
+        public ScheduleRepository(DataContext dataContext, IRoomRepository roomRepository, ITimeRepository timeRepository, IInstructorRepository instructorRepository, IClassRepository classRepository, IWeekdayRepository weekdayRepository, IInstructorClassRepository instructorClassRepository)
         {
             this._dataContext = dataContext;
+            this._roomRepository = roomRepository;
+            this._timeRepository = timeRepository;
+            this._instructorRepository = instructorRepository;
+            this._classRepository = classRepository;    
+            this._weekdayRepository = weekdayRepository;
+            this._instructorClassRepository = instructorClassRepository;
         }
 
         public IEnumerable<Schedule> GetAll => throw new NotImplementedException();
@@ -38,6 +49,7 @@ namespace UCS_Backend.Repositories
                 return temp;
             }
         }
+
         /// <summary>
         /// delete schedule added
         /// </summary>
@@ -80,15 +92,15 @@ namespace UCS_Backend.Repositories
             bool instructorCheck = true;
             List<Dictionary<string, string>> messages = new List<Dictionary<string, string>>();
 
-            string cls = addClassModel.cls;
-            string section = addClassModel.section;
-            string classSize = addClassModel.classSize;
-            string classStart = addClassModel.classStart;
-            string classEnd = addClassModel.classEnd;
-            string roomCode = addClassModel.roomCode;
-            string room = addClassModel.room;
-            string instructor = addClassModel.instructor;
-            string days = addClassModel.days;
+            string courseNumber = addClassModel.CourseNumber;
+            string section = addClassModel.SectionNumber;
+            string classSize = addClassModel.Enrollment;
+            string classStart = addClassModel.ClassStart;
+            string classEnd = addClassModel.ClassEnd;
+            string roomCode = addClassModel.RoomCode;
+            string room = addClassModel.RoomNumber;
+            string instructor = addClassModel.InstructorName;
+            string days = addClassModel.Days;
 
             Tuple<int, int> time = Tuple.Create(Int32.Parse(classStart), Int32.Parse(classEnd));
             string firstName = instructor.Split(' ')[0];
@@ -167,14 +179,77 @@ namespace UCS_Backend.Repositories
                 }
             }
 
-            if (roomCheck)
+            // Number of Enrollment check with classsize
+            bool classSizeCheck = true;
+            bool doesRoomExist = true;
+            var temp = this._dataContext.Rooms.Where(r => r.Name == $@"{roomCode} {room}").FirstOrDefault();
+            if (temp == null)
             {
-                if (instructorCheck)
-                {
-                    messages.Add(new Dictionary<string, string> { { "header", $"{instructor}" }, { "message-primary", $"{roomCode + ' ' + room}" }, { "message-secondary", $"{time.Item1} - {time.Item2},{string.Join(' ', days.Split(','))}" } });
-                }
+                doesRoomExist = false;
+                messages.Add(new Dictionary<string, string> { { "header", "ROOM CONFLICT" }, { "message-primary", $"Room {roomCode} {room} does not exist"} });
+            }else if (temp.Capacity < Int32.Parse(classSize))
+            {
+                classSizeCheck = false;
+                messages.Add(new Dictionary<string, string> { { "header", "CLASS SIZE CONFLICT" }, { "message-primary", $"Room {roomCode} {room} has capacity of {temp.Capacity}" }, { "message-secondary", $"Inserted {classSize}" } });
             }
-            return new SuccessInfo { success = roomCheck & instructorCheck, messages = messages };
+
+            if (roomCheck & instructorCheck & classSizeCheck & doesRoomExist)
+            {
+                // Call add class when all checks are passed
+                AddClass(addClassModel);
+                messages.Add(new Dictionary<string, string> { { "header", $"{instructor}" }, { "message-primary", $"{roomCode + ' ' + room}" }, { "message-secondary", $"{time.Item1} - {time.Item2},{string.Join(' ', days.Split(','))}" } });
+            }
+
+            return new SuccessInfo { success = roomCheck & instructorCheck & classSizeCheck & doesRoomExist, messages = messages };
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="addClassModel"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public void AddClass(AddClassModel addClassModel)
+        {
+            int roomId = this._roomRepository.GetRoomIdByRoomName(addClassModel.RoomCode, addClassModel.RoomNumber);
+            int timeId = this._timeRepository.GetTimeId(addClassModel.ClassStart, addClassModel.ClassEnd);
+            int instructorId = this._instructorRepository.GetInstuctorId(addClassModel.InstructorName);
+            int classId = this._classRepository.GetClassIdByCourseAndSection(addClassModel.CourseNumber, addClassModel.SectionNumber, addClassModel.Enrollment);
+            int weekdayId = this._weekdayRepository.GetWeekDaysIdByDescription(addClassModel.Days);
+
+            // Insert into InstructorClass table
+            var temp1 = this._instructorClassRepository.AddUpdateInstructorClass(new InstructorClass { 
+                ClassId = classId,
+                InstructorId = instructorId
+            }); 
+
+            // Insert into Schedule table
+            var temp2 = AddUpdateSchedule(new Schedule { 
+                ClassId = classId,
+                RoomId = roomId,
+                TimeId = timeId,
+                WeekdayId = weekdayId
+            });
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="schedule"></param>
+        /// <returns></returns>
+        public Schedule AddUpdateSchedule(Schedule schedule)
+        {
+            var temp = this._dataContext.Schedules.Where(x => x.ClassId == schedule.ClassId && x.RoomId == schedule.RoomId && x.TimeId == schedule.TimeId && x.WeekdayId == schedule.WeekdayId).FirstOrDefault();
+            if (temp != null)
+            {
+                return temp;
+            }
+            else
+            {
+                var res = this._dataContext.Schedules.Add(schedule).Entity;
+                this._dataContext.SaveChanges();
+                return res;
+            }
         }
     }
 }
