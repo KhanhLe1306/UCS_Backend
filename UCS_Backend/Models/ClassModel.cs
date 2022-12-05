@@ -27,7 +27,7 @@ namespace UCS_Backend.Models
         public string CourseNumber { get; set; }
         public string SectionNumber { get; set; }
         public string InstructorName { get; set; }
-        public string ClassSize { get; set; }
+        public string Enrollment { get; set; }
         public string ClassStart { get; set; }
         public string ClassEnd { get; set; }
         public string RoomCode { get; set; }

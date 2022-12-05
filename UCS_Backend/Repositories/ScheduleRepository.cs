@@ -90,7 +90,7 @@ namespace UCS_Backend.Repositories
 
             string courseNumber = addClassModel.CourseNumber;
             string section = addClassModel.SectionNumber;
-            string classSize = addClassModel.ClassSize;
+            string classSize = addClassModel.Enrollment;
             string classStart = addClassModel.ClassStart;
             string classEnd = addClassModel.ClassEnd;
             string roomCode = addClassModel.RoomCode;
@@ -175,14 +175,30 @@ namespace UCS_Backend.Repositories
                 }
             }
 
+            // Number of Enrollment check with classsize
+            bool classSizeCheck = true;
+            bool doesRoomExist = true;
+            var temp = this._dataContext.Rooms.Where(r => r.Name == $@"{roomCode} {room}").FirstOrDefault();
+            if (temp == null)
+            {
+                doesRoomExist = false;
+                messages.Add(new Dictionary<string, string> { { "header", "ROOM CONFLICT" }, { "message-primary", $"Room {roomCode} {room} does not exist"} });
+            }else if (temp.Capacity < Int32.Parse(classSize))
+            {
+                classSizeCheck = false;
+                messages.Add(new Dictionary<string, string> { { "header", "CLASS SIZE CONFLICT" }, { "message-primary", $"Room {roomCode} {room} has capacity of {temp.Capacity}" }, { "message-secondary", $"Inserted {classSize}" } });
+            }
+
+
+
             if (roomCheck)
             {
-                if (instructorCheck)
+                if (instructorCheck & classSizeCheck & doesRoomExist)
                 {
                     messages.Add(new Dictionary<string, string> { { "header", $"{instructor}" }, { "message-primary", $"{roomCode + ' ' + room}" }, { "message-secondary", $"{time.Item1} - {time.Item2},{string.Join(' ', days.Split(','))}" } });
                 }
             }
-            return new SuccessInfo { success = roomCheck & instructorCheck, messages = messages };
+            return new SuccessInfo { success = roomCheck & instructorCheck & classSizeCheck & doesRoomExist, messages = messages };
         }
 
         /// <summary>
@@ -196,7 +212,7 @@ namespace UCS_Backend.Repositories
             int roomId = this._roomRepository.GetRoomIdByRoomName(addClassModel.RoomCode, addClassModel.RoomNumber);
             int timeId = this._timeRepository.GetTimeId(addClassModel.ClassStart, addClassModel.ClassEnd);
             int instructorId = this._instructorRepository.GetInstuctorId(addClassModel.InstructorName);
-            int classId = this._classRepository.GetClassIdByCourseAndSection(addClassModel.CourseNumber, addClassModel.SectionNumber, addClassModel.ClassSize);
+            int classId = this._classRepository.GetClassIdByCourseAndSection(addClassModel.CourseNumber, addClassModel.SectionNumber, addClassModel.Enrollment);
 
             return true;
         }
