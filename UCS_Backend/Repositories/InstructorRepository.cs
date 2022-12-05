@@ -441,5 +441,26 @@ namespace UCS_Backend.Repositories
                 }
             return returnResult;
         }
+
+        public int GetInstuctorId(string instructorName)
+        {
+            string[] subs = instructorName.Split(' ');
+            string firstName = subs[0];
+            string lastName = subs[1];
+            var instructor = this._dataContext.Instructors.Where(i => i.FirstName == firstName && i.LastName == lastName).FirstOrDefault();
+            if (instructor == null)
+            {
+                return 
+                    this._dataContext.Instructors.Add(new Instructor
+                {
+                    FirstName = firstName,
+                    LastName = lastName,
+                }).Entity.InstructorId;
+            }
+            else
+            {
+                return instructor.InstructorId;
+            }
+        }
     }
 }

@@ -14,5 +14,6 @@ namespace UCS_Backend.Interfaces
         Task<(bool, Instructor)> UpdateInstrutor(Instructor instructor);
         Task<bool> DeleteInstructor(Instructor instructor);
         List<ScheduleInfo> GetScheduleByInstructor(string firstName, string lastName);
+        int GetInstuctorId(string instructorName);
     }
 }

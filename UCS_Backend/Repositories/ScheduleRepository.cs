@@ -14,11 +14,15 @@ namespace UCS_Backend.Repositories
         private DataContext _dataContext;
         private IRoomRepository _roomRepository;
         private ITimeRepository _timeRepository;
-        public ScheduleRepository(DataContext dataContext, IRoomRepository roomRepository, ITimeRepository timeRepository)
+        private IInstructorRepository _instructorRepository;
+        private IClassRepository _classRepository;
+        public ScheduleRepository(DataContext dataContext, IRoomRepository roomRepository, ITimeRepository timeRepository, IInstructorRepository instructorRepository, IClassRepository classRepository)
         {
             this._dataContext = dataContext;
             this._roomRepository = roomRepository;
             this._timeRepository = timeRepository;
+            this._instructorRepository = instructorRepository;
+            this._classRepository = classRepository;    
         }
 
         public IEnumerable<Schedule> GetAll => throw new NotImplementedException();
@@ -84,15 +88,15 @@ namespace UCS_Backend.Repositories
             bool instructorCheck = true;
             List<Dictionary<string, string>> messages = new List<Dictionary<string, string>>();
 
-            string cls = addClassModel.cls;
-            string section = addClassModel.section;
-            string classSize = addClassModel.classSize;
-            string classStart = addClassModel.classStart;
-            string classEnd = addClassModel.classEnd;
-            string roomCode = addClassModel.roomCode;
-            string room = addClassModel.room;
-            string instructor = addClassModel.instructor;
-            string days = addClassModel.days;
+            string courseNumber = addClassModel.CourseNumber;
+            string section = addClassModel.SectionNumber;
+            string classSize = addClassModel.ClassSize;
+            string classStart = addClassModel.ClassStart;
+            string classEnd = addClassModel.ClassEnd;
+            string roomCode = addClassModel.RoomCode;
+            string room = addClassModel.RoomNumber;
+            string instructor = addClassModel.InstructorName;
+            string days = addClassModel.Days;
 
             Tuple<int, int> time = Tuple.Create(Int32.Parse(classStart), Int32.Parse(classEnd));
             string firstName = instructor.Split(' ')[0];
@@ -189,8 +193,10 @@ namespace UCS_Backend.Repositories
         /// <exception cref="NotImplementedException"></exception>
         public bool AddClass(AddClassModel addClassModel)
         {
-            int roomId = this._roomRepository.GetRoomIdByRoomName(addClassModel.roomCode, addClassModel.room);
-            int timeId = this._timeRepository.GetTimeId(addClassModel.classStart, addClassModel.classEnd);
+            int roomId = this._roomRepository.GetRoomIdByRoomName(addClassModel.RoomCode, addClassModel.RoomNumber);
+            int timeId = this._timeRepository.GetTimeId(addClassModel.ClassStart, addClassModel.ClassEnd);
+            int instructorId = this._instructorRepository.GetInstuctorId(addClassModel.InstructorName);
+            int classId = this._classRepository.GetClassIdByCourseAndSection(addClassModel.CourseNumber, addClassModel.SectionNumber, addClassModel.ClassSize);
 
             return true;
         }

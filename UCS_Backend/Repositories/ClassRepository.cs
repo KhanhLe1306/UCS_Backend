@@ -56,5 +56,29 @@ namespace UCS_Backend.Repositories
             var res = _context.Classes.Where(x => x.CatalogNumber == catalogNumber && x.Section == section).FirstOrDefault();
             return res != null ? res.ClssId : 0;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="courseNumber"></param>
+        /// <param name="sectionNumber"></param>
+        /// <returns></returns>
+        public int GetClassIdByCourseAndSection(string courseNumber, string sectionNumber, string enrollment)
+        {
+            var classResult = this._context.Classes.Where(c => c.CatalogNumber == courseNumber && c.Section == sectionNumber).FirstOrDefault();  
+            if (classResult == null) // Add
+            {
+                return this._context.Classes.Add(new ClassModel
+                {
+                    CatalogNumber = courseNumber,
+                    Section = sectionNumber,
+                    Enrollments = Int32.Parse(enrollment)
+                }).Entity.ClassId;
+            }
+            else
+            {
+                return classResult.ClassId;
+            }
+        }
     }
 }
