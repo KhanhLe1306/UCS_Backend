@@ -84,6 +84,7 @@ namespace UCS_Backend.Utils
                     string courseTitle = lecture[10];
                     string section = lecture[9];
                     string catNum = lecture[7];
+                    string subjectCode = lecture[6];
                     int classId = _classRepository.AddNewClass(new ClassModel
                     {
                         ClssId = clssId,
@@ -92,6 +93,7 @@ namespace UCS_Backend.Utils
                         Course = course,
                         Section = section,
                         CatalogNumber = catNum,
+                        SubjectCode = subjectCode,
                     });
 
                     // = = = = = = Instructor = = = = = =
