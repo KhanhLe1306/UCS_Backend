@@ -6,9 +6,9 @@ using UCS_Backend.Models.SubModels;
 
 namespace UCS_Backend.Repositories
 {
-        /// <summary>
-        /// Creates a class for ScheduleRepositoty
-        /// </summary> 
+    /// <summary>
+    /// Creates a class for ScheduleRepositoty.
+    /// </summary> 
     public class ScheduleRepository : IScheduleRepository
     {
         private DataContext _dataContext;
@@ -29,18 +29,22 @@ namespace UCS_Backend.Repositories
             this._instructorClassRepository = instructorClassRepository;
         }
 
-        public IEnumerable<Schedule> GetAll => throw new NotImplementedException();
         /// <summary>
-        /// add scheduled added
+        /// Grabs all Schedule Table entries.
         /// </summary>
-        /// <param name="s"></param>
-        /// <returns></returns>
-        public Schedule Add(Schedule s)
+        public IEnumerable<Schedule> GetAll => throw new NotImplementedException();
+        
+        /// <summary>
+        /// Given a Schedule Object, an entry is inserted into the Schedule Table.
+        /// </summary>
+        /// <param name="schedule">Instance of the Schedule Class</param>
+        /// <returns>The inserted entry if it doesn't already exist, otherwise the entry that already exists</returns>
+        public Schedule Add(Schedule schedule)
         {
-            var temp = _dataContext.Schedules.Where(x => x.ClassId == s.ClassId && x.RoomId == s.RoomId && x.TimeId == s.TimeId && x.WeekdayId == s.WeekdayId).FirstOrDefault();
+            var temp = _dataContext.Schedules.Where(x => x.ClassId == schedule.ClassId && x.RoomId == schedule.RoomId && x.TimeId == schedule.TimeId && x.WeekdayId == schedule.WeekdayId).FirstOrDefault();
             if (temp == null)
             {
-                var res = _dataContext.Schedules.Add(s).Entity;
+                var res = _dataContext.Schedules.Add(schedule).Entity;
                 _dataContext.SaveChanges();
                 return res;
             }
@@ -51,41 +55,50 @@ namespace UCS_Backend.Repositories
         }
 
         /// <summary>
-        /// delete schedule added
+        /// Given a Schedule Object, the record is removed from the Schedule Table given it exists.
         /// </summary>
-        /// <param name="entity"></param>
-        public void Delete(Schedule entity)
+        /// <param name="schedule">Instance of the Schedule Class</param>
+        public void Delete(Schedule schedule)
         {
             throw new NotImplementedException();
         }
+
         /// <summary>
-        /// finds schedule by id
+        /// Given an id, return the matching row in the Schedule Table.
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">Integer value mapping to a row in the Schedule Table</param>
         /// <returns></returns>
         public Schedule? FindById(int id)
         {
             throw new NotImplementedException();
         }
+
         /// <summary>
-        /// puts schedule into a list format
+        /// R
         /// </summary>
         /// <returns></returns>
         public List<Schedule> GetAllSchedules()
         { 
             var res = this._dataContext.Schedules.ToList();
-
             return res;
         }
+
         /// <summary>
-        /// updates schedule sheet
+        /// Given a Schedule Object, the function updates that entry in the Schedule Table
         /// </summary>
         /// <param name="entity"></param>
         public void Update(Schedule entity)
         {
             throw new NotImplementedException();
         }
-        
+
+        /// <summary>
+        /// Given the parameters from the frontend add-class form, different checks are made to ensure the
+        /// class can be added to the schedule without conflict. Appropriate messages are logged when conflicts
+        /// are encountered. If all checks are passed a call is made to add the class to the Schedule Table.
+        /// </summary>
+        /// <param name="addClassModel">Model that maps to the inputs from the Add Class form on the front end</param>
+        /// <returns>Success Information Model</returns>
         public SuccessInfo ValidateInsert(AddClassModel addClassModel)
         {
             bool roomCheck = true;
@@ -161,7 +174,11 @@ namespace UCS_Backend.Repositories
                            Course = c.Course,
                            CourseTitle = c.CourseTitle,
                            MeetingDays = w.Description.ToString(),
-                           Instructor = i.FirstName + " " + i.LastName
+                           Instructor = i.FirstName + " " + i.LastName,
+                           Section = c.Section,
+                           CatNumber = c.CatalogNumber,
+                           SubjectCode = c.SubjectCode,
+
                        }).ToList();
 
             foreach (var item in res)
@@ -193,11 +210,25 @@ namespace UCS_Backend.Repositories
                 messages.Add(new Dictionary<string, string> { { "header", "CLASS SIZE CONFLICT" }, { "message-primary", $"Room {roomCode} {room} has capacity of {temp.Capacity}" }, { "message-secondary", $"Inserted {classSize}" } });
             }
 
-            if (roomCheck & instructorCheck & classSizeCheck & doesRoomExist)
+            // Does this class alredy exist (etchris will add this to fix add class bug)
+            bool doesNotExist = false;
+            foreach (var item in res)
+            {
+                Console.WriteLine(item.SubjectCode);
+                Console.ReadLine();
+            }
+
+            if (roomCheck && instructorCheck && classSizeCheck && doesRoomExist && doesNotExist)
             {
                 // Call add class when all checks are passed
                 AddClass(addClassModel);
                 messages.Add(new Dictionary<string, string> { { "header", $"{instructor}" }, { "message-primary", $"{roomCode + ' ' + room}" }, { "message-secondary", $"{time.Item1} - {time.Item2},{string.Join(' ', days.Split(','))}" } });
+            }
+
+            Console.WriteLine("Printing out errors . . .");
+            foreach (Dictionary<string, string> message in messages)
+            {
+                Console.WriteLine(message["message-primary"]);
             }
 
             return new SuccessInfo { success = roomCheck & instructorCheck & classSizeCheck & doesRoomExist, messages = messages };
@@ -206,7 +237,7 @@ namespace UCS_Backend.Repositories
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="addClassModel"></param>
+        /// <param name="addClassModel">Model that maps to the inputs from the Add Class form on the front end</param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
         public void AddClass(AddClassModel addClassModel)
@@ -217,6 +248,7 @@ namespace UCS_Backend.Repositories
             int classId = this._classRepository.GetClassIdByCourseAndSection(addClassModel.CourseNumber, addClassModel.SectionNumber, addClassModel.Enrollment);
             int weekdayId = this._weekdayRepository.GetWeekDaysIdByDescription(addClassModel.Days);
 
+            Console.WriteLine(roomId + " " + timeId + " " + instructorId + " " + classId + " " + weekdayId);
             // Insert into InstructorClass table
             var temp1 = this._instructorClassRepository.AddUpdateInstructorClass(new InstructorClass { 
                 ClassId = classId,
@@ -233,9 +265,10 @@ namespace UCS_Backend.Repositories
         }
 
         /// <summary>
-        /// 
+        /// Takes in a schedule object and attempts to insert into the Schedule Table if 
+        /// an entry doesn't already exist
         /// </summary>
-        /// <param name="schedule"></param>
+        /// <param name="schedule">Instance of the Schedule Class</param>
         /// <returns></returns>
         public Schedule AddUpdateSchedule(Schedule schedule)
         {

@@ -3,8 +3,8 @@
 namespace UCS_Backend.Models
 {
 
-     /// <summary>
-     /// Creates a class for ClassModel
+    /// <summary>
+    /// Creates a class for ClassModel
     /// </summary> 
     public class ClassModel
     {
@@ -16,6 +16,7 @@ namespace UCS_Backend.Models
         public int? Enrollments { get; set; }
         public string? Section { get; set; }
         public string? CatalogNumber { get; set; }
+        public string? SubjectCode { get; set; }
 
     }
     /// <summary>
