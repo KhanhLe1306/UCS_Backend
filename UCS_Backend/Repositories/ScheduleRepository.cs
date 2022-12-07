@@ -114,6 +114,9 @@ namespace UCS_Backend.Repositories
             string room = addClassModel.RoomNumber;
             string instructor = addClassModel.InstructorName;
             string days = addClassModel.Days;
+            string subjectCode = addClassModel.SubjectCode;
+            string courseTitle = addClassModel.CourseTitle;
+            string sectionNumber = addClassModel.SectionNumber;
 
             Tuple<int, int> time = Tuple.Create(Int32.Parse(classStart), Int32.Parse(classEnd));
             string firstName = instructor.Split(' ')[0];
@@ -211,14 +214,16 @@ namespace UCS_Backend.Repositories
             }
 
             // Does this class alredy exist (etchris will add this to fix add class bug)
-            bool doesNotExist = false;
-            foreach (var item in res)
+            bool doesClassNotExist = true;
+            var temp2 = this._dataContext.Classes.Where(x => x.SubjectCode == subjectCode && x.CatalogNumber == courseNumber && x.Section == sectionNumber).FirstOrDefault();
+            if (temp2 != null)
             {
-                Console.WriteLine(item.SubjectCode);
-                Console.ReadLine();
+                doesClassNotExist = false;
+                messages.Add(new Dictionary<string, string> { { "header", "CLASS EXISTS CONFLICT" }, { "message-primary", $"Class {subjectCode} {courseNumber} - {courseTitle}" }, {"message-secondary", $"The section {section} already exists!" } });
             }
 
-            if (roomCheck && instructorCheck && classSizeCheck && doesRoomExist && doesNotExist)
+
+            if (roomCheck && instructorCheck && classSizeCheck && doesRoomExist && doesClassNotExist)
             {
                 // Call add class when all checks are passed
                 AddClass(addClassModel);
@@ -231,7 +236,7 @@ namespace UCS_Backend.Repositories
                 Console.WriteLine(message["message-primary"]);
             }
 
-            return new SuccessInfo { success = roomCheck & instructorCheck & classSizeCheck & doesRoomExist, messages = messages };
+            return new SuccessInfo { success = roomCheck && instructorCheck && classSizeCheck && doesRoomExist && doesClassNotExist, messages = messages };
         }
 
         /// <summary>
@@ -245,7 +250,9 @@ namespace UCS_Backend.Repositories
             int roomId = this._roomRepository.GetRoomIdByRoomName(addClassModel.RoomCode, addClassModel.RoomNumber);
             int timeId = this._timeRepository.GetTimeId(addClassModel.ClassStart, addClassModel.ClassEnd);
             int instructorId = this._instructorRepository.GetInstuctorId(addClassModel.InstructorName);
-            int classId = this._classRepository.GetClassIdByCourseAndSection(addClassModel.CourseNumber, addClassModel.SectionNumber, addClassModel.Enrollment);
+
+            // Insert into the class Table
+            int classId = this._classRepository.GetClassIdByCourseAndSection(addClassModel.CourseNumber, addClassModel.SectionNumber, addClassModel.Enrollment, addClassModel.SubjectCode, addClassModel.CourseTitle, 0);
             int weekdayId = this._weekdayRepository.GetWeekDaysIdByDescription(addClassModel.Days);
 
             Console.WriteLine(roomId + " " + timeId + " " + instructorId + " " + classId + " " + weekdayId);
@@ -253,10 +260,10 @@ namespace UCS_Backend.Repositories
             var temp1 = this._instructorClassRepository.AddUpdateInstructorClass(new InstructorClass { 
                 ClassId = classId,
                 InstructorId = instructorId
-            }); 
+            });
 
             // Insert into Schedule table
-            var temp2 = AddUpdateSchedule(new Schedule { 
+            var temp3 = AddUpdateSchedule(new Schedule { 
                 ClassId = classId,
                 RoomId = roomId,
                 TimeId = timeId,

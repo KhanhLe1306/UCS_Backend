@@ -1,0 +1,20 @@
+var searchData=
+[
+  ['capacity_0',['Capacity',['../class_u_c_s___backend_1_1_models_1_1_room.html#a2ebccfdd3be7cc0142a56741e76f3d05',1,'UCS_Backend::Models::Room']]],
+  ['catalognumber_1',['CatalogNumber',['../class_u_c_s___backend_1_1_models_1_1_class_model.html#ad994b8e16447631646e939019cf0d5b2',1,'UCS_Backend::Models::ClassModel']]],
+  ['classend_2',['ClassEnd',['../class_u_c_s___backend_1_1_models_1_1_add_class_model.html#aa4d0180a34b0133c9bf69532bbdf1fc5',1,'UCS_Backend::Models::AddClassModel']]],
+  ['classes_3',['Classes',['../class_u_c_s___backend_1_1_data_1_1_data_context.html#a68d772cbeab1f4162d9ccb72a639c05a',1,'UCS_Backend::Data::DataContext']]],
+  ['classid_4',['ClassId',['../class_u_c_s___backend_1_1_models_1_1_class_model.html#a34fa848764fa3fcc3b8498a29b53b9c4',1,'UCS_Backend.Models.ClassModel.ClassId()'],['../class_u_c_s___backend_1_1_models_1_1_instructor_class.html#a879ead08e62aeddb01c8a3a50f6470b2',1,'UCS_Backend.Models.InstructorClass.ClassId()'],['../class_u_c_s___backend_1_1_models_1_1_schedule.html#a0f767752c9430879048a22084b3a2eec',1,'UCS_Backend.Models.Schedule.ClassId()']]],
+  ['classstart_5',['ClassStart',['../class_u_c_s___backend_1_1_models_1_1_add_class_model.html#ab18f64ed52b1cc7e7c8d290a9cb30334',1,'UCS_Backend::Models::AddClassModel']]],
+  ['clssid_6',['ClssID',['../class_u_c_s___backend_1_1_models_1_1_sub_models_1_1_schedule_info.html#a0f1757aa831c21d82d585e03fc360df6',1,'UCS_Backend::Models::SubModels::ScheduleInfo']]],
+  ['clssid_7',['ClssId',['../class_u_c_s___backend_1_1_models_1_1_class_model.html#a5508739cfd5ae3a8665aff6ca12a31ed',1,'UCS_Backend::Models::ClassModel']]],
+  ['clssid1_8',['ClssID1',['../class_u_c_s___backend_1_1_models_1_1_cross.html#af11c528ecc093e9040636da44b68453d',1,'UCS_Backend::Models::Cross']]],
+  ['clssid2_9',['ClssID2',['../class_u_c_s___backend_1_1_models_1_1_cross.html#ac040c6a91f10dd5ab929905d7184dfcb',1,'UCS_Backend::Models::Cross']]],
+  ['course_10',['Course',['../class_u_c_s___backend_1_1_models_1_1_class_model.html#a550c4f98225dc9cf501f3da5d422ecb1',1,'UCS_Backend.Models.ClassModel.Course()'],['../class_u_c_s___backend_1_1_models_1_1_sub_models_1_1_schedule_info.html#a2976fe82e41cea840ee8719b9badda84',1,'UCS_Backend.Models.SubModels.ScheduleInfo.Course()']]],
+  ['coursenumber_11',['CourseNumber',['../class_u_c_s___backend_1_1_models_1_1_add_class_model.html#a4077b2b27e79a179ae25afa873939dd9',1,'UCS_Backend::Models::AddClassModel']]],
+  ['coursetitle_12',['CourseTitle',['../class_u_c_s___backend_1_1_models_1_1_class_model.html#aa1d13dd3bac3386b778806f6fefbd2be',1,'UCS_Backend.Models.ClassModel.CourseTitle()'],['../class_u_c_s___backend_1_1_models_1_1_sub_models_1_1_schedule_info.html#a715bb2d9d9624f1a74da5a6025d8d5a4',1,'UCS_Backend.Models.SubModels.ScheduleInfo.CourseTitle()']]],
+  ['cross_13',['Cross',['../class_u_c_s___backend_1_1_data_1_1_data_context.html#a3b54582ee5aa488b63a41b45da9f59f0',1,'UCS_Backend::Data::DataContext']]],
+  ['crossid_14',['CrossId',['../class_u_c_s___backend_1_1_models_1_1_cross.html#a39e2e2cfbdcf5276a471a57866d9d2e1',1,'UCS_Backend::Models::Cross']]],
+  ['crosslistedclssid_15',['CrossListedClssID',['../class_u_c_s___backend_1_1_models_1_1_sub_models_1_1_schedule_info.html#a9a6c8f37adaf1d6baf2c0e0dab9db7fc',1,'UCS_Backend::Models::SubModels::ScheduleInfo']]],
+  ['crosslistedwith_16',['CrossListedWith',['../class_u_c_s___backend_1_1_models_1_1_sub_models_1_1_schedule_info.html#a644129ab467d23f2b42b6cd52bcfe185',1,'UCS_Backend::Models::SubModels::ScheduleInfo']]]
+];

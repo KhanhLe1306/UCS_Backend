@@ -1,0 +1,8 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" title=" " alt="" coords="5,127,83,152"/>
+<area shape="rect" id="node2" href="$class_home_controller.html" title="Creates a class for HomeController" alt="" coords="164,5,275,31"/>
+<area shape="rect" id="node3" href="$class_u_c_s___backend_1_1_controllers_1_1_class_controller.html" title="creates class for class controller" alt="" coords="131,55,308,95"/>
+<area shape="rect" id="node4" href="$class_u_c_s___backend_1_1_controllers_1_1_instructor_controller.html" title="Creates a class for InstructorController" alt="" coords="131,119,308,159"/>
+<area shape="rect" id="node5" href="$class_u_c_s___backend_1_1_controllers_1_1_room_controller.html" title="Creates a class for RoomController" alt="" coords="131,183,308,223"/>
+<area shape="rect" id="node6" href="$class_u_c_s___backend_1_1_controllers_1_1_schedule_controller.html" title=" " alt="" coords="131,247,308,287"/>
+</map>

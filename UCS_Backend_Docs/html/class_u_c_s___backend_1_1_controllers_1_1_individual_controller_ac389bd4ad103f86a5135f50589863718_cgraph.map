@@ -1,0 +1,4 @@
+<map id="UCS_Backend.Controllers.IndividualController.GetIndividualById" name="UCS_Backend.Controllers.IndividualController.GetIndividualById">
+<area shape="rect" id="node1" title="get individuals by individual_id" alt="" coords="5,5,237,45"/>
+<area shape="rect" id="node2" href="$interface_u_c_s___backend_1_1_interfaces_1_1_i_individual_repository.html#afdc8f1c4a663e9bd3b0329d572de22fd" title=" " alt="" coords="285,5,512,45"/>
+</map>

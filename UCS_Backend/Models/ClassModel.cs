@@ -25,6 +25,8 @@ namespace UCS_Backend.Models
 
     public class AddClassModel
     {
+        public string CourseTitle { get; set; }
+        public string SubjectCode { get; set; }
         public string CourseNumber { get; set; }
         public string SectionNumber { get; set; }
         public string InstructorName { get; set; }

@@ -10,6 +10,7 @@ namespace UCS_Backend.Repositories
     public class TimeRepository : ITimeRepository
     {
         private DataContext _dataContext;
+
         /// <summary>
         /// creates time repo
         /// </summary>
@@ -18,7 +19,9 @@ namespace UCS_Backend.Repositories
         {
             this._dataContext = context;
         }
+
         public IEnumerable<Time> GetAll => throw new NotImplementedException();
+
         /// <summary>
         /// creates a method to add time and returns time as a data context 
         /// </summary>
@@ -43,6 +46,7 @@ namespace UCS_Backend.Repositories
                 };
             }
         }
+
         /// <summary>
         /// deletes the incorrect time entity
         /// </summary>
@@ -79,7 +83,7 @@ namespace UCS_Backend.Repositories
                     StartTime = Int32.Parse(startTime),
                     EndTime = Int32.Parse(endTime)
                 }).Entity.TimeId;
-                this._dataContext.SaveChanges();    
+                this._dataContext.SaveChanges();
                 return timeId;
             }
         }

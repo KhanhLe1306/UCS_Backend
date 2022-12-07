@@ -1,0 +1,26 @@
+var _program_8cs =
+[
+    [ "AddControllers", "_program_8cs.html#abc3694a0e15618f2499e5a540264f833", null ],
+    [ "AddCors", "_program_8cs.html#ae5b03866dfd1fd158e67cdd1a3a1b0ce", null ],
+    [ "AddDbContext< DataContext >", "_program_8cs.html#a4cac556b51f3be4635a81e42c5d41991", null ],
+    [ "AddEndpointsApiExplorer", "_program_8cs.html#a0d7859f9cad50e8e9fdf015100780e07", null ],
+    [ "AddSwaggerGen", "_program_8cs.html#ae0ce43c019a5621d731d0c622c793644", null ],
+    [ "AddTransient< IClassRepository, ClassRepository >", "_program_8cs.html#a9395c31c2a00c683a2a95de9d5fec638", null ],
+    [ "AddTransient< ICrossRepository, CrossRepository >", "_program_8cs.html#a03fd6694971d7031f2d95213ac2dfce6", null ],
+    [ "AddTransient< IIndividualRepository, IndividualRepository >", "_program_8cs.html#a595509d4cb93ddedee42d3a55758b4fc", null ],
+    [ "AddTransient< IInstructorClassRepository, InstructorClassRepository >", "_program_8cs.html#ac2c50cb09d7f314c60d6d32df74b2b70", null ],
+    [ "AddTransient< IInstructorRepository, InstructorRepository >", "_program_8cs.html#a15ea03ad3d1675839545cb52f4065627", null ],
+    [ "AddTransient< IRoomRepository, RoomRepository >", "_program_8cs.html#ac859d6c479cd547c3837f454768ea246", null ],
+    [ "AddTransient< IScheduleManager, ScheduleManager >", "_program_8cs.html#a3abe155087bd3634e9d8998774b1c909", null ],
+    [ "AddTransient< IScheduleRepository, ScheduleRepository >", "_program_8cs.html#a08d1971c6b5ff54c01ebd0fa178ceebd", null ],
+    [ "AddTransient< ITimeRepository, TimeRepository >", "_program_8cs.html#a640b974dadb4eba8a129820a93a91f7f", null ],
+    [ "AddTransient< IWeekdayRepository, WeekdayRepository >", "_program_8cs.html#a7dce40d636cb2e5d7dbdc8f1d045c018", null ],
+    [ "if", "_program_8cs.html#a79a944c7f0e25196ca3c5a8638b919b9", null ],
+    [ "MapControllers", "_program_8cs.html#a9e2ee3170aa6279b68eefd1651f7d96c", null ],
+    [ "Run", "_program_8cs.html#aaa3dbf02e269c3ef7e8546d290c6b3dd", null ],
+    [ "UseAuthorization", "_program_8cs.html#af6f72d752b2e73aa0292f74bd13237ab", null ],
+    [ "UseCors", "_program_8cs.html#a1d93023778db2d3c7c3b131c79ab0371", null ],
+    [ "UseHttpsRedirection", "_program_8cs.html#aa4d447fc3129a3aa301d736b8bd04ae9", null ],
+    [ "app", "_program_8cs.html#a7b225fcb720e4d5ed2bbf60e28a25e6d", null ],
+    [ "builder", "_program_8cs.html#a2f78352277081c620fd4cf92a5ce15e5", null ]
+];
