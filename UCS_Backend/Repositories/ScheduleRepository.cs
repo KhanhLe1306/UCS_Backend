@@ -78,8 +78,8 @@ namespace UCS_Backend.Repositories
         /// </summary>
         /// <returns></returns>
         public List<Schedule> GetAllSchedules()
-        { 
-            var res = this._dataContext.Schedules.ToList();
+        {
+            var res = this._dataContext.Schedules.Where(x => x.IsDeleted == false || x.IsDeleted == null).ToList();
             return res;
         }
 

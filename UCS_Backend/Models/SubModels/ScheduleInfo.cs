@@ -6,6 +6,7 @@
     /// </summary> 
     public class ScheduleInfo
     {
+        public string ClassID { get; set; }
         public string ClssID { get; set; }
         public string RoomName { get; set; }
         public string StartTime { get; set; }
