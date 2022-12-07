@@ -454,13 +454,13 @@ namespace UCS_Backend.Repositories
             var instructor = this._dataContext.Instructors.Where(i => i.FirstName == firstName && i.LastName == lastName).FirstOrDefault();
             if (instructor == null)
             {
-                var instructorId = this._dataContext.Instructors.Add(new Instructor
+                var res = this._dataContext.Instructors.Add(new Instructor
                 {
                     FirstName = firstName,
                     LastName = lastName,
-                }).Entity.InstructorId;
+                }).Entity;
                 this._dataContext.SaveChanges();
-                return instructorId;
+                return res.InstructorId;
             }
             else
             {

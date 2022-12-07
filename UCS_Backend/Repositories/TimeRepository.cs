@@ -78,13 +78,13 @@ namespace UCS_Backend.Repositories
             if (time != null) { 
                 return time.TimeId; 
             }else {
-                var timeId = this._dataContext.Time.Add(new Time
+                var res = this._dataContext.Time.Add(new Time
                 {
                     StartTime = Int32.Parse(startTime),
                     EndTime = Int32.Parse(endTime)
-                }).Entity.TimeId;
+                }).Entity;
                 this._dataContext.SaveChanges();
-                return timeId;
+                return res.TimeId;
             }
         }
 

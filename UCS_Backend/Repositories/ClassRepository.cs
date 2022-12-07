@@ -73,7 +73,7 @@ namespace UCS_Backend.Repositories
             var classResult = this._context.Classes.Where(c => c.CatalogNumber == courseNumber && c.Section == sectionNumber).FirstOrDefault();  
             if (classResult == null) // Add
             {
-                var classId = this._context.Classes.Add(new ClassModel
+                var res = this._context.Classes.Add(new ClassModel
                 {
                     CatalogNumber = courseNumber,
                     Section = sectionNumber,
@@ -82,9 +82,9 @@ namespace UCS_Backend.Repositories
                     CourseTitle = courseTitle,
                     ClssId = clssId,
                     Course = subjectCode + " " + courseNumber
-                }).Entity.ClassId;
+                }).Entity;
                 this._context.SaveChanges();
-                return classId;
+                return res.ClassId;
             }
             else
             {

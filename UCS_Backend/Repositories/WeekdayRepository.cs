@@ -79,12 +79,12 @@ namespace UCS_Backend.Repositories
             var weekdays = _dataContext.Weekdays.Where(x => x.Description == description).FirstOrDefault();
             if(weekdays == null) // Add
             {
-                var weekdayId = this._dataContext.Add(new Weekday
+                var res = this._dataContext.Add(new Weekday
                 {
                     Description = description,
-                }).Entity.WeekdayId;
+                }).Entity;
                 this._dataContext.SaveChanges();
-                return weekdayId;
+                return res.WeekdayId;
             }
             else
             {
