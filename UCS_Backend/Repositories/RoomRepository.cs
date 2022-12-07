@@ -91,8 +91,9 @@ namespace UCS_Backend.Repositories
                        join w in _dataContext.Weekdays on s.WeekdayId equals w.WeekdayId
                        join ic in _dataContext.InstructorClasses on s.ClassId equals ic.ClassId
                        join i in _dataContext.Instructors on ic.InstructorId equals i.InstructorId
-                       where r.Name.Substring(3, r.Name.Length - 3).Contains(roomNumber.ToString()) & roomNumber.ToString().Length == 3
+                       where r.Name.Substring(3, r.Name.Length - 3).Contains(roomNumber.ToString()) && roomNumber.ToString().Length == 3 && s.IsDeleted != true
                        select new ScheduleInfo {
+                           ClassID = c.ClassId.ToString(),
                            ClssID = c.ClssId.ToString(),
                            RoomName = r.Name,
                            StartTime = t.StartTime.ToString().PadLeft(4, '0'),

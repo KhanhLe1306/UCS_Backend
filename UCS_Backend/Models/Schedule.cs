@@ -12,5 +12,6 @@
         public int ClassId { get; set; }
         public int WeekdayId { get; set; }
         public string? Description { get; set; }
+        public bool? IsDeleted { get; set; }
     }
 }

@@ -91,5 +91,19 @@ namespace UCS_Backend.Repositories
                 return classResult.ClassId;
             }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="classID"></param>
+        public void RemoveClass(string classID)
+        {
+            var schedule = this._context.Schedules.Where(x => x.ClassId == Int32.Parse(classID)).FirstOrDefault();
+            if (schedule != null)
+            {
+                schedule.IsDeleted = true;
+                this._context.SaveChanges();
+            }
+        }
     }
 }
