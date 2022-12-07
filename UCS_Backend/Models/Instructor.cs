@@ -13,6 +13,6 @@ namespace UCS_Backend.Models
         public int InstructorId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string EmployeeNumber { get; set; }
+        public string? EmployeeNumber { get; set; }
     }
 }

@@ -4,14 +4,13 @@ using UCS_Backend.Models;
 
 namespace UCS_Backend.Repositories
 {
-
-
-         /// <summary>
-        /// Creates a class for TimeRepositoty
-        /// </summary> 
+    /// <summary>
+    /// Creates a class for TimeRepositoty
+    /// </summary> 
     public class TimeRepository : ITimeRepository
     {
         private DataContext _dataContext;
+
         /// <summary>
         /// creates time repo
         /// </summary>
@@ -20,7 +19,9 @@ namespace UCS_Backend.Repositories
         {
             this._dataContext = context;
         }
+
         public IEnumerable<Time> GetAll => throw new NotImplementedException();
+
         /// <summary>
         /// creates a method to add time and returns time as a data context 
         /// </summary>
@@ -45,6 +46,7 @@ namespace UCS_Backend.Repositories
                 };
             }
         }
+
         /// <summary>
         /// deletes the incorrect time entity
         /// </summary>
@@ -62,6 +64,30 @@ namespace UCS_Backend.Repositories
         {
             throw new NotImplementedException();
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="startTime"></param>
+        /// <param name="endTime"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public int GetTimeId(string startTime, string endTime)
+        {
+            var time = this._dataContext.Time.Where(x => x.StartTime == Int32.Parse(startTime) && x.EndTime == Int32.Parse(endTime)).FirstOrDefault();
+            if (time != null) { 
+                return time.TimeId; 
+            }else {
+                var res = this._dataContext.Time.Add(new Time
+                {
+                    StartTime = Int32.Parse(startTime),
+                    EndTime = Int32.Parse(endTime)
+                }).Entity;
+                this._dataContext.SaveChanges();
+                return res.TimeId;
+            }
+        }
+
         /// <summary>
         /// updates time entity
         /// </summary>

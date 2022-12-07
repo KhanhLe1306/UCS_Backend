@@ -1,0 +1,4 @@
+<map id="UCS_Backend.Interfaces.IInstructorRepository.GetScheduleByInstructor" name="UCS_Backend.Interfaces.IInstructorRepository.GetScheduleByInstructor">
+<area shape="rect" id="node1" title=" " alt="" coords="264,13,497,53"/>
+<area shape="rect" id="node2" href="$class_u_c_s___backend_1_1_controllers_1_1_instructor_controller.html#a7a197fd4a41db32970847e1be75ac765" title="adds instructor to lst by employee number" alt="" coords="5,5,216,60"/>
+</map>

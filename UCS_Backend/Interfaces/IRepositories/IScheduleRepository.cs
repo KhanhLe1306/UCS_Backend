@@ -11,5 +11,7 @@ namespace UCS_Backend.Interfaces
     {
         List<Schedule> GetAllSchedules();
         SuccessInfo ValidateInsert(AddClassModel addClassModel);
+        void AddClass(AddClassModel addClassModel);
+        void UpdateClassInSchedule(string scheduleID, int timeID, int weekdayID);
     }
 }

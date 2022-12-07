@@ -1,0 +1,4 @@
+<map id="UCS_Backend.Repositories.InstructorRepository.GetScheduleByInstructor" name="UCS_Backend.Repositories.InstructorRepository.GetScheduleByInstructor">
+<area shape="rect" id="node1" title="method to have employee number in data schedule" alt="" coords="5,5,223,60"/>
+<area shape="rect" id="node2" href="$class_u_c_s___backend_1_1_repositories_1_1_instructor_repository.html#af02c51c00f175235d363bc6d09f1fa91" title="Creates method for cross listed classesto have a list of schedule info" alt="" coords="271,5,484,60"/>
+</map>

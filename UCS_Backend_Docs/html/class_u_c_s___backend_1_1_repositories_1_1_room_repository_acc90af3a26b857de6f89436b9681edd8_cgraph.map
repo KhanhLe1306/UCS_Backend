@@ -1,0 +1,4 @@
+<map id="UCS_Backend.Repositories.RoomRepository.GetScheduleByRoomNumber" name="UCS_Backend.Repositories.RoomRepository.GetScheduleByRoomNumber">
+<area shape="rect" id="node1" title="method to get schedule by room number in data context" alt="" coords="5,5,252,60"/>
+<area shape="rect" id="node2" href="$class_u_c_s___backend_1_1_repositories_1_1_room_repository.html#ac408c9a56a0e1283de285f7e8b398329" title="Creates schedule info" alt="" coords="300,5,528,60"/>
+</map>

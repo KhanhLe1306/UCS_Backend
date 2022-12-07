@@ -1,0 +1,5 @@
+<map id="UCS_Backend.Interfaces.IRepositories.IRoomRepository" name="UCS_Backend.Interfaces.IRepositories.IRoomRepository">
+<area shape="rect" id="node1" title="creates class for room repo to find room id by name" alt="" coords="5,79,256,119"/>
+<area shape="rect" id="node3" href="$class_u_c_s___backend_1_1_repositories_1_1_room_repository.html" title="Creates a class for RoomRepositoty" alt="" coords="37,167,224,207"/>
+<area shape="rect" id="node2" href="$interface_u_c_s___backend_1_1_interfaces_1_1_i_base_repository.html" title=" " alt="" coords="43,5,218,31"/>
+</map>

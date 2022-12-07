@@ -12,5 +12,7 @@ namespace UCS_Backend.Interfaces.IRepositories
         int FindRoomIdByName(string name);
 
         List<ScheduleInfo> GetScheduleByRoomNumber(int roomNumber);
+
+        int GetRoomIdByRoomName(string buildingCode, string roomNumber);
     }
 }

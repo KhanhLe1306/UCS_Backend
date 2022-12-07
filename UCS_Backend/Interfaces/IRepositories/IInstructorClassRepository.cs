@@ -12,5 +12,6 @@ namespace UCS_Backend.Interfaces.IRepositories
         Task<InstructorClass> AddInstructorClass(InstructorClass instructorClass);
         Task<(bool, InstructorClass)> UpdateInstructorClass(InstructorClass instructorClass);
         Task<bool> DeleteInstructorClass(InstructorClass instructorClass);
+        int AddUpdateInstructorClass(InstructorClass instructureClass);
     }
 }

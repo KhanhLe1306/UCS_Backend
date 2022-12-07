@@ -1,0 +1,4 @@
+<map id="UCS_Backend.Repositories.InstructorRepository.FindInstructorByName" name="UCS_Backend.Repositories.InstructorRepository.FindInstructorByName">
+<area shape="rect" id="node1" title="be able to find instructor by firstname and lastname" alt="" coords="240,5,461,60"/>
+<area shape="rect" id="node2" href="$class_u_c_s___backend_1_1_repositories_1_1_instructor_repository.html#a81a1eaae9517ae9a19a2f817ec268416" title="Add instructor to data context but find the instructor by name" alt="" coords="5,13,192,53"/>
+</map>
