@@ -291,5 +291,16 @@ namespace UCS_Backend.Repositories
                 return res;
             }
         }
+
+        public void UpdateClassInSchedule(string scheduleID, int timeID, int weekdayID)
+        {
+            var temp = this._dataContext.Schedules.Where(s => s.ScheduleId == Int32.Parse(scheduleID)).FirstOrDefault();
+            if (temp != null)
+            {
+                temp.TimeId = timeID;
+                temp.WeekdayId = weekdayID;
+            }
+            this._dataContext.SaveChanges();
+        }
     }
 }

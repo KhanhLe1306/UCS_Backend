@@ -68,6 +68,19 @@ namespace UCS_Backend.Controllers
             this._classRepository.RemoveClass(classID);
         }
 
+        [HttpPost("updateClass")]
+        public SuccessInfo UpdateClass([FromBody] UpdateClassModel updateClassModel)
+        {
+            SuccessInfo successInfo = this._classRepository.ValidateClassUpdate(updateClassModel);
+            if (successInfo.success == true)
+            {
+                int timeID = this._timeRepository.GetTimeId(updateClassModel.StartTime, updateClassModel.EndTime);
+                int weekdayID = this._weekdayRepository.GetWeekDaysIdByDescription(updateClassModel.MeetingDays);
+                this._scheduleRepository.UpdateClassInSchedule(updateClassModel.ScheduleID, timeID, weekdayID);
+            }
+            return successInfo;
+        }
+
 
     }
 }

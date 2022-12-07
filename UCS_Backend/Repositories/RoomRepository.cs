@@ -93,6 +93,7 @@ namespace UCS_Backend.Repositories
                        join i in _dataContext.Instructors on ic.InstructorId equals i.InstructorId
                        where r.Name.Substring(3, r.Name.Length - 3).Contains(roomNumber.ToString()) && roomNumber.ToString().Length == 3 && s.IsDeleted != true
                        select new ScheduleInfo {
+                           ScheduleID = s.ScheduleId.ToString(),
                            ClassID = c.ClassId.ToString(),
                            ClssID = c.ClssId.ToString(),
                            RoomName = r.Name,

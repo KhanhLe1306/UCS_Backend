@@ -1,4 +1,5 @@
 ﻿using UCS_Backend.Models;
+using UCS_Backend.Models.SubModels;
 
 namespace UCS_Backend.Interfaces.IRepositories
 {
@@ -11,5 +12,6 @@ namespace UCS_Backend.Interfaces.IRepositories
         int FindClssID(string catalogNumber, string section);
         void RemoveClass(string classID);
         int GetClassIdByCourseAndSection(string courseNumber, string sectionNumber, string enrollment, string subjectCode, string coursetitle, int clssId);
+        SuccessInfo ValidateClassUpdate(UpdateClassModel updateClassModel);
     }
 }
