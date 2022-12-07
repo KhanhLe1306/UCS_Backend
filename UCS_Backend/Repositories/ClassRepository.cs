@@ -68,7 +68,7 @@ namespace UCS_Backend.Repositories
         /// <param name="courseNumber"></param>
         /// <param name="sectionNumber"></param>
         /// <returns></returns>
-        public int GetClassIdByCourseAndSection(string courseNumber, string sectionNumber, string enrollment)
+        public int GetClassIdByCourseAndSection(string courseNumber, string sectionNumber, string enrollment, string subjectCode, string courseTitle, int clssId)
         {
             var classResult = this._context.Classes.Where(c => c.CatalogNumber == courseNumber && c.Section == sectionNumber).FirstOrDefault();  
             if (classResult == null) // Add
@@ -77,7 +77,11 @@ namespace UCS_Backend.Repositories
                 {
                     CatalogNumber = courseNumber,
                     Section = sectionNumber,
-                    Enrollments = Int32.Parse(enrollment)
+                    Enrollments = Int32.Parse(enrollment),
+                    SubjectCode = subjectCode,
+                    CourseTitle = courseTitle,
+                    ClssId = clssId,
+                    Course = subjectCode + " " + courseNumber
                 }).Entity.ClassId;
                 this._context.SaveChanges();
                 return classId;

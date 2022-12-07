@@ -9,6 +9,6 @@ namespace UCS_Backend.Interfaces.IRepositories
     {
         int AddNewClass(ClassModel classModel);
         int FindClssID(string catalogNumber, string section);
-        int GetClassIdByCourseAndSection(string courseNumber, string sectionNumber, string enrollment);
+        int GetClassIdByCourseAndSection(string courseNumber, string sectionNumber, string enrollment, string subjectCode, string coursetitle, int clssId);
     }
 }

@@ -1,0 +1,5 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$interface_u_c_s___backend_1_1_interfaces_1_1_i_base_repository.html" title=" " alt="" coords="5,35,209,75"/>
+<area shape="rect" id="node2" href="$interface_u_c_s___backend_1_1_interfaces_1_1_i_individual_repository.html" title="creates class for individual repo with task to get individuals" alt="" coords="257,5,484,45"/>
+<area shape="rect" id="node3" href="$class_u_c_s___backend_1_1_repositories_1_1_individual_repository.html" title="Creates a class for IndividualRepositoty" alt="" coords="532,35,719,75"/>
+</map>
