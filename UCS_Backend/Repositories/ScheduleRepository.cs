@@ -167,7 +167,7 @@ namespace UCS_Backend.Repositories
                        join c in _dataContext.Classes on s.ClassId equals c.ClassId
                        join w in _dataContext.Weekdays on s.WeekdayId equals w.WeekdayId
                        join r in _dataContext.Rooms on s.RoomId equals r.RoomId
-                       where i.FirstName == firstName && i.LastName == lastName
+                       where i.FirstName == firstName && i.LastName == lastName && s.IsDeleted != true
                        select new ScheduleInfo
                        {
                            ClssID = c.ClssId.ToString(),
@@ -218,8 +218,12 @@ namespace UCS_Backend.Repositories
             var temp2 = this._dataContext.Classes.Where(x => x.SubjectCode == subjectCode && x.CatalogNumber == courseNumber && x.Section == sectionNumber).FirstOrDefault();
             if (temp2 != null)
             {
-                doesClassNotExist = false;
-                messages.Add(new Dictionary<string, string> { { "header", "CLASS EXISTS CONFLICT" }, { "message-primary", $"Class {subjectCode} {courseNumber} - {courseTitle}" }, {"message-secondary", $"The section {section} already exists!" } });
+                var temp3 = this._dataContext.Schedules.Where(s => s.ClassId == temp2.ClassId).FirstOrDefault().IsDeleted;
+                if (temp3 != null && temp3 != true)
+                {
+                    doesClassNotExist = false;
+                    messages.Add(new Dictionary<string, string> { { "header", "CLASS EXISTS CONFLICT" }, { "message-primary", $"Class {subjectCode} {courseNumber} - {courseTitle}" }, {"message-secondary", $"The section {section} already exists!" } });
+                }
             }
 
 
@@ -227,7 +231,7 @@ namespace UCS_Backend.Repositories
             {
                 // Call add class when all checks are passed
                 AddClass(addClassModel);
-                messages.Add(new Dictionary<string, string> { { "header", $"{instructor}" }, { "message-primary", $"{roomCode + ' ' + room}" }, { "message-secondary", $"{time.Item1} - {time.Item2},{string.Join(' ', days.Split(','))}" } });
+                messages.Add(new Dictionary<string, string> { { "header", $"Instructor: {instructor}" }, { "message-primary", $"Room: {roomCode + ' ' + room}" }, { "message-secondary", $"Meeting: {time.Item1} - {time.Item2}, {string.Join(' ', days.Split(','))}" } });
             }
 
             Console.WriteLine("Printing out errors . . .");
@@ -279,7 +283,7 @@ namespace UCS_Backend.Repositories
         /// <returns></returns>
         public Schedule AddUpdateSchedule(Schedule schedule)
         {
-            var temp = this._dataContext.Schedules.Where(x => x.ClassId == schedule.ClassId && x.RoomId == schedule.RoomId && x.TimeId == schedule.TimeId && x.WeekdayId == schedule.WeekdayId).FirstOrDefault();
+            var temp = this._dataContext.Schedules.Where(x => x.ClassId == schedule.ClassId && x.RoomId == schedule.RoomId && x.TimeId == schedule.TimeId && x.WeekdayId == schedule.WeekdayId && x.IsDeleted != true).FirstOrDefault();
             if (temp != null)
             {
                 return temp;
