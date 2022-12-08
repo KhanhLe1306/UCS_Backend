@@ -1,7 +1,7 @@
 ﻿namespace UCS_Backend.Models.SubModels
 {
 
-     /// <summary>
+    /// <summary>
     /// Creates a class for Scheduleinfo
     /// </summary> 
     public class ScheduleInfo

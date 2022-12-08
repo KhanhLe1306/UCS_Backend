@@ -12,6 +12,7 @@ namespace UCS_Backend.Interfaces.IRepositories
         int FindClssID(string catalogNumber, string section);
         void RemoveClass(string classID);
         int GetClassIdByCourseAndSection(string courseNumber, string sectionNumber, string enrollment, string subjectCode, string coursetitle, int clssId);
+        int GetScheduleIdByClssId(int clssId);
         SuccessInfo ValidateClassUpdate(UpdateClassModel updateClassModel);
     }
 }
