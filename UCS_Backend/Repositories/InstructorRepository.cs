@@ -181,17 +181,20 @@ namespace UCS_Backend.Repositories
                        join c in _dataContext.Classes on s.ClassId equals c.ClassId
                        join w in _dataContext.Weekdays on s.WeekdayId equals w.WeekdayId
                        join r in _dataContext.Rooms on s.RoomId equals r.RoomId
-                       where i.FirstName == firstName && i.LastName == lastName
+                       where i.FirstName == firstName && i.LastName == lastName && s.IsDeleted != true
                        select new ScheduleInfo
                        {
+                           ScheduleID = s.ScheduleId.ToString(),
+                           ClassID = c.ClassId.ToString(),
                            ClssID = c.ClssId.ToString(),
                            RoomName = r.Name,
-                           StartTime = t.StartTime.ToString(),
-                           EndTime = t.EndTime.ToString(),
+                           StartTime = t.StartTime.ToString().PadLeft(4, '0'),
+                           EndTime = t.EndTime.ToString().PadLeft(4, '0'),
                            Course = c.Course,
                            CourseTitle = c.CourseTitle,
                            MeetingDays = w.Description.ToString(),
-                           Instructor = i.FirstName + " " + i.LastName
+                           Instructor = i.FirstName + " " + i.LastName,
+                           Section = c.Section
                        }).ToList();
 
             if (res.Count == 0)

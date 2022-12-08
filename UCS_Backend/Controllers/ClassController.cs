@@ -73,10 +73,18 @@ namespace UCS_Backend.Controllers
         {
             SuccessInfo successInfo = this._classRepository.ValidateClassUpdate(updateClassModel);
             if (successInfo.success == true)
-            {
+            {  
                 int timeID = this._timeRepository.GetTimeId(updateClassModel.StartTime, updateClassModel.EndTime);
                 int weekdayID = this._weekdayRepository.GetWeekDaysIdByDescription(updateClassModel.MeetingDays);
                 this._scheduleRepository.UpdateClassInSchedule(updateClassModel.ScheduleID, timeID, weekdayID);
+
+                // Also update the crosslisting if there is one
+                if (int.Parse(updateClassModel.CrossListedClssId) != 0)
+                {
+                    int scheduleID = this._classRepository.GetScheduleIdByClssId(int.Parse(updateClassModel.CrossListedClssId));
+                    Console.WriteLine("CROSSLISTED CLASS SCHEDULE ID: " + scheduleID);
+                    this._scheduleRepository.UpdateClassInSchedule(scheduleID.ToString(), timeID, weekdayID);
+                }
             }
             return successInfo;
         }

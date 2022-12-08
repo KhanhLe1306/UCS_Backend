@@ -102,7 +102,8 @@ namespace UCS_Backend.Repositories
                            Course = c.Course,
                            CourseTitle = c.CourseTitle,
                            MeetingDays = w.Description.ToString(),
-                           Instructor = i.FirstName + " " + i.LastName
+                           Instructor = i.FirstName + " " + i.LastName,
+                           Section = c.Section
                        }).ToList();
 
             // If the search didn't return anything, return a list with a single 

@@ -3,6 +3,7 @@ using UCS_Backend.Interfaces;
 using UCS_Backend.Interfaces.IManagers;
 using UCS_Backend.Interfaces.IRepositories;
 using UCS_Backend.Models;
+using UCS_Backend.Repositories;
 using UCS_Backend.Utils;
 
 namespace UCS_Backend.Controllers
@@ -23,6 +24,7 @@ namespace UCS_Backend.Controllers
         private ICrossRepository _crossRepository;
         private IInstructorRepository _instructorRepository;
         private IInstructorClassRepository _instructorClassRepository;
+        private IWeekdayRepository _weekdayRepository;
         private CSVParser parser;
         /// <summary>
          /// Creates method for controller scheduling
@@ -43,6 +45,7 @@ namespace UCS_Backend.Controllers
             this._classRepository = classRepository;
             this._instructorRepository = instructorRepository;
             this._instructorClassRepository = instructorClassRepository;
+            this._weekdayRepository = weekdayRepository;
             this.parser = new CSVParser(classRepository, roomRepository, timeRepository, weekdayRepository, crossRepository, scheduleRepository, instructorRepository, instructorClassRepository);
         }
         [HttpGet]
